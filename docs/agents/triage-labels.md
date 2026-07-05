@@ -12,7 +12,7 @@ Five canonical labels. The role name and the label string are the same by defaul
 
 ## Creating or re-syncing the labels on the repo
 
-`gh label create` errors if the label already exists; `gh label edit` is the idempotent re-sync pattern. Pick the right command per label.
+`gh label create` errors if the label already exists; `gh label edit` is idempotent. Pick the right command per label.
 
 ### First-time setup (fresh repo)
 
@@ -25,21 +25,15 @@ gh label create ready-for-agent  --repo IsaacMorzy/mupla --color "0e8a16" --desc
 gh label create ready-for-human  --repo IsaacMorzy/mupla --color "5319e7" --description "Needs a human implementer"
 ```
 
-### Migrating an existing greenfield repo
+### Re-sync existing labels
 
-If a label already lives on the remote (GitHub creates default labels, `wontfix #ffffff` is a common one), use `gh label edit` instead — it is idempotent:
+If a label already lives on the remote (e.g. GitHub's default `wontfix #ffffff`), use `gh label edit` — it is idempotent and overwrites color/description in place:
 
 ```bash
 gh label edit wontfix --repo IsaacMorzy/mupla --color "d93f0b" --description "Out of scope"
 ```
 
-### Description-length constraint
-
-GitHub's API rejects label descriptions longer than **100 characters**. The exact strings in this file's `--description` flags are the contract — keep them short, copy-paste verbatim from the table, and never rewrite them as full sentences.
-
-### Drift is the #1 silent break
-
-If a label has a different color on the remote, this file and GitHub are out of sync — fix with `gh label edit <name> --repo IsaacMorzy/mupla --color "<hex>" --description "<desc>"`. The five hex values and descriptions in the table are the source of truth.
+GitHub caps label descriptions at **100 characters** — copy the `--description` values verbatim from the table; the table is the source of truth. If any color drifts, fix it with `gh label edit` (same form as above).
 
 ## State transitions
 

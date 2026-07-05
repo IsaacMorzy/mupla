@@ -12,7 +12,7 @@ GitHub Issues on [`IsaacMorzy/mupla`](https://github.com/IsaacMorzy/mupla), reac
 
 ### Triage labels
 
-Five canonical labels — `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix` — created on the repo with `gh label create`. See [`docs/agents/triage-labels.md`](./docs/agents/triage-labels.md).
+Five canonical labels — `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix` — synced to the repo via the `gh` CLI (`gh label create` for new labels, `gh label edit` for re-syncs). See [`docs/agents/triage-labels.md`](./docs/agents/triage-labels.md).
 
 ### Domain docs
 

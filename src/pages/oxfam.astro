@@ -1,0 +1,367 @@
+---
+import Base from '../layouts/Base.astro';
+import Section from '../components/ui/Section.astro';
+
+const programs = [
+	{
+		tag: 'Education',
+		title: 'Schooling for refugee children',
+		text: 'We sponsor 12,400 students across 38 countries — from Syrian refugees in Jordan to Rohingya children in Bangladesh.',
+		bg: 'from-[#0B2540] to-[#1A3656]',
+	},
+	{
+		tag: 'Water',
+		title: 'Clean water access',
+		text: 'Solar-powered wells, rainwater harvesting, and sanitation kits for villages in East Africa and South Asia.',
+		bg: 'from-[#1A3656] to-[#0B2540]',
+	},
+	{
+		tag: 'Women',
+		title: "Women's economic empowerment",
+		text: 'Microfinance, vocational training, and leadership programs for women in underserved Muslim communities.',
+		bg: 'from-[#0B2540] to-[#2A4A75]',
+	},
+	{
+		tag: 'Emergency',
+		title: 'Disaster response',
+		text: 'Rapid-deployment aid for earthquakes, floods, and conflict — food, shelter, medical care within 72 hours.',
+		bg: 'from-[#2A4A75] to-[#0B2540]',
+	},
+	{
+		tag: 'Youth',
+		title: 'Youth leadership',
+		text: 'University scholarships, mentorship, and civic engagement programs for the next generation of Muslim leaders.',
+		bg: 'from-[#0B2540] to-[#1A3656]',
+	},
+	{
+		tag: 'Orphans',
+		title: 'Orphan sponsorship',
+		text: 'Long-term sponsorship for Muslim orphans — covering food, clothing, education, and healthcare until age 18.',
+		bg: 'from-[#1A3656] to-[#2A4A75]',
+	},
+];
+
+const stories = [
+	{
+		quote:
+			'After the earthquake destroyed our school, mupla rebuilt it in three months. My daughter is back in class. We never lost hope.',
+		author: 'Fatima Al-Rashid',
+		role: 'Mother, Antakya, Turkey',
+	},
+	{
+		quote:
+			'I received a mupla scholarship to study engineering. Today I design water systems for villages that never had clean water. The circle continues.',
+		author: 'Yusuf Ibrahim',
+		role: 'Engineer, Kano, Nigeria',
+	},
+	{
+		quote:
+			'When the floods came, mupla was there with food and shelter within two days. They did not forget us.',
+		author: 'Mariam Diallo',
+		role: 'Community elder, Bamako, Mali',
+	},
+];
+---
+
+<Base
+	title="mupla · Oxfam-style variant"
+	description="Oxfam-style home page variant for A/B testing against the Anthropic-paper baseline."
+>
+	<div class="theme-oxfam">
+		{/* Variant notice — orients the viewer; sits above the urgent banner */}
+		<div
+			class="border-b-4 border-[#FF6B35] bg-[#0B2540] px-6 py-3 text-center text-xs font-bold uppercase tracking-widest text-white"
+		>
+			You're viewing the <span class="text-[#FF6B35]">Oxfam-style variant</span>.
+			<a href="/" class="ml-2 underline underline-offset-2 hover:text-[#FF6B35]"
+				>Switch to Anthropic-paper baseline →</a
+			>
+		</div>
+
+		{/* Urgent top banner — Oxfam's ongoing-crisis callout */}
+		<a
+			href="#donate"
+			class="block bg-[#FF6B35] px-6 py-2 text-center text-xs font-bold uppercase tracking-widest text-white transition hover:bg-[#E55A24]"
+		>
+			<span class="mr-2">●</span> Ongoing crisis · Yemen food aid ·
+			<span class="underline">Donate now</span>
+		</a>
+
+		{/* Hero — full-bleed teal, urgent sans, decorative SVG portrait placeholder */}
+		<Section background="bg-[#0B2540]" class="!max-w-none !py-20 lg:!py-28">
+			<div
+				class="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-12"
+			>
+				<div class="lg:col-span-7">
+					<p class="mb-4 text-xs font-bold uppercase tracking-widest text-[#FF6B35]">
+						Where we work · 2024
+					</p>
+					<h1
+						class="text-5xl font-black leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-8xl"
+					>
+						Where faith<br />meets action.
+					</h1>
+					<p class="mt-8 max-w-xl text-lg leading-relaxed text-white/80">
+						For 30 years, mupla has stood with Muslim communities in crisis and
+						in hope — from refugee camps to university halls. We don't choose
+						between mercy and justice. We choose both.
+					</p>
+					<div class="mt-10 flex flex-wrap gap-4">
+						<a
+							href="#donate"
+							class="rounded-md bg-[#FF6B35] px-8 py-4 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#E55A24]"
+						>
+							Donate now
+						</a>
+						<a
+							href="#about"
+							class="rounded-md border-2 border-white px-8 py-4 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-white hover:text-[#0B2540]"
+						>
+							Our work
+						</a>
+					</div>
+				</div>
+				<div class="relative aspect-[4/5] overflow-hidden rounded-lg lg:col-span-5">
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-[#0B2540] via-[#1A3656] to-[#2A4A75]"
+					>
+					</div>
+					<svg
+						viewBox="0 0 400 500"
+						class="absolute inset-0 h-full w-full opacity-70"
+						preserveAspectRatio="xMidYMid slice"
+					>
+						<defs>
+							<radialGradient id="face" cx="50%" cy="40%">
+								<stop
+									offset="0%"
+									stop-color="#FF6B35"
+									stop-opacity="0.6"
+								></stop>
+								<stop
+									offset="100%"
+									stop-color="#FF6B35"
+									stop-opacity="0"
+								></stop>
+							</radialGradient>
+						</defs>
+						<circle cx="200" cy="180" r="140" fill="url(#face)"></circle>
+						<circle cx="200" cy="180" r="60" fill="#FF6B35" opacity="0.7"
+						></circle>
+						<ellipse
+							cx="200"
+							cy="410"
+							rx="150"
+							ry="130"
+							fill="#FF6B35"
+							opacity="0.5"
+						></ellipse>
+					</svg>
+					<div
+						class="absolute inset-x-4 bottom-4 rounded bg-white/10 p-4 backdrop-blur"
+					>
+						<p class="text-[10px] font-bold uppercase tracking-widest text-[#FF6B35]">
+							Portrait · placeholder
+						</p>
+						<p class="mt-1 text-sm font-medium text-white">
+							Amina, 12, in a mupla-supported school in Jordan. 2024.
+						</p>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		{/* Stats — big numbers, one in orange for accent */}
+		<Section background="bg-white" class="!py-16">
+			<div class="mb-12 text-center">
+				<p class="mb-3 text-xs font-bold uppercase tracking-widest text-[#FF6B35]">
+					By the numbers · 2024
+				</p>
+				<h2 class="text-4xl font-extrabold tracking-tight text-[#0B2540] sm:text-5xl">
+					30 years of impact
+				</h2>
+			</div>
+			<div
+				class="grid divide-y divide-[#E5E7EB] border-y border-[#E5E7EB] sm:grid-cols-3 sm:divide-x sm:divide-y-0"
+			>
+				<div class="py-8 text-center">
+					<div class="text-5xl font-black text-[#0B2540] sm:text-6xl">12,400</div>
+					<p class="mt-2 text-xs font-bold uppercase tracking-widest text-[#4B5563]">
+						Students sponsored
+					</p>
+				</div>
+				<div class="py-8 text-center">
+					<div class="text-5xl font-black text-[#0B2540] sm:text-6xl">38</div>
+					<p class="mt-2 text-xs font-bold uppercase tracking-widest text-[#4B5563]">
+						Countries reached
+					</p>
+				</div>
+				<div class="py-8 text-center">
+					<div class="text-5xl font-black text-[#FF6B35] sm:text-6xl">$2.4M</div>
+					<p class="mt-2 text-xs font-bold uppercase tracking-widest text-[#4B5563]">
+						Distributed in 2024
+					</p>
+				</div>
+			</div>
+		</Section>
+
+		{/* Programs — 3-up grid of full-bleed photo placeholder cards */}
+		<Section background="bg-[#F8F7F2]" class="!py-20">
+			<div class="mb-12">
+				<p class="mb-3 text-xs font-bold uppercase tracking-widest text-[#FF6B35]">
+					What we do
+				</p>
+				<h2
+					class="max-w-3xl text-3xl font-extrabold tracking-tight text-[#0B2540] sm:text-4xl lg:text-5xl"
+				>
+					Six programs, one mission: dignity for every Muslim community we serve.
+				</h2>
+			</div>
+			<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+				{
+					programs.map((p) => (
+						<a
+							href="#"
+							class="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-lg"
+						>
+							<div class={`absolute inset-0 bg-gradient-to-br ${p.bg}`} />
+							<svg
+								class="absolute inset-0 h-full w-full opacity-30"
+								viewBox="0 0 400 500"
+								preserveAspectRatio="xMidYMid slice"
+							>
+								<circle cx="100" cy="120" r="80" fill="#FF6B35" opacity="0.4" />
+								<circle
+									cx="320"
+									cy="380"
+									r="120"
+									fill="#FF6B35"
+									opacity="0.3"
+								/>
+							</svg>
+							<div class="relative p-6">
+								<p class="text-[10px] font-bold uppercase tracking-widest text-[#FF6B35]">
+									{p.tag}
+								</p>
+								<h3 class="mt-2 text-2xl font-extrabold leading-tight tracking-tight text-white">
+									{p.title}
+								</h3>
+								<p class="mt-3 text-sm text-white/80">{p.text}</p>
+							</div>
+						</a>
+					))
+				}
+			</div>
+		</Section>
+
+		{/* Stories — 3 testimonial cards with orange left-rule */}
+		<Section background="bg-white" class="!py-20">
+			<div class="mb-12 text-center">
+				<p class="mb-3 text-xs font-bold uppercase tracking-widest text-[#FF6B35]">
+					Voices from our community
+				</p>
+				<h2
+					class="text-3xl font-extrabold tracking-tight text-[#0B2540] sm:text-4xl lg:text-5xl"
+				>
+					Stories from the people we walk beside
+				</h2>
+			</div>
+			<div class="grid gap-6 md:grid-cols-3">
+				{
+					stories.map((s) => (
+						<figure class="flex h-full flex-col gap-4 border-l-4 border-[#FF6B35] bg-[#F8F7F2] p-6">
+							<blockquote class="flex-1">
+								<p class="text-base leading-relaxed text-[#0A1628]">
+									“{s.quote}”
+								</p>
+							</blockquote>
+							<figcaption class="border-t border-[#E5E7EB] pt-4">
+								<p class="text-sm font-bold text-[#0B2540]">{s.author}</p>
+								<p class="text-xs uppercase tracking-wider text-[#4B5563]">
+									{s.role}
+								</p>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+		</Section>
+
+		{/* CTA — full-bleed orange, white text, white buttons */}
+		<Section background="bg-[#FF6B35]" class="!max-w-none !py-24">
+			<div class="mx-auto max-w-4xl px-6 text-center">
+				<h2
+					class="text-4xl font-black leading-[1] tracking-tight text-white sm:text-5xl lg:text-6xl"
+				>
+					A crisis doesn't wait.<br />Neither do we.
+				</h2>
+				<p class="mx-auto mt-6 max-w-2xl text-lg text-white/90">
+					Your gift today puts food on the table, a roof overhead, and a future
+					within reach for a Muslim family in crisis.
+				</p>
+				<div class="mt-10 flex flex-wrap justify-center gap-4">
+					<a
+						href="#donate"
+						class="rounded-md bg-white px-10 py-5 text-sm font-bold uppercase tracking-wide text-[#0B2540] transition hover:bg-[#F8F7F2]"
+					>
+						Donate now
+					</a>
+					<a
+						href="#monthly"
+						class="rounded-md border-2 border-white px-10 py-5 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-white hover:text-[#FF6B35]"
+					>
+						Give monthly
+					</a>
+				</div>
+			</div>
+		</Section>
+	</div>
+</Base>
+
+<style is:global>
+	/*
+	 * Oxfam-style theme override — scoped to .theme-oxfam wrapper.
+	 * Does not touch the global Anthropic-paper tokens in global.css.
+	 * All variant sections and reuse of Section/Button/Card inside this
+	 * wrapper auto-pick up these values.
+	 */
+	.theme-oxfam {
+		--background: #f8f7f2;
+		--foreground: #0a1628;
+		--card: #ffffff;
+		--card-foreground: #0a1628;
+		--popover: #ffffff;
+		--popover-foreground: #0a1628;
+		--primary: #0b2540;
+		--primary-foreground: #f8f7f2;
+		--secondary: #e5e7eb;
+		--secondary-foreground: #0a1628;
+		--muted: #e5e7eb;
+		--muted-foreground: #4b5563;
+		--accent: #ff6b35;
+		--accent-foreground: #ffffff;
+		--destructive: #dc2626;
+		--border: #d1d5db;
+		--input: #d1d5db;
+		--ring: #0b2540;
+	}
+
+	/* Override the global h1/h2/h3 serif rule (from global.css @layer base)
+	   inside the variant. Oxfam = sans, heavy, tight tracking. */
+	.theme-oxfam h1,
+	.theme-oxfam h2,
+	.theme-oxfam h3 {
+		font-family: var(--font-sans);
+		letter-spacing: -0.025em;
+		color: #0b2540;
+	}
+	.theme-oxfam h1 {
+		font-weight: 900;
+	}
+	.theme-oxfam h2 {
+		font-weight: 800;
+	}
+	.theme-oxfam h3 {
+		font-weight: 700;
+	}
+</style>

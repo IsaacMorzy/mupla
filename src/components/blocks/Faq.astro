@@ -1,0 +1,40 @@
+---
+import { tinaField } from '@tinacms/astro/tina-field';
+import TinaMarkdown from '@tinacms/astro/TinaMarkdown.astro';
+import Section from '../ui/Section.astro';
+import Accordion from '../ui/Accordion.astro';
+import AccordionItem from '../ui/AccordionItem.astro';
+import AccordionTrigger from '../ui/AccordionTrigger.astro';
+import AccordionContent from '../ui/AccordionContent.astro';
+import { mdxComponents } from '../mdx/components';
+import type { FaqBlock, FaqItem } from '../../lib/data';
+
+interface Props {
+	data: FaqBlock;
+}
+
+const { data } = Astro.props;
+const items = (data.items ?? []).filter((it): it is FaqItem => it !== null);
+---
+<Section>
+	<div class="mx-auto max-w-3xl text-center">
+		{data.title && <h2 data-tina-field={tinaField(data, 'title')} class="text-balance text-3xl font-semibold md:text-4xl">{data.title}</h2>}
+		{data.description && <p data-tina-field={tinaField(data, 'description')} class="mt-4 text-muted-foreground">{data.description}</p>}
+	</div>
+	{items.length > 0 && (
+		<Accordion class="mx-auto mt-10 max-w-3xl">
+			{items.map((item) => (
+				<AccordionItem data-tina-field={tinaField(item)}>
+					<AccordionTrigger>
+						<span data-tina-field={tinaField(item, 'question')} class="text-base font-medium">{item.question}</span>
+					</AccordionTrigger>
+					<AccordionContent>
+						<div data-tina-field={tinaField(item, 'answer')} class="prose prose-sm max-w-none text-muted-foreground">
+							<TinaMarkdown content={item.answer} components={mdxComponents} />
+						</div>
+					</AccordionContent>
+				</AccordionItem>
+			))}
+		</Accordion>
+	)}
+</Section>

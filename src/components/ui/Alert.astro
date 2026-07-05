@@ -1,0 +1,24 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { tv, type VariantProps } from 'tailwind-variants';
+import { cn } from '../../lib/cn';
+
+const alert = tv({
+	base: 'relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7',
+	variants: {
+		variant: {
+			default: 'bg-background text-foreground border-border',
+			destructive: 'border-destructive/50 text-destructive bg-destructive/10 [&>svg]:text-destructive',
+		},
+	},
+	defaultVariants: { variant: 'default' },
+});
+
+type Props = HTMLAttributes<'div'> & VariantProps<typeof alert>;
+
+const { variant, class: className, ...rest } = Astro.props;
+const classes = cn(alert({ variant }), className);
+---
+<div role="alert" class={classes} {...rest}>
+	<slot />
+</div>

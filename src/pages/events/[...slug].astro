@@ -1,0 +1,104 @@
+---
+import type { CmsEvent } from '../../lib/data';
+import Base from '../../layouts/Base.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Button from '../../components/ui/Button.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { getConfig, getEvent, listEvents } from '../../lib/data';
+
+export async function getStaticPaths() {
+	const events = await listEvents();
+	return events.map((node: CmsEvent) => ({ params: { slug: node._sys.filename } }));
+}
+
+const slug = (Astro.params.slug ?? '').toString();
+const eventResult = await getEvent(slug);
+const data: CmsEvent | undefined = eventResult.data?.event;
+if (!data) return new Response('Not Found', { status: 404 });
+
+const config = (await getConfig()).data?.config ?? null;
+const eventDate = data.date ? new Date(data.date) : null;
+const eventEndDate = data.endDate ? new Date(data.endDate) : null;
+const isMultiDay = Boolean(eventEndDate && eventDate && eventEndDate.toDateString() !== eventDate.toDateString());
+const descriptionText = (data.description ?? '').replace(/<[^>]+>/g, '').slice(0, 200);
+
+// Google Calendar expects dates as YYYYMMDDTHHMMSSZ (no separators).
+const toCalDate = (d: string | null | undefined): string =>
+	(d ?? '').replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+const calDates = `${toCalDate(data.date)}/${toCalDate(data.endDate)}`;
+const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(data.title ?? 'Event')}&dates=${calDates}&location=${encodeURIComponent(data.location ?? '')}&details=${encodeURIComponent(descriptionText)}`;
+---
+<Base
+	title={`${data.title ?? 'Event'}${config?.seo?.title ? ` — ${config.seo.title}` : ''}`}
+	description={descriptionText}
+>
+	<main class="mx-auto max-w-3xl px-6 py-16">
+		<a href="/events" class="mb-8 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground">
+			<Icon name="arrow-left" class="size-4" />
+			All events
+		</a>
+
+		<header class="mb-10 space-y-5">
+			<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+				{eventDate && (
+					<time datetime={data.date} class="font-medium text-foreground">
+						<FormattedDate date={eventDate} />
+						{isMultiDay && eventEndDate && (
+							<>
+								{' \u2013 '}
+								<FormattedDate date={eventEndDate} />
+							</>
+						)}
+					</time>
+				)}
+				{data.location && (
+					<span class="flex items-center gap-1">
+						<Icon name="map-pin" class="size-3.5" />
+						{data.location}
+					</span>
+				)}
+				{data.cost && <Badge variant="outline" class="font-normal">{data.cost}</Badge>}
+			</div>
+			<h1 class="text-balance text-4xl font-semibold tracking-tight md:text-5xl">{data.title}</h1>
+			{data.rsvpUrl && (
+				<div class="pt-2">
+					<Button href={data.rsvpUrl} size="lg">
+						<Icon name="calendar-plus" class="size-4" />
+						RSVP for this event
+					</Button>
+				</div>
+			)}
+		</header>
+
+		{data.image && (
+			<img
+				src={data.image}
+				alt={data.title ?? ''}
+				width={1200}
+				height={675}
+				class="mb-10 aspect-video w-full rounded-xl border object-cover"
+			/>
+		)}
+
+		<div class="prose prose-lg max-w-none">
+			{data.description}
+		</div>
+
+		{eventDate && (
+			<aside class="mt-16 rounded-xl border bg-card p-6 text-sm">
+				<h2 class="text-base font-medium">Add to your calendar</h2>
+				<p class="mt-1 text-muted-foreground">Set a reminder so you don't miss it.</p>
+				<a
+					href={calUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="mt-3 inline-flex items-center gap-1.5 text-primary underline-offset-4 hover:underline"
+				>
+					<Icon name="calendar-plus" class="size-4" />
+					Add to Google Calendar
+				</a>
+			</aside>
+		)}
+	</main>
+</Base>

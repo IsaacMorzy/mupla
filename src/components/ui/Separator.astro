@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { cn } from '../../lib/cn';
+
+type Props = HTMLAttributes<'hr'> & {
+	orientation?: 'horizontal' | 'vertical';
+};
+
+const { orientation = 'horizontal', class: className, ...rest } = Astro.props;
+---
+<hr
+	role="separator"
+	aria-orientation={orientation}
+	class={cn(
+		'shrink-0 bg-border',
+		orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px',
+		className
+	)}
+	{...rest}
+/>

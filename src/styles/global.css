@@ -73,9 +73,9 @@
 	--card-foreground: oklch(0.26 0.025 60);
 	--popover: oklch(0.995 0.006 75);
 	--popover-foreground: oklch(0.26 0.025 60);
-	/* Muted clay/rust primary (was vivid red-orange) — quieter, more
-	   community-trustworthy. */
-	--primary: oklch(0.55 0.1 38);
+	/* Amber/gold primary — warm, lantern-lit, resonant with Islamic
+	   illumination manuscripts. Single-hue shift from the prior clay/rust. */
+	--primary: oklch(0.62 0.12 78);
 	--primary-foreground: oklch(0.985 0.008 75);
 	--secondary: oklch(0.94 0.012 75);
 	--secondary-foreground: oklch(0.34 0.03 60);
@@ -86,9 +86,9 @@
 	--destructive: oklch(0.55 0.15 22);
 	--border: oklch(0.88 0.015 75);
 	--input: oklch(0.88 0.015 75);
-	--ring: oklch(0.55 0.1 38);
-	/* Charts shifted from rainbow to a warm spectrum so data viz stays on-tone. */
-	--chart-1: oklch(0.65 0.13 38);
+	--ring: oklch(0.62 0.12 78);
+	/* Charts shifted from rainbow to a warm amber spectrum so data viz stays on-tone. */
+	--chart-1: oklch(0.7 0.13 78);
 	--chart-2: oklch(0.55 0.1 75);
 	--chart-3: oklch(0.4 0.05 50);
 	--chart-4: oklch(0.78 0.13 75);
@@ -103,7 +103,7 @@
 	--card-foreground: oklch(0.95 0.012 75);
 	--popover: oklch(0.24 0.022 60);
 	--popover-foreground: oklch(0.95 0.012 75);
-	--primary: oklch(0.78 0.1 40);
+	--primary: oklch(0.8 0.11 80);
 	--primary-foreground: oklch(0.2 0.018 60);
 	--secondary: oklch(0.3 0.03 60);
 	--secondary-foreground: oklch(0.95 0.012 75);
@@ -114,7 +114,7 @@
 	--destructive: oklch(0.65 0.16 22);
 	--border: oklch(0.95 0.012 75 / 14%);
 	--input: oklch(0.95 0.012 75 / 18%);
-	--ring: oklch(0.78 0.1 40);
+	--ring: oklch(0.8 0.11 80);
 }
 
 @layer base {

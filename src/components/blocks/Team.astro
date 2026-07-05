@@ -1,0 +1,42 @@
+---
+import { tinaField } from '@tinacms/astro/tina-field';
+import Section from '../ui/Section.astro';
+import Card from '../ui/Card.astro';
+import CardContent from '../ui/CardContent.astro';
+import Avatar from '../ui/Avatar.astro';
+import Badge from '../ui/Badge.astro';
+import type { TeamBlock, TeamMember } from '../../lib/data';
+
+interface Props {
+	data: TeamBlock;
+}
+
+const { data } = Astro.props;
+const members = (data.members ?? []).filter((m): m is TeamMember => m !== null);
+const initials = (name?: string | null) =>
+	(name ?? '')
+		.split(' ')
+		.map((w) => w[0])
+		.filter(Boolean)
+		.join('')
+		.slice(0, 2)
+		.toUpperCase();
+---
+<Section>
+	<div class="mx-auto max-w-2xl text-center">
+		{data.title && <h2 data-tina-field={tinaField(data, 'title')} class="text-balance text-3xl font-semibold md:text-4xl">{data.title}</h2>}
+		{data.description && <p data-tina-field={tinaField(data, 'description')} class="mt-4 text-muted-foreground">{data.description}</p>}
+	</div>
+	<div class="mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+		{members.map((m) => (
+			<Card class="h-full" data-tina-field={tinaField(m)}>
+				<CardContent class="flex flex-col items-center text-center">
+					<Avatar src={m.avatar} alt={m.name} fallback={initials(m.name)} class="size-20 text-base" />
+					<h3 data-tina-field={tinaField(m, 'name')} class="mt-4 font-medium">{m.name}</h3>
+					{m.role && <Badge variant="outline" class="mt-1.5 font-normal">{m.role}</Badge>}
+					{m.bio && <p data-tina-field={tinaField(m, 'bio')} class="mt-3 text-sm text-muted-foreground">{m.bio}</p>}
+				</CardContent>
+			</Card>
+		))}
+	</div>
+</Section>

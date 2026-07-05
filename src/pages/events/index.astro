@@ -1,0 +1,104 @@
+---
+import type { CmsEvent } from '../../lib/data';
+import Base from '../../layouts/Base.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Button from '../../components/ui/Button.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { getConfig, listEvents } from '../../lib/data';
+
+const events: CmsEvent[] = await listEvents();
+const config = (await getConfig()).data?.config ?? null;
+const now = new Date();
+const upcoming: CmsEvent[] = events.filter((e: CmsEvent) => Boolean(e.date) && new Date(e.date as string) >= now);
+const past: CmsEvent[] = events.filter((e: CmsEvent) => Boolean(e.date) && new Date(e.date as string) < now);
+
+// Strip basic markdown markers from rich-text descriptions for the card preview.
+const stripMd = (s: string | null | undefined): string =>
+	(s ?? '').replace(/[#*_`>]/g, '').slice(0, 200);
+---
+<Base
+	title={`Events${config?.seo?.title ? ` — ${config.seo.title}` : ''}`}
+	description="Upcoming community events at the mupla foundation."
+>
+	<main class="mx-auto max-w-5xl px-6 py-16">
+		<div class="mb-12 text-center">
+			<h1 class="text-balance text-5xl font-semibold tracking-tight md:text-6xl">Events</h1>
+			<p class="mx-auto mt-4 max-w-2xl text-muted-foreground">
+				From weekly iftars to workshops to our annual gala — find what's coming up and how to join.
+			</p>
+		</div>
+
+		{upcoming.length > 0 && (
+			<section class="mb-16">
+				<h2 class="mb-6 text-2xl font-semibold">Upcoming</h2>
+				<ul class="grid list-none gap-6 p-0 md:grid-cols-2">
+					{upcoming.map((event: CmsEvent) => (
+						<li>
+							<a href={`/events/${event._sys.filename}/`} class="group flex h-full flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-shadow hover:shadow-md">
+								{event.image && (
+									<img width={720} height={360} src={event.image} alt={event.title ?? ''} class="aspect-video w-full object-cover" />
+								)}
+								<div class="flex flex-1 flex-col gap-3 p-6">
+									<div class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+										<time datetime={event.date} class="font-medium text-foreground">
+											<FormattedDate date={new Date(event.date)} />
+										</time>
+										{event.location && (
+											<span class="flex items-center gap-1">
+												<Icon name="map-pin" class="size-3.5" />
+												{event.location}
+											</span>
+										)}
+										{event.cost && (
+											<Badge variant="outline" class="font-normal">{event.cost}</Badge>
+										)}
+									</div>
+									<h3 class="text-lg font-semibold group-hover:underline">{event.title}</h3>
+									{event.description && (
+										<p class="line-clamp-3 text-sm text-muted-foreground">
+											{stripMd(event.description as string)}
+										</p>
+									)}
+									<div class="mt-auto flex items-center justify-end pt-2">
+										{event.rsvpUrl && (
+											<Button href={event.rsvpUrl} size="sm" variant="outline">
+												RSVP
+											</Button>
+										)}
+									</div>
+								</div>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		)}
+
+		{past.length > 0 && (
+			<section>
+				<h2 class="mb-6 text-2xl font-semibold">Past events</h2>
+				<ul class="divide-y rounded-xl border bg-card">
+					{past.slice(0, 10).map((event: CmsEvent) => (
+						<li>
+							<a href={`/events/${event._sys.filename}/`} class="group flex flex-wrap items-center justify-between gap-3 p-5 transition-colors hover:bg-accent/30">
+								<div class="min-w-0 flex-1">
+									<h3 class="font-medium group-hover:underline">{event.title}</h3>
+									<p class="mt-0.5 text-sm text-muted-foreground">
+										<FormattedDate date={new Date(event.date)} />
+										{event.location && ` · ${event.location}`}
+									</p>
+								</div>
+								<Icon name="arrow-right" class="size-4 text-muted-foreground transition-transform group-hover:translate-x-1" />
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		)}
+
+		{upcoming.length === 0 && past.length === 0 && (
+			<p class="text-center text-muted-foreground">No events scheduled right now. Check back soon — or <a href="/get-involved" class="underline">get involved</a> to help us plan the next one.</p>
+		)}
+	</main>
+</Base>

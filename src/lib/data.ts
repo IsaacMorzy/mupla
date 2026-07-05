@@ -7,9 +7,9 @@
  *
  * Types below are pure derivations — no hand-written shapes. Each one is
  * either inferred from a loader's return type (`CmsConfig`/`CmsPage`/
- * `CmsBlog`) or `Extract`/index-accessed off those. The Tina collection
- * is the source of truth; regen with `tinacms dev` and everything
- * downstream updates.
+ * `CmsBlog`/`CmsEvent`) or `Extract`/index-accessed off those. The Tina
+ * collection is the source of truth; regen with `tinacms dev` and
+ * everything downstream updates.
  */
 import type { TinaRichTextContent } from '@tinacms/astro';
 import { requestWithMetadata } from '@tinacms/astro/data';
@@ -19,10 +19,22 @@ export const getConfig = () =>
 	requestWithMetadata(client.queries.config({ relativePath: 'config.json' }));
 
 export const getPage = (slug: string) =>
-	requestWithMetadata(client.queries.page({ relativePath: `${slug}.mdx` }), { priority: 'primary' });
+	requestWithMetadata(
+		client.queries.page({ relativePath: `${slug}.mdx` }),
+		{ priority: 'primary' },
+	);
 
 export const getBlog = (slug: string) =>
-	requestWithMetadata(client.queries.blog({ relativePath: `${slug}.mdx` }), { priority: 'primary' });
+	requestWithMetadata(
+		client.queries.blog({ relativePath: `${slug}.mdx` }),
+		{ priority: 'primary' },
+	);
+
+export const getEvent = (slug: string) =>
+	requestWithMetadata(
+		client.queries.event({ relativePath: `${slug}.mdx` }),
+		{ priority: 'primary' },
+	);
 
 export async function listPages() {
 	const result = await client.queries.pageConnection();
@@ -41,9 +53,21 @@ export async function listBlogs() {
 		});
 }
 
+export async function listEvents() {
+	const result = await client.queries.eventConnection();
+	return (result.data.eventConnection.edges ?? [])
+		.flatMap((edge) => (edge?.node ? [edge.node] : []))
+		.sort((a, b) => {
+			const ad = a.date ? new Date(a.date).valueOf() : 0;
+			const bd = b.date ? new Date(b.date).valueOf() : 0;
+			return ad - bd;
+		});
+}
+
 export type CmsConfig = Awaited<ReturnType<typeof getConfig>>['data']['config'];
 export type CmsPage = Awaited<ReturnType<typeof getPage>>['data']['page'];
 export type CmsBlog = Awaited<ReturnType<typeof getBlog>>['data']['blog'];
+export type CmsEvent = Awaited<ReturnType<typeof getEvent>>['data']['event'];
 
 export type PageBlock = NonNullable<NonNullable<CmsPage['blocks']>[number]>;
 export type PageBlockTypename = PageBlock['__typename'];
@@ -57,6 +81,9 @@ export type ContentBlock = Extract<PageBlock, { __typename: 'PageBlocksContent' 
 export type TestimonialBlock = Extract<PageBlock, { __typename: 'PageBlocksTestimonial' }>;
 export type VideoBlock = Extract<PageBlock, { __typename: 'PageBlocksVideo' }>;
 export type SplitBlock = Extract<PageBlock, { __typename: 'PageBlocksSplit' }>;
+export type FaqBlock = Extract<PageBlock, { __typename: 'PageBlocksFaq' }>;
+export type TeamBlock = Extract<PageBlock, { __typename: 'PageBlocksTeam' }>;
+export type ContactFormBlock = Extract<PageBlock, { __typename: 'PageBlocksContactForm' }>;
 
 export type CmsConfigNav = NonNullable<NonNullable<CmsConfig['nav']>[number]>;
 export type CmsConfigContactLink = NonNullable<NonNullable<CmsConfig['contactLinks']>[number]>;
@@ -67,6 +94,8 @@ export type ImageField = NonNullable<HeroBlock['image']>;
 export type FeatureItem = NonNullable<NonNullable<FeaturesBlock['items']>[number]>;
 export type StatItem = NonNullable<NonNullable<StatsBlock['stats']>[number]>;
 export type TestimonialItem = NonNullable<NonNullable<TestimonialBlock['testimonials']>[number]>;
+export type FaqItem = NonNullable<NonNullable<FaqBlock['items']>[number]>;
+export type TeamMember = NonNullable<NonNullable<TeamBlock['members']>[number]>;
 
 /** Tina rich-text bodies are typed as `any` in the generated client; this is what `<TinaMarkdown>` expects. */
 export type RichText = TinaRichTextContent;

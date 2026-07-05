@@ -1,0 +1,154 @@
+---
+import { tinaField } from '@tinacms/astro/tina-field';
+import Section from '../ui/Section.astro';
+import Input from '../ui/Input.astro';
+import Textarea from '../ui/Textarea.astro';
+import Label from '../ui/Label.astro';
+import Button from '../ui/Button.astro';
+import Alert from '../ui/Alert.astro';
+import AlertTitle from '../ui/AlertTitle.astro';
+import AlertDescription from '../ui/AlertDescription.astro';
+import type { ContactFormBlock } from '../../lib/data';
+
+/**
+ * Inline fallback shape so the component still typechecks when the TinaCMS
+ * generated client hasn't been regenerated yet (e.g. during a fresh clone,
+ * before `pnpm tinacms build` has been run). Once the client is up to date,
+ * this union resolves to `ContactFormBlock` and gives full autocomplete.
+ */
+type ContactFormData =
+	| ContactFormBlock
+	| {
+			action?: string | null;
+			to?: string | null;
+			subject?: string | null;
+			submitLabel?: string | null;
+			successMessage?: string | null;
+			errorMessage?: string | null;
+	  };
+
+interface Props {
+	data: ContactFormData;
+}
+
+const { data } = Astro.props;
+const action = data.action?.trim() || '';
+const to = data.to ?? 'hello@mupla.org';
+const subject = data.subject ?? 'Message from the mupla website';
+const submitLabel = data.submitLabel ?? 'Send message';
+const successMessage = data.successMessage ?? "Thanks for reaching out! Your message has been sent — we'll be in touch within two business days.";
+const errorMessage = data.errorMessage ?? "Something went wrong. Please email us directly at hello@mupla.org.";
+// Unique ID so multiple contact forms on a page don't collide.
+const formId = `contact-form-${Math.random().toString(36).slice(2, 9)}`;
+---
+<Section class="bg-default">
+	<form
+		id={formId}
+		class="mx-auto grid max-w-2xl gap-5"
+		novalidate
+		data-contact-form
+		data-action={action}
+		data-to={to}
+		data-subject={subject}
+		data-success={successMessage}
+		data-error={errorMessage}
+	>
+		<div class="grid gap-2">
+			<Label for={`${formId}-name`}>Name</Label>
+			<Input id={`${formId}-name`} name="name" type="text" required placeholder="Your name" />
+		</div>
+		<div class="grid gap-2">
+			<Label for={`${formId}-email`}>Email</Label>
+			<Input id={`${formId}-email`} name="email" type="email" required placeholder="you@example.com" />
+		</div>
+		<div class="grid gap-2">
+			<Label for={`${formId}-subject`}>Subject</Label>
+			<Input id={`${formId}-subject`} name="subject" type="text" value={subject} placeholder="What's this about?" />
+		</div>
+		<div class="grid gap-2">
+			<Label for={`${formId}-message`}>Message</Label>
+			<Textarea id={`${formId}-message`} name="message" required rows={6} placeholder="How can we help?" />
+		</div>
+		{/* Honeypot — hidden from real users, blocks spam bots when filled. Formspree / Netlify Forms ignore submissions with this field set. */}
+		<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="sr-only" />
+		<div class="flex items-center justify-between gap-4">
+			<p class="text-xs text-muted-foreground">We read every message and respond within two business days.</p>
+			<Button type="submit" size="lg" data-tina-field={tinaField(data, 'submitLabel')}>{submitLabel}</Button>
+		</div>
+		<div data-form-feedback hidden>
+			<Alert variant="default" data-form-alert>
+				<AlertTitle data-form-alert-title>—</AlertTitle>
+				<AlertDescription data-form-alert-body>—</AlertDescription>
+			</Alert>
+		</div>
+	</form>
+</Section>
+
+<script is:inline>
+	document.querySelectorAll('form[data-contact-form]').forEach((form) => {
+		if (form.dataset.bound) return;
+		form.dataset.bound = '1';
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const data = new FormData(form);
+			const name = (data.get('name') ?? '').toString().trim();
+			const email = (data.get('email') ?? '').toString().trim();
+			const subject = (data.get('subject') || form.dataset.subject || '').toString().trim();
+			const message = (data.get('message') ?? '').toString().trim();
+			if ((form.querySelector('[name="_gotcha"]')?.value || '').trim()) return; // honeypot filled → bot, drop silently
+			const wrapper = form.querySelector('[data-form-feedback]');
+			const alert = form.querySelector('[data-form-alert]');
+			const titleEl = form.querySelector('[data-form-alert-title]');
+			const bodyEl = form.querySelector('[data-form-alert-body]');
+			const show = (kind, title, body) => {
+				if (!wrapper || !alert || !titleEl || !bodyEl) return;
+				wrapper.hidden = false;
+				alert.className = 'relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7 ' + (
+					kind === 'error'
+						? 'border-destructive/50 text-destructive bg-destructive/10 [&>svg]:text-destructive'
+						: 'bg-background text-foreground border-border'
+				);
+				titleEl.textContent = title;
+				bodyEl.innerHTML = '';
+				const p = document.createElement('p');
+				p.textContent = body;
+				bodyEl.appendChild(p);
+				wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			};
+			if (!name || !email || !message) {
+				show('error', 'Please fill in all required fields.', 'Name, email, and message are required.');
+				return;
+			}
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+				show('error', 'That email address looks off.', 'Please double-check and try again.');
+				return;
+			}
+			const action = form.dataset.action;
+			if (action) {
+				fetch(action, {
+					method: 'POST',
+					body: new FormData(form),
+					headers: { 'Accept': 'application/json' },
+				}).then((r) => {
+					if (r.ok) {
+						show('success', 'Message sent!', form.dataset.success || 'Thanks for reaching out.');
+						form.reset();
+					} else {
+						show('error', 'Something went wrong.', form.dataset.error || 'Please try again or email us directly.');
+					}
+				}).catch(() => {
+					show('error', 'Something went wrong.', form.dataset.error || 'Please try again or email us directly.');
+				});
+				return;
+			}
+			const to = form.dataset.to || '';
+			const body = 'Name: ' + name + '\nEmail: ' + email + '\n\n' + message;
+			const mailto = 'mailto:' + encodeURIComponent(to)
+				+ '?subject=' + encodeURIComponent(subject)
+				+ '&body=' + encodeURIComponent(body);
+			window.location.href = mailto;
+			show('success', 'Opening your email client...', form.dataset.success || "If your email client didn't open, please email us directly.");
+			form.reset();
+		});
+	});
+</script>

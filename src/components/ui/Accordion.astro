@@ -1,0 +1,11 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { cn } from '../../lib/cn';
+
+type Props = HTMLAttributes<'details'>;
+
+const { class: className, ...rest } = Astro.props;
+---
+<details class={cn('group', className)} {...rest}>
+	<slot />
+</details>

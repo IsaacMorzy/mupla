@@ -68,3 +68,4 @@ deno.lock
 .netlify
 .wrangler
 dist
+.env*

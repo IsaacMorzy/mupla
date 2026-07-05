@@ -1,0 +1,42 @@
+# CMS context — the Tina editing layer
+
+This is the editor-facing side of mupla. Tina Cloud (or the local Tina client) writes in here; the rendered site reads from `tina/__generated__/`.
+
+## Domain primitives
+
+- **Collection** — a Tina collection declared in `tina/collections/<name>.ts`. Three currently:
+  - `page` — top-level pages by slug under `src/content/page/`.
+  - `blog` — long-form posts under `src/content/blog/`.
+  - `config` — singleton global config under `src/content/config/`.
+- **Block template** — the schema/data-shape for a page section, declared in `src/components/blocks/<name>.template.ts`. Imported by `tina/collections/page.ts` and listed in the `templates:` array there.
+- **Field types** — Tina primitives: `string`, `boolean`, `image`, `datetime`, `rich-text`, plus `object` with `list: true` for arrays. Object fields apply to nested structures (e.g. `image` → `{ src, alt }`).
+- **Visual selector** — `ui: { visualSelector: true }` on the `Page Sections` field wires the block picker UI in `/admin`.
+- **Generated artefacts** — `tina/__generated__/` rebuilds every time `tinacms dev` (or `tinacms build --local`) runs. The generated client is consumed by `src/lib/data.ts`, which exports `getConfig()`, `getPage(slug)`, `getBlog(slug)`, `listPages()`, `listBlogs()`. The derived types (`CmsConfig`, `CmsPage`, `CmsBlog`, and the per-block `HeroBlock` / `FeaturesBlock` / etc. shapes) are inferred from the loader return types — no hand-written shapes.
+- **Domain data loaders** — primary loaders are in `src/lib/data.ts`. They wrap generated client queries with `requestWithMetadata()` so the editor overlay flows in when the page renders inside the admin iframe.
+
+## Workflow boundary
+
+- This context owns schemas, not rendering — the [`site` context](./CONTEXT-site.md) picks up the rendered output.
+- Editor changes flow: Tina UI → JSON / MDX writes → git diff → site re-renders on the next build.
+- The build path `tinacms build --local --skip-cloud-checks -c "astro build"` runs two peak phases in series: Tina's pre-build (graph + types) and Astro's bundle. Both share the `NODE_OPTIONS` script-level cap. See the [site context memory note](./CONTEXT-site.md#workflow-boundary).
+
+## Triage integration
+
+Issues raised against this context follow the `triage` skill's label vocabulary — see [`docs/agents/triage-labels.md`](./docs/agents/triage-labels.md). CMS changes that surface as bugs (e.g., schema validation drift after `__generated__` regenerates, or a block whose TypeScript type fails after Tina refactors) should land in issues labelled `needs-triage` and move through the same workflow as anything else.
+
+## Out of scope
+
+- Astute Astro rendering work — that's [`CONTEXT-site.md`](./CONTEXT-site.md).
+- Future storage layer for the Foundation-org data — that's a future `CONTEXT-foundation.md`.
+
+## Glossary
+
+- **Schema** — Tina collection declaration; lives in `tina/collections/<name>.ts`.
+- **Template** — block-level schema fragment (a Tina `Template` inside a collection). Lives in `src/components/blocks/<name>.template.ts`.
+- **Field** — single named entry in a schema. The visual editor surfaces each field with the `label` you declared.
+- **Generated** — code or types emitted under `tina/__generated__/` by the Tina CLI; treat as derived state, **do not edit by hand**. To regenerate after a schema change, run `tinacms build --local` (or `tinacms dev` for the equivalent without a static build).
+- **TinaCloud** — the hosted Tina backend. Until `clientId` and `token` are configured via env (`PUBLIC_TINA_CLIENT_ID` and `TINA_TOKEN`), only the `--local` mode works.
+
+## When the schema changes
+
+If you add a collection, a block template, or rename a field, edit this file in the same commit. The collection map and the field-types-in-use are what go stale fastest.

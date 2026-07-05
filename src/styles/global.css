@@ -16,8 +16,24 @@
 	size-adjust: 107.12%;
 }
 
+/* Editorial serif stack — uses locally-installed system serifs (Charter,
+   Iowan Old Style, Apple Garamond, then Georgia) so no extra @fontsource
+   package or network fetch. CLS-safe metric-matched fallback. */
+@font-face {
+	font-family: 'Serif Fallback';
+	src: local('Charter'), local('Iowan Old Style'), local('Apple Garamond'),
+		local('Georgia');
+	ascent-override: 92%;
+	descent-override: 24%;
+	line-gap-override: 0%;
+	size-adjust: 105%;
+}
+
 @theme inline {
 	--font-sans: 'Inter Variable', 'Inter Fallback', system-ui, sans-serif;
+	--font-serif:
+		'Charter', 'Iowan Old Style', 'Apple Garamond', 'Serif Fallback', ui-serif,
+		Georgia, serif;
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
@@ -48,51 +64,57 @@
 }
 
 :root {
-	--radius: 0.625rem;
-	--background: oklch(0.99 0.004 285);
-	--foreground: oklch(0.20 0.03 285);
-	--card: oklch(1 0.002 285);
-	--card-foreground: oklch(0.20 0.03 285);
-	--popover: oklch(1 0.002 285);
-	--popover-foreground: oklch(0.20 0.03 285);
-	--primary: oklch(0.57 0.198 37);
-	--primary-foreground: oklch(0.99 0.005 285);
-	--secondary: oklch(0.96 0.01 285);
-	--secondary-foreground: oklch(0.30 0.04 285);
-	--muted: oklch(0.96 0.01 285);
-	--muted-foreground: oklch(0.48 0.03 285);
-	--accent: oklch(0.95 0.02 285);
-	--accent-foreground: oklch(0.30 0.05 285);
-	--destructive: oklch(0.577 0.245 27.325);
-	--border: oklch(0.90 0.012 285);
-	--input: oklch(0.90 0.012 285);
-	--ring: oklch(0.57 0.198 37);
-	--chart-1: oklch(0.646 0.222 41.116);
-	--chart-2: oklch(0.6 0.118 184.704);
-	--chart-3: oklch(0.398 0.07 227.392);
-	--chart-4: oklch(0.828 0.189 84.429);
-	--chart-5: oklch(0.769 0.188 70.08);
+	--radius: 0.5rem;
+	/* Warm paper-ivory light mode (replaces the prior indigo 285 hue family)
+	   — calmer, editorial, additive at print scale. */
+	--background: oklch(0.985 0.008 75);
+	--foreground: oklch(0.26 0.025 60);
+	--card: oklch(0.995 0.006 75);
+	--card-foreground: oklch(0.26 0.025 60);
+	--popover: oklch(0.995 0.006 75);
+	--popover-foreground: oklch(0.26 0.025 60);
+	/* Muted clay/rust primary (was vivid red-orange) — quieter, more
+	   community-trustworthy. */
+	--primary: oklch(0.55 0.1 38);
+	--primary-foreground: oklch(0.985 0.008 75);
+	--secondary: oklch(0.94 0.012 75);
+	--secondary-foreground: oklch(0.34 0.03 60);
+	--muted: oklch(0.94 0.012 75);
+	--muted-foreground: oklch(0.5 0.025 60);
+	--accent: oklch(0.92 0.025 50);
+	--accent-foreground: oklch(0.3 0.04 50);
+	--destructive: oklch(0.55 0.15 22);
+	--border: oklch(0.88 0.015 75);
+	--input: oklch(0.88 0.015 75);
+	--ring: oklch(0.55 0.1 38);
+	/* Charts shifted from rainbow to a warm spectrum so data viz stays on-tone. */
+	--chart-1: oklch(0.65 0.13 38);
+	--chart-2: oklch(0.55 0.1 75);
+	--chart-3: oklch(0.4 0.05 50);
+	--chart-4: oklch(0.78 0.13 75);
+	--chart-5: oklch(0.68 0.13 30);
 }
 
+/* Sepia-tinted dark — calm, sincere, fade-resistant at night. */
 .dark {
-	--background: oklch(0.16 0.02 285);
-	--foreground: oklch(0.95 0.012 285);
-	--card: oklch(0.21 0.025 285);
-	--card-foreground: oklch(0.95 0.012 285);
-	--popover: oklch(0.21 0.025 285);
-	--popover-foreground: oklch(0.95 0.012 285);
-	--primary: oklch(0.70 0.18 40);
-	--primary-foreground: oklch(0.16 0.02 285);
-	--secondary: oklch(0.26 0.03 285);
-	--secondary-foreground: oklch(0.95 0.012 285);
-	--muted: oklch(0.26 0.03 285);
-	--muted-foreground: oklch(0.72 0.03 285);
-	--accent: oklch(0.28 0.04 285);
-	--accent-foreground: oklch(0.95 0.012 285);
-	--destructive: oklch(0.70 0.19 22);
-	--border: oklch(0.95 0.01 285 / 12%);
-	--input: oklch(0.95 0.01 285 / 15%);
-	--ring: oklch(0.70 0.18 40);
+	--background: oklch(0.2 0.018 60);
+	--foreground: oklch(0.95 0.012 75);
+	--card: oklch(0.24 0.022 60);
+	--card-foreground: oklch(0.95 0.012 75);
+	--popover: oklch(0.24 0.022 60);
+	--popover-foreground: oklch(0.95 0.012 75);
+	--primary: oklch(0.78 0.1 40);
+	--primary-foreground: oklch(0.2 0.018 60);
+	--secondary: oklch(0.3 0.03 60);
+	--secondary-foreground: oklch(0.95 0.012 75);
+	--muted: oklch(0.3 0.03 60);
+	--muted-foreground: oklch(0.72 0.025 65);
+	--accent: oklch(0.32 0.04 50);
+	--accent-foreground: oklch(0.95 0.012 75);
+	--destructive: oklch(0.65 0.16 22);
+	--border: oklch(0.95 0.012 75 / 14%);
+	--input: oklch(0.95 0.012 75 / 18%);
+	--ring: oklch(0.78 0.1 40);
 }
 
 @layer base {
@@ -109,10 +131,20 @@
 	.bg-default {
 		background-color: var(--background);
 	}
+	/* Editorial headings use serif by default so the chosen system reads as
+	   community/intellectual, not as SaaS. Per-component tweaks (Hero, etc.)
+	   still override locally if needed. */
+	h1,
+	h2,
+	h3 {
+		font-family: var(--font-serif);
+		letter-spacing: -0.005em;
+		font-weight: 500;
+	}
 }
 
 /* Prose (blog body) follows the theme tokens so it inverts in dark mode and
-   keeps the indigo tint, rather than the plugin's default zero-chroma grays.
+   keeps the warm tint rather than the plugin's default zero-chroma grays.
    Unlayered so it overrides the typography plugin's layered variables. */
 .prose {
 	--tw-prose-body: var(--foreground);
@@ -134,10 +166,3 @@
 	--tw-prose-td-borders: var(--border);
 }
 
-@keyframes twinkle {
-	0%, 100% { opacity: 0.25; }
-	50% { opacity: 0.9; }
-}
-@media (prefers-reduced-motion: no-preference) {
-	.star-twinkle { animation: twinkle var(--twinkle-dur, 4s) ease-in-out infinite; animation-delay: var(--d, 0s); }
-}

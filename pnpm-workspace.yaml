@@ -1,0 +1,13 @@
+# Not a monorepo — `packages` is only here so pnpm <10.5.0 accepts this
+# settings file instead of failing with "packages field missing or empty".
+packages:
+  - '.'
+
+allowBuilds:
+  '@parcel/watcher': true
+  better-sqlite3: true
+  core-js: true
+  esbuild: true
+  protobufjs: true
+  sharp: true
+  workerd: true

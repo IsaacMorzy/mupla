@@ -12,22 +12,34 @@ Five canonical labels. The role name and the label string are the same by defaul
 
 ## Creating or re-syncing the labels on the repo
 
-Run once after this file lands; rerun any single line after a rename or color change:
+`gh label create` errors if the label already exists; `gh label edit` is the idempotent re-sync pattern. Pick the right command per label.
+
+### First-time setup (fresh repo)
+
+Run once where none of the five labels exist yet:
 
 ```bash
-gh label create needs-triage       --repo IsaacMorzy/mupla --color "fbca04" --description "Maintainer needs to evaluate"
-gh label create needs-info         --repo IsaacMorzy/mupla --color "dbab09" --description "Waiting on reporter"
-gh label create ready-for-agent    --repo IsaacMorzy/mupla --color "0e8a16" --description "Fully specified; AFK-ready"
-gh label create ready-for-human    --repo IsaacMorzy/mupla --color "5319e7" --description "Needs a human implementer"
-gh label create wontfix            --repo IsaacMorzy/mupla --color "d93f0b" --description "Out of scope"
+gh label create needs-triage     --repo IsaacMorzy/mupla --color "fbca04" --description "Maintainer needs to evaluate"
+gh label create needs-info       --repo IsaacMorzy/mupla --color "dbab09" --description "Waiting on reporter"
+gh label create ready-for-agent  --repo IsaacMorzy/mupla --color "0e8a16" --description "Fully specified; AFK-ready"
+gh label create ready-for-human  --repo IsaacMorzy/mupla --color "5319e7" --description "Needs a human implementer"
 ```
 
-`gh label create` is **not idempotent** — it errors if the label already exists. The two safe patterns:
+### Migrating an existing greenfield repo
 
-- **First-time setup** — run the block above as-is.
-- **Re-sync a single label** — run `gh label edit <name> --repo IsaacMorzy/mupla --color "<hex>" --description "<desc>"` instead. This is how you keep a row in the table and the remote aligned byte-for-byte when one drifts.
+If a label already lives on the remote (GitHub creates default labels, `wontfix #ffffff` is a common one), use `gh label edit` instead — it is idempotent:
 
-Color drift is the #1 way this wiring breaks silently. If a label has a different color on the remote, this file and GitHub are out of sync — fix with `gh label edit`.
+```bash
+gh label edit wontfix --repo IsaacMorzy/mupla --color "d93f0b" --description "Out of scope"
+```
+
+### Description-length constraint
+
+GitHub's API rejects label descriptions longer than **100 characters**. The exact strings in this file's `--description` flags are the contract — keep them short, copy-paste verbatim from the table, and never rewrite them as full sentences.
+
+### Drift is the #1 silent break
+
+If a label has a different color on the remote, this file and GitHub are out of sync — fix with `gh label edit <name> --repo IsaacMorzy/mupla --color "<hex>" --description "<desc>"`. The five hex values and descriptions in the table are the source of truth.
 
 ## State transitions
 

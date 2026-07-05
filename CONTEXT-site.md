@@ -31,7 +31,7 @@ This is the "what visitors see" side of the mupla foundation website. Editors co
 - **Block** — Tina page-section template. Schema at `<name>.template.ts`, component at `<name>.astro`.
 - **Section** — the layout wrapper (`src/components/Section.astro`) every block uses for consistent vertical rhythm.
 - **Island** — `tina-island/[name].ts` route; the on-demand Astro server route Tina's visual-editing endpoint runs through.
-- **Visual primitives** — the only layout primitives in use are `Section`, `Button`, `Card`, the icon set, and so on. Earlier cosmic chrome (`<Aurora />` / `<Starfield />`) was intentionally retired in the Anthropic-paper redesign; treating those as a current option would re-introduce chrome the design system explicitly dropped.
+- **Visual primitives** — the only layout primitives in use are `Section`, `Button`, `Card`, the icon set, and so on. Do not reintroduce cosmic chrome (`<Aurora />` / `<Starfield />`); retired in the Anthropic-paper redesign and not a current option.
 
 ## When the surface changes
 

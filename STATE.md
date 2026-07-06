@@ -23,7 +23,7 @@ Last updated: 2026-07-06 by pass **4** (loop score 80/100, no `gh` drift, WIP cl
 | 0    | 2026-07-06 | 25/100 (L0) → 74/100 (L1) | bootstrap + scaffold                              |
 | 1    | 2026-07-06 | 74/100             | gh mut + §3 prune + bootstrap commit                   |
 | 2    | 2026-07-06 | 80/100             | post-`.github/` + mcp.json wire                        |
-| 3    | 2026-07-06 | 74/100             | +4 SKILL.md files globally installed (verified below)  |
+| 3    | 2026-07-06 | 74/100             | +4 SKILL.md files globally installed (verified below). *Drop from Pass 2 (80 → 74, −6): suspected because `loop-audit` notes out-of-tree skill placement. Not investigated this pass; flagged here so Pass 5 can probe whether to keep skills project-local instead.* |
 | 4    | 2026-07-06 | **80/100 (L1)**    | +6 vs Pass 3; no gh drift; loop-sync warnings closed   |
 
 ## open issues

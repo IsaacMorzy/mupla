@@ -340,6 +340,12 @@ the developer's own pace and break the loop's append-only invariants.
 - `loop-run-log.md` (this entry)
 - `STATE.md` (overwritten for `pass_id = 4`)
 
+### Local commit (Pass 4 — content snapshot)
+
+- Amended HEAD at log-write time: `f35c31d`. (Short SHA only; retrieve full: `git rev-parse f35c31d`.)
+- Important: the amend was used once to fold reviewer-driven findings into a single tree *locally*; future passes are expected to use **fresh commits**, never `git commit --amend`, so the append-only contract holds across pushes.
+- A `## Pass 4.1` amendment entry was added immediately after this Pass 4 entry to book the amend-without-entry gap so `loop-run-log.md` ↔ `git log` reconcile.
+
 No commit is created on `origin/main` automatically — `git push` is
 on the human-gate list (`docs/safety.md`). Local commit (`HEAD+1`)
 captures Pass 4's loop-owned artefacts.
@@ -355,15 +361,58 @@ honestly classified out-of-loop; the loop continues to be append-only.
   terminal when ready.
 - Maintainer eyeballs + commits + pushes the 16 WIP modifications
   under their own narrative (out of loop's scope).
-- `loop-audit . --suggest` captured this pass. Top findings (verbatim):
-  *(a) install `loop-triage` to automate per-issue triage traces,*
-  *(b) add a verifier agent (`loop-verifier`) so assertion findings*
-  *don't depend on a human reviewer, (c) hoist the safety denylist*
-  *into a runtime constraint via `loop-constraints` skills,*
-  *(d) add `.github/workflows/loop-audit.yml` to enforce auditability*
-  *per PR.* Each is a clear Pass 5 deliverable.
+- `loop-audit . --suggest` verbatim output (captured this pass):
+
+```text
+$ loop-audit . --suggest
+Install one or more of the available loop skills to fully automate this workflow:
+  - loop-triage  (automated triage check)
+  - loop-verifier (assertions and checks for fixes)
+  - loop-constraints  (denylist enforcement)
+  - GitHub Actions integration for audit/pattern validation
+```
+
+Each is a clear Pass 5 deliverable.
 - Optionally wire the daily-triage cron as a GitHub Action under
   `.github/workflows/loop.yml`.
+
+## Pass 4.1 — 2026-07-06 (Pass 4 amendment)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | Codebuff agent                                                 |
+| Pattern  | `daily-triage`                                                 |
+| Started  | 2026-07-06                                                     |
+| Status   | COMPLETE — editorial fixes from Pass-4 review folded into a fresh commit |
+
+### Why this entry exists
+
+Pass 4's local commit was *amended* once to fold reviewer-driven findings (WIP file count math; drop stale "warnings closed" claim; project-side WIP gate reframe; skills-strategy verifier strengthened; explicit out-of-loop WIP file enumeration; STATE.md heading purged). The amended tree is at `f35c31d`.
+
+Rather than re-amend (which would silently keep rewriting history and harm the append-only contract), this Pass 4.1 entry books the amendment as a fresh commit and pins the amended SHA so future readers can reconcile `loop-run-log.md` ↔ `git log`.
+
+### What changed in Pass 4.1 vs Pass 4
+
+- `STATE.md` Pass 3 row Notes column now acknowledges the drift from Pass 2 (80 → 74) and flags it as a Pass 5 probe.
+- `STATE.md` heading `## open issues (unchanged from pass 1)` → plain `## open issues` (loop-sync structural-similarity cleanliness).
+- WIP "13 other modified files" → "15 other modified files (named below)"; explicit enumeration block inserted in `STATE.md`.
+- Stale `warnings closed` claim removed from `loop-run-log.md` Pass 4 entry.
+- Project-side WIP reframed as **out-of-loop housekeeping**, not a Pass-4 gate, in both `STATE.md` and `loop-run-log.md`.
+- `docs/agents/skills-strategy.md` verifier strengthened: count + frontmatter shape (already on disk from previous turn).
+- `loop-audit --suggest` excerpts in the Pass 5 list are now verbatim fenced rather than paraphrased.
+- `f35c31d` (the amended Pass 4 SHA) now pinned in Pass 4's Local commit section.
+
+### Self-grade
+
+GOOD — all Pass-4 reviewer findings addressed; SHA pinned; future passes avoid amend-without-entry drift.
+
+### Open gates for Pass 5
+
+- Maintainer eyeball + commit + push of the local loop-owned commit
+  + this amendment commit.
+- Otherwise unchanged from Pass 4 open gates.
+
+---
 
 ## Pass 4.5 — PLACEHOLDER (template)
 

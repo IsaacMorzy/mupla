@@ -1385,3 +1385,37 @@ Maintainer gates (HUMAN-ONLY per docs/safety.md):
 Recovered tickets:
 
 - #16 / Add loop-engineering MCP server status to readiness audit brief - now reachable from patterns/registry.yaml ## mcp_connectors and docs/agents/mcp-overview-2026-07-06.md. Maintainer transition to ready-for-human remains once the manifest lights up locally.
+
+
+## Pass 13.5 - 2026-07-06 (MCP drift corrective - closes Pass 13.4 reviewer flags)
+
+| Slot     | Value                                                                                                                                  |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                                                                                          |
+| Pattern  | operator-connectors + articles-synthesis                                                                                               |
+| Status   | COMPLETE - corrective text-only + small script refactor                                                                                |
+| Score    | +0 (no new gates; corrective only)                                                                                                     |
+| Tokens   | ~1k (well under 200k budget)                                                                                                           |
+
+Reviewer flags closed (from Pass 13.4 reviewer-minimax-m3 cumulative review):
+
+1. **bin/mcp-bootstrap.sh DRIFT RISK** (hardcoded npx list duplicated patterns/registry.yaml ## mcp_connectors) -> closed by rewriting bin/mcp-bootstrap.sh to source install_cmd directly from the YAML block via awk. Single source of truth restored.
+2. **.mcp.json \$schema URL guess** -> closed by dropping the `$schema` field. Field-name convention (`mcpServers: []`) is portable across MCP-aware agents; the URL was not verifiable.
+
+What shipped:
+
+- bin/mcp-bootstrap.sh REWRITTEN (awk extraction; one new npx source = one install_cmd source).
+- .mcp.json REWRITTEN: dropped `$schema` field, kept `_comment` + `mcpServers: []`.
+- STATE.md pass_id 13.4 -> 13.5; Predecessor chain extended with / 13.5.
+- loop-run-log.md (this entry).
+- Verifier: /tmp/mcp-bootstrap.sh.pass13.4.bak preserved outside repo (no in-repo backup).
+
+Maintainer gates still HUMAN-ONLY per docs/safety.md:
+
+- bash bin/mcp-bootstrap.sh from a TTY after bin/prep-push.sh lands. Edits to patterns/registry.yaml ## mcp_connectors are now the only source of truth for the install commands.
+- Categorise the remaining 30 needs-triage issues. (#9, #10, #18 ready-for-agent; rest await maintainer's --add-label ready-for-human|wontfix|needs-info pastes.)
+
+Recovered followups (now de-prioritised; close in future pass if Audit needs them):
+
+- Pin MCP install versions OR document the un-pinned nature explicitly. (`npx -y` pulls latest; breakage risk if upstream breaks.)
+- Verify `$schema` URL against https://modelcontextprotocol.io/schemas/ before reintroducing that field.

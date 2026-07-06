@@ -5,7 +5,7 @@
 - **Project**: mupla-front (Astro + TinaCMS + Tailwind; Vercel deploy; Matt Pocock skills)
 - **Pattern**: matt-pocock-skill + loop-engineering (Passes 1-12 closed)
 - **Loop readiness score**: 95 / 100 (L3 - unattended loop safe). Held flat from Pass 11 since Pass 12 ops don't add new scoring gates.
-- **Last updated**: pass 13.4 - 2026-07-06
+- **Last updated**: pass 13.5 - 2026-07-06 (MCP drift corrective)
 - **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 30 issues attached in Backlog).
 - **Active GH issues snapshot**: docs/agents/gh-triage-2026-07-06-pass-12.md (re-runnable).
 - **Promoted T1 ticket**: #10 (bin/gh-create-issues.sh ran idempotently; T1 promote via gh issue edit --add-label ready-for-agent, allowed per docs/safety.md).
@@ -30,7 +30,7 @@ In-band drift events the agent caught and recovered (preserved verbatim from Pas
 
 ## Predecessor chain
 
-1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2 / 13.4
+1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2 / 13.4 / 13.5
 
 ( suffix = corrective amendment inside the same integer pass.)
 

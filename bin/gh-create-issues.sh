@@ -57,86 +57,15 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
 # Roadmap has 9 cells per row: # | Pass | Title | Label | Tier | Acceptance | Effort | Score | Body template
-# The awk regex was too narrow (matched only Bucket A). Replace with Python
-# heredoc inside bash - the single-quoted PYEOF delimiter prevents bash from
-# interpreting Python content (backticks, $, !, etc).
-#
-# Python parses any markdown table in the file: finds the divider row (| --- |),
-# identifies the header row above it, then loops data rows that follow. Skips
-# header rows. Strips bold markers (**N** -> N), then extracts Title (column 3)
-# and Body template (column 9, the LAST data column).
-python3 - "$ROADMAP" > "$TMP/tickets.tsv" <<'PYEOF'
-import sys, re
-from pathlib import Path
-
-path = Path(sys.argv[1])
-text = path.read_text()
-lines = text.split('\n')
-
-# Build a list of (line_idx, table_rows) where table_rows is a parsed table.
-# Strategy: walk line by line, identify divider rows, then the header row above
-# and the data rows below (until the next divider or non-table row).
-tables = []
-i = 0
-while i < len(lines):
-    line = lines[i]
-    stripped = line.strip()
-    # Match divider: lines whose cells are only --- / :--- / ---: / :---:
-    if re.match(r'^\|(\s*:?-{2,}:?\s*\|)+\s*$', stripped):
-        # Header must be the previous table-ish line.
-        if i - 1 >= 0 and lines[i-1].lstrip().startswith('|'):
-            header = lines[i-1]
-            # Data rows follow until the next non-table line.
-            rows = []
-            j = i + 1
-            while j < len(lines) and lines[j].lstrip().startswith('|'):
-                rows.append(lines[j])
-                j += 1
-            # Only keep tables with at least 9 columns (otherwise it's a 2-3 col
-            # nested table we don't care about).
-            if header.count('|') >= 10:
-                tables.append((header, rows))
-            i = j
-            continue
-    i += 1
-
-# Now parse each table into (title, body) pairs.
-out = []
-for header_row, data_rows in tables:
-    cells = [c.strip() for c in header_row.strip().strip('|').split('|')]
-    # Header sanity: must include 'Title' AND have at least 9 cells.
-    if 'Title' not in cells or len(cells) < 9:
-        continue
-    title_idx = cells.index('Title')
-    # Body template is conventionally the LAST cell. Try by header label first,
-    # fall back to last column.
-    body_idx = None
-    for label in ('Body template', 'Body', 'Description'):
-        if label in cells:
-            body_idx = cells.index(label)
-            break
-    if body_idx is None:
-        body_idx = len(cells) - 1
-    for row in data_rows:
-        rcells = [c.strip() for c in row.strip().strip('|').split('|')]
-        if len(rcells) <= max(title_idx, body_idx):
-            continue
-        # First cell should be a number (or bold-marker number).
-        first = rcells[0]
-        if not re.match(r'^\*?\*?[0-9]+\*?\*?$', first):
-            continue
-        title = rcells[title_idx]
-        body = rcells[body_idx]
-        if not title or not body:
-            continue
-        out.append((title, body))
-
-for title, body in out:
-    # TSV-safe: replace tabs in body with 4 spaces (rare but safe).
-    body_safe = body.replace('\t', '    ')
-    out_line = title + '\t' + body_safe + '\n'
-    sys.stdout.write(out_line)
-PYEOF
+# Parser lives in its own file (bin/_gh-roadmap-parse.py) so we avoid the bash
+# heredoc + bash-escape hazards documented in Pass 12.x. The script works
+# regardless of $PWD because $BASH_SOURCE resolves the script's own dir.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ ! -f "$SCRIPT_DIR/_gh-roadmap-parse.py" ]]; then
+	echo "gh-create-issues.sh: parser not found at $SCRIPT_DIR/_gh-roadmap-parse.py" >&2
+	exit 70
+fi
+python3 "$SCRIPT_DIR/_gh-roadmap-parse.py" "$ROADMAP" > "$TMP/tickets.tsv"
 
 ROWS="$(wc -l < "$TMP/tickets.tsv")"
 echo "[gh-create-issues] found $ROWS ticket rows in $ROADMAP"

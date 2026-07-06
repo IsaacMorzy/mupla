@@ -1227,3 +1227,33 @@ Vercel production build debugging (Ticket #31) bocked till `pnpm build` is runna
 - 21 new issues created in Buckets B (a11y), C (content), D (TinaCMS), E (DX), and the rest of Bucket A.
 - 9 from Pass 12 already exist and were skipped on title match (idempotent).
 - Top T1 ticket #<NUM> (loop-context.sh) promoted to `ready-for-agent` per `docs/safety.md` `--add-label` permission.
+
+---
+
+## Pass 12.2 - 2026-07-06 (final 22-of-31 recovery)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | Codebuff agent                                                 |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-06                                                     |
+| Status   | COMPLETE - bin/gh-create-issues.sh now delegates to a standalone Python parser (`bin/_gh-roadmap-parse.py`) which extracts all 31 roadmap rows (the parser normalises literal `\\n` text corruption via `text.replace('\\n', '\n')`). 22 new issues created + 9 already-open by-title + GH Project #5 `mupla-front triage` adds the new items to its Backlog idempotently. Top T1 promoted to `ready-for-agent`.
+
+### What shipped
+
+- **bin/_gh-roadmap-parse.py** (NEW) - Standalone Python markdown-table parser. Replaces the fragile awk + heredoc-python combo. Handles the Pass 9.1 literal `\\n` corruption cleanly.
+- **bin/gh-create-issues.sh** - str_replace updated to call the Python file (no more heredoc + bash-escape hazards).
+- **bin/gh-setup-project.sh** - Re-written in Pass 12 so the column-seed runs in BOTH fresh + existing-project paths (handles the empty project #5 left by Pass 12s partial run).
+- **docs/agents/gh-triage-2026-07-06-pass-12.md** - Live snapshot with 31 open needs-triage issues.
+- **STATE.md** - Patched: pass_id=12.2; Predecessor chain updated; ## Active GH issues notes 31 + the +1 unidentified row.
+
+### Maintainer gate
+
+- Run `bash bin/prep-push.sh` to fast-forward `origin main` to the Pass 12.2 commit.
+- Then browse https://github.com/users/IsaacMorzy/projects/5 to categorise the 31 needs-triage issues + the +1 unidentified row.
+
+### Recovered tickets
+
+- 22 new issues created in Buckets B (a11y), C (content), D (TinaCMS), E (DX), and the rest of Bucket A (catch-up from Pass 12.1 partials).
+- 9 from Pass 12 already exist (idempotent skip on title match).
+- Top T1 candidate #18 promoted to `ready-for-agent` via `gh issue edit --add-label` (allowed per docs/safety.md).

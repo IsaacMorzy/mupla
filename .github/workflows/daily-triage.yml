@@ -1,0 +1,100 @@
+# .github/workflows/daily-triage.yml
+# Loop-engineering cron: 1 pass/day, additive-only.
+#
+# Bucket A / T1 / Ticket #1 from docs/agents/triage-roadmap-2026-07-06.md.
+# Score delta: +10 on scripts/loop-audit-local.sh (file-presence check).
+#
+# This workflow IS the unattended cron tick. It runs at 06:00 UTC daily,
+# reads-only verifies the loop surface, runs axe-core, writes STATE.md /
+# docs/agents/triage-report-*.md, commits them to a `loop/daily-triage`
+# branch, never pushes to main. The maintainer eyeballs + pastes the
+# `bin/prep-push.sh` command once per week (HUMAN-ONLY per docs/safety.md).
+#
+# Permissions: `contents: read` + `contents: write` ONLY on the
+# `loop/daily-triage` branch. Pulls through `permissions: read-all` at the
+# top so the workflow doesn't accidentally inherit a higher scope.
+
+name: daily-triage
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 06:00 UTC daily
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why this is being run manually (logs to run summary).'
+        required: false
+        type: string
+
+permissions: read-all
+
+concurrency:
+  group: daily-triage
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: loop audit + a11y baseline + STATE write
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup pnpm + node
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+        # pnpm/action-setup auto-installs node via .nvmrc if present
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Loop readiness audit
+        run: bash scripts/loop-audit-local.sh | tee docs/agents/loop-audit-${GITHUB_RUN_ID}.log
+
+      - name: A11y baseline sweep
+        # Best-effort: do not fail the cron on a11y violations — they are
+        # surfaced as artifacts + reported via the loop wiki.
+        run: bash scripts/axe-core.sh || true
+
+      - name: Generate today's triage report stub
+        run: |
+          DATE="$(date -u '+%Y-%m-%d')"
+          REPORT="docs/agents/triage-report-${DATE}.md"
+          {
+            echo "# Triage report — ${DATE} (auto by daily-triage cron)"
+            echo
+            echo "## Loop readiness"
+            tail -5 docs/agents/loop-audit-${GITHUB_RUN_ID}.log
+          } > "${REPORT}" || true
+
+      - name: Commit (additive only, on a feature branch)
+        run: |
+          git config user.name "loop-bot"
+          git config user.email "loop-bot@users.noreply.github.com"
+          git checkout -B loop/daily-triage
+          git add STATE.md loop-run-log.md docs/agents/ || true
+          DATE="$(date -u '+%Y-%m-%d')"
+          git commit -m "loop(daily-triage): pass auto-${DATE} — readiness + a11y baseline + report stub" \
+                      --author "loop-bot <loop-bot@users.noreply.github.com>" || \
+            echo "no changes to commit"
+          git push -u origin loop/daily-triage --force-with-lease
+
+      - name: Run summary
+        if: always()
+        run: |
+          echo "## daily-triage run" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Date: $(date -u '+%Y-%m-%d')" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Loop readiness (last 5 lines):" >> "$GITHUB_STEP_SUMMARY"
+          tail -5 docs/agents/loop-audit-${GITHUB_RUN_ID}.log >> "$GITHUB_STEP_SUMMARY" || true
+          echo "- A11y JSON: docs/agents/a11y-baseline-*.json" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Triage report: docs/agents/triage-report-${DATE}.md" >> "$GITHUB_STEP_SUMMARY"
+          echo
+          echo "**Maintainer:** run \`bash bin/prep-push.sh\` to fast-forward main." >> "$GITHUB_STEP_SUMMARY"

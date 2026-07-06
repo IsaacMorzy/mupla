@@ -113,6 +113,54 @@ export const GlobalConfigCollection: Collection = {
           type: "string"
         }
       ],
+    },
+
+    // ============================================================
+    // contactBlock — ADDITIVE (Pass 11, ticket #16).
+    // Source of truth for /contact and /faq MDX placeholders cleaned
+    // up in ticket #15. All fields are optional so existing config.json
+    // files parse unchanged; the maintainer pastes real values.
+    // Cross-ref: docs/agents/triage-roadmap-2026-07-06.md §Bucket C.
+    // ============================================================
+    {
+      name: "contactBlock",
+      label: "Contact Block (postal address + phone)",
+      description:
+        "Used by /contact and /faq prose replacements. Any field empty renders as `[field-add-in-tina-admin]` so visitors never see placeholder text the maintainer hasn't reviewed.",
+      type: "object",
+      fields: [
+        {
+          name: "phone",
+          label: "Phone (display format, e.g. (555) 123-4567)",
+          type: "string",
+          required: false,
+          description: "Plain display string. Rendered in the contact card + FAQ answer bullet."
+        },
+        {
+          name: "addressLine1",
+          label: "Address line 1",
+          type: "string",
+          required: false,
+        },
+        {
+          name: "addressLine2",
+          label: "Address line 2 (suite / unit / etc.)",
+          type: "string",
+          required: false,
+        },
+        {
+          name: "city",
+          label: "City + region + postal code (single line)",
+          type: "string",
+          required: false,
+        },
+        {
+          name: "postalCode",
+          label: "Postal / ZIP code",
+          type: "string",
+          required: false,
+        },
+      ],
     }
 
     // Add other config fields here...

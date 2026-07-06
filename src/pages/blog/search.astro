@@ -1,0 +1,257 @@
+---
+import Base from '../../layouts/Base.astro';
+import Input from '../../components/ui/Input.astro';
+import Label from '../../components/ui/Label.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { getConfig } from '../../lib/data';
+
+const config = (await getConfig()).data?.config ?? null;
+---
+
+<Base
+	title={`Search${config?.seo?.title ? ` — ${config.seo.title}` : ''}`}
+	description="Search blog posts and upcoming events on the mupla foundation site."
+>
+	<main class="mx-auto max-w-3xl px-6 py-16">
+		<header class="mb-10 text-center">
+			<h1 class="text-balance text-4xl font-semibold tracking-tight md:text-5xl">Search</h1>
+			<p class="mt-3 text-muted-foreground">Find blog posts and upcoming events across the site.</p>
+		</header>
+
+		<div class="mx-auto max-w-2xl">
+			<Label for="search-input" class="sr-only">Search</Label>
+			<div class="relative">
+				<Icon
+					name="search"
+					class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+				/>
+				<Input
+					id="search-input"
+					name="q"
+					type="search"
+					placeholder="Try &quot;iftar&quot;, &quot;zakat&quot;, &quot;youth&quot;…"
+					autocomplete="off"
+					spellcheck="false"
+					class="h-11 pl-9 pr-12 text-base"
+				/>
+				<kbd
+					aria-hidden="true"
+					class="absolute right-3 top-1/2 hidden -translate-y-1/2 items-center rounded border border-border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground sm:inline-flex"
+				>
+					/
+				</kbd>
+			</div>
+		</div>
+
+		<div
+			id="search-status"
+			class="mx-auto mt-6 max-w-2xl text-sm text-muted-foreground"
+			aria-live="polite"
+			aria-atomic="true"
+		>
+			Loading…
+		</div>
+
+		<ul
+			id="search-results"
+			class="mx-auto mt-4 max-w-2xl list-none divide-y divide-border overflow-hidden rounded-xl border bg-card p-0"
+			role="list"
+		></ul>
+
+		<p class="mx-auto mt-6 max-w-2xl text-center text-xs text-muted-foreground">
+			Press <kbd class="rounded border border-border bg-muted px-1 font-mono text-[10px]">/</kbd> anywhere to focus the search.
+		</p>
+	</main>
+</Base>
+
+<script>
+	type Entry = {
+		title: string;
+		url: string;
+		category: 'blog' | 'event';
+		pubDate: string | null;
+		excerpt: string;
+		fullText: string;
+	};
+
+	type Ranked = { item: Entry; score: number };
+
+	const results = document.getElementById('search-results') as HTMLUListElement | null;
+	const status = document.getElementById('search-status') as HTMLDivElement | null;
+	const input = document.getElementById('search-input') as HTMLInputElement | null;
+
+	if (results && status && input) {
+		const esc = (s: string): string =>
+			s.replace(
+				/[&<>"']/g,
+				(c) =>
+					(
+						{
+							'&': '&amp;',
+							'<': '&lt;',
+							'>': '&gt;',
+							'"': '&quot;',
+							"'": '&#39;',
+						} as Record<string, string>
+					)[c] ?? c,
+			);
+
+		const escapeRegex = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+		const highlight = (text: string, query: string): string => {
+			const safe = esc(text);
+			if (!query) return safe;
+			const re = new RegExp(escapeRegex(esc(query)), 'gi');
+			return safe.replace(
+				re,
+				(m) =>
+					`<mark class="rounded-sm bg-amber-200 px-1 text-amber-950 dark:bg-amber-900 dark:text-amber-50">${m}</mark>`,
+			);
+		};
+
+		// Pull a small context window around the first match in the body so result
+		// snippets show WHY the page ranked — not just the title.
+		const snippet = (text: string, trimmedQuery: string): string => {
+			const lower = text.toLowerCase();
+			const q = trimmedQuery.toLowerCase();
+			const idx = lower.indexOf(q);
+			if (idx === -1) {
+				const head = text.slice(0, 160);
+				return head + (text.length > 160 ? '…' : '');
+			}
+			const start = Math.max(0, idx - 60);
+			const end = Math.min(text.length, idx + trimmedQuery.length + 100);
+			return (start > 0 ? '… ' : '') + text.slice(start, end) + (end < text.length ? ' …' : '');
+		};
+
+		const formatDate = (iso: string): string => {
+			const d = new Date(iso);
+			if (Number.isNaN(d.getTime())) return '';
+			return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+		};
+
+		const render = (entries: Entry[], total: number, query: string): void => {
+			results!.innerHTML = '';
+			if (loadFailed) {
+				status!.textContent = 'Search index unavailable. Try again later.';
+				return;
+			}
+			if (items.length === 0) {
+				status!.textContent = 'Search index is empty.';
+				return;
+			}
+			const q = query.trim();
+			if (!q) {
+				status!.textContent = `${items.length} ${items.length === 1 ? 'entry' : 'entries'} indexed — type to search.`;
+				return;
+			}
+			if (entries.length === 0) {
+				status!.textContent = `No matches for "${q}".`;
+				return;
+			}
+			const shown = entries.length;
+			status!.textContent =
+				total > shown
+					? `${total} matches — showing top ${shown} for "${q}".`
+					: `${shown} ${shown === 1 ? 'result' : 'results'} for "${q}".`;
+			const frag = document.createDocumentFragment();
+			for (const entry of entries) {
+				const li = document.createElement('li');
+				const pubDate = entry.pubDate ? formatDate(entry.pubDate) : '';
+				li.innerHTML = `
+					<a
+						href="${esc(entry.url)}"
+						class="group block p-5 transition-colors hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none"
+					>
+						<div class="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
+							<span class="rounded-full bg-muted px-2 py-0.5 font-mono normal-case tracking-normal">${esc(entry.category)}</span>
+							${pubDate ? `<time datetime="${esc(entry.pubDate ?? '')}">${esc(pubDate)}</time>` : ''}
+						</div>
+						<h2 class="mt-1 font-medium group-hover:underline">${highlight(entry.title, q)}</h2>
+						<p class="mt-1 line-clamp-2 text-sm text-muted-foreground">${highlight(snippet(entry.fullText || entry.excerpt, q), q)}</p>
+					</a>
+				`;
+				frag.appendChild(li);
+			}
+			results!.appendChild(frag);
+		};
+
+		// Title hits outrank body hits; multiple body hits boost score.
+		type SearchResult = { items: Entry[]; total: number };
+		const search = (entries: Entry[], query: string): SearchResult => {
+			const q = query.trim().toLowerCase();
+			if (!q) return { items: [], total: 0 };
+			const ranked: Ranked[] = [];
+			for (const entry of entries) {
+				const t = entry.title.toLowerCase();
+				const b = (entry.fullText || entry.excerpt).toLowerCase();
+				const titleHits = t.includes(q) ? 1 : 0;
+				let bodyHits = 0;
+				let from = 0;
+				while (from <= b.length) {
+					const idx = b.indexOf(q, from);
+					if (idx === -1) break;
+					bodyHits += 1;
+					from = idx + q.length;
+					if (bodyHits > 50) break; // bound the count for very common terms
+				}
+				if (titleHits === 0 && bodyHits === 0) continue;
+				ranked.push({
+					item: entry,
+					score: titleHits * 1000 + bodyHits,
+				});
+			}
+			ranked.sort((a, b) => b.score - a.score);
+			return { items: ranked.slice(0, 30).map((r) => r.item), total: ranked.length };
+		};
+
+		let items: Entry[] = [];
+		let loadFailed = false;
+		fetch('/blog/search.json')
+			.then((r) => {
+				if (!r.ok) throw new Error(`HTTP ${r.status}`);
+				return r.json() as Promise<Entry[]>;
+			})
+			.then((data: Entry[]) => {
+				items = Array.isArray(data) ? data : [];
+				status!.textContent = items.length
+					? `${items.length} ${items.length === 1 ? 'entry' : 'entries'} indexed — type to search.`
+					: 'Search index is empty.';
+				if (location.hash.startsWith('#q=')) {
+					const preset = decodeURIComponent(location.hash.slice(3));
+					if (preset) {
+						input.value = preset;
+						const { items: matches, total } = search(items, preset);
+						render(matches, total, preset);
+					}
+				}
+			})
+			.catch(() => {
+				loadFailed = true;
+				items = [];
+				status!.textContent = 'Search index unavailable. Try again later.';
+			});
+
+		let timer: number | undefined;
+		input.addEventListener('input', () => {
+			window.clearTimeout(timer);
+			const value = input.value;
+			timer = window.setTimeout(() => {
+				const { items: matches, total } = search(items, value);
+				render(matches, total, value);
+			}, 120);
+		});
+
+		input.focus();
+
+		// Global "/" shortcut to focus the search box.
+		document.addEventListener('keydown', (e) => {
+			if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+			const t = e.target as HTMLElement | null;
+			if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+			e.preventDefault();
+			input.focus();
+			input.select();
+		});
+	}
+</script>

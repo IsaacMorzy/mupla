@@ -31,6 +31,13 @@ const contactLinks = (config?.contactLinks ?? []).filter(item => item !== null);
 				{contactLinks.map((link) => (
 					<IconLink title={link.title} link={link.link} icon={link.icon} data-tina-field={tinaField(link, "title")} />
 				))}
+				<a
+					href="/blog/search"
+					aria-label="Search"
+					class="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+				>
+					<Icon name="tabler:search" class="size-5" />
+				</a>
 				<ThemeToggle />
 			</div>
 			<button
@@ -66,6 +73,13 @@ const contactLinks = (config?.contactLinks ?? []).filter(item => item !== null);
 					{contactLinks.map((link) => (
 						<IconLink title={link.title} link={link.link} icon={link.icon} data-tina-field={tinaField(link, "title")} />
 					))}
+					<a
+						href="/blog/search"
+						aria-label="Search"
+						class="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					>
+						<Icon name="tabler:search" class="size-5" />
+					</a>
 				</div>
 				<ThemeToggle />
 			</div>

@@ -5,7 +5,7 @@
 - **Project**: mupla-front (Astro + TinaCMS + Tailwind; Vercel deploy; Matt Pocock skills)
 - **Pattern**: matt-pocock-skill + loop-engineering (Passes 1-12 closed)
 - **Loop readiness score**: 95 / 100 (L3 - unattended loop safe). Held flat from Pass 11 since Pass 12 ops don't add new scoring gates.
-- **Last updated**: pass 13.1 - 2026-07-06
+- **Last updated**: pass 13.2 - 2026-07-06
 - **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 30 issues attached in Backlog).
 - **Active GH issues snapshot**: docs/agents/gh-triage-2026-07-06-pass-12.md (re-runnable).
 - **Promoted T1 ticket**: #10 (bin/gh-create-issues.sh ran idempotently; T1 promote via gh issue edit --add-label ready-for-agent, allowed per docs/safety.md).
@@ -30,7 +30,7 @@ In-band drift events the agent caught and recovered (preserved verbatim from Pas
 
 ## Predecessor chain
 
-1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1
+1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2
 
 ( suffix = corrective amendment inside the same integer pass.)
 
@@ -38,13 +38,13 @@ In-band drift events the agent caught and recovered (preserved verbatim from Pas
 
 Live snapshot at  regenerated each pass close via [{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":17,"title":"**Vercel production build debugging (TinaCloud rebuild hook + `astro build` OOM @ 3072 MiB)**"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":16,"title":"Add `loop-engineering` MCP server status to readiness audit brief"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":15,"title":"Document override flow for human-only denylist ops"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":14,"title":"Add `docs/agents/kill-switch-test-2026-XX.md` drill report"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":13,"title":"Register `goal-engineering` pattern in `patterns/registry.yaml` (`status: not-active`)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":12,"title":"Document per-pass worktree policy in `loop-constraints.md`"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":11,"title":"Add `sub-agent` section to `loop-constraints.md` (maker/checker split)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"},{"id":"LA_kwDOTOfmAM8AAAACqR5LQg","name":"ready-for-agent","description":"Fully specified; AFK-ready","color":"0e8a16"}],"number":10,"title":"Scaffold `scripts/loop-context.sh` (rehydrate `run.json` → STATE.md)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":9,"title":"Wire `.github/workflows/daily-triage.yml` (night cron, 1 pass/day)"}]. Currently **30 open needs-triage issues** (Pass 12.2 landed 31; #18 promoted to ready-for-agent in Pass 12.2; Pass 13 close did NOT promote any new issues. Parser-vs-GH comm diff confirms zero missing titles + zero duplicates.) attached to GH Project  (#5) under IsaacMorzy. Top unaddressed T1 (#10) promoted to .
 
-## Next pass (Pass 13)
+## Next pass (Pass 14)
 
-3-bullet agenda lifted from docs/agents/triage-roadmap-2026-07-06.md Bucket B (a11y) - see the roadmap for the full 6-ticket list:
+3-bullet agenda lifted from docs/agents/triage-roadmap-2026-07-06.md Bucket C (content-data hygiene) - see the roadmap for the full 6-ticket list:
 
-1. ** scaffolding** (Bucket A #2, T1, ~120k tokens): rehydrate run.json -> STATE.md without overwriting; idempotent. Score +5.
-2. **Apply axe-core baseline** (Bucket B #10, T2, ~60k tokens): run bash scripts/axe-core.sh once bin/prep-push.sh lands; emit docs/agents/a11y-baseline-2026-07-07.{json,md}.
-3. **Add sub-agent section to loop-constraints.md** (Bucket A #3, T1, ~25k tokens): maker/checker split; cross-ref spawn_agents and code-reviewer-minimax-m3. Score +5.
+1. **`scripts/page-budget.sh` audit** (Bucket C #18, T2, ~25k tokens): run on Pages collection; warn if any page < 6 sections; emit `docs/agents/page-budget-2026-07-XX.md`. Score +0.
+2. **Surface `processSteps` / Zakat-variant in CMS config** (Bucket C #17, T2, ~25k tokens, `needs-info`): maintainer-info-first; re-open with concrete acceptance once maintainer answers. Score +0.
+3. **Defer Bucket C #19 `oxfam.astro` token audit** (T3, ~60k tokens, next-quarter): out of current sprint window per loop-budget.md; backlog to Q3. (T3-pick rendered as deferral ack per Pass 13.2 reviewer flag.)
 
 ## Onward contract (Pass N+1)
 

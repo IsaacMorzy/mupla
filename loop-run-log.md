@@ -1304,3 +1304,24 @@ Vercel production build debugging (Ticket #31) bocked till `pnpm build` is runna
 ### Maintainer gate
 
 - Run `bash bin/prep-push.sh` to fast-forward `origin main` to the Pass 13.1 commit.
+
+
+## Pass 13.2 - 2026-07-06 (Pass 14 agenda corrective)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | Codebuff agent                                                 |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-06                                                     |
+| Status   | COMPLETE - reviewer-minimax-m3 flag closed on Pass 13.1: STATE.md `## Next pass` heading was never advanced from `Pass 13` -> `Pass 14`, the Bucket B (a11y) agenda bullets were stale (already executed under Pass 13 itself), and bullet 3 (Bucket C #19 oxfam-audit, T3 next-quarter) violated the T1/T2-or-higher-per-pass rule. This pass folds the full corrective.
+
+### What shipped
+
+- **STATE.md** - Three str_replace patches in a single turn: (a) `Last updated: pass 13.1 - 2026-07-06` -> `Last updated: pass 13.2 - 2026-07-06`; (b) `## Predecessor chain` extended `/ 13.1` -> `/ 13.1 / 13.2`; (c) `## Next pass (Pass 13)` heading + Bucket B (a11y) bullets 1-3 replaced with `## Next pass (Pass 14)` heading + Bucket C (content-data hygiene) bullets: `scripts/page-budget.sh` audit (Bucket C #18 T2 ~25k tokens), surface `processSteps` / Zakat-variant in CMS config (Bucket C #17 T2 ~25k tokens, needs-info), and a deferral-ack bullet for Bucket C #19 oxfam-audit (T3, out-of-current-sprint-window per loop-budget.md).
+- **loop-run-log.md** - This Pass 13.2 entry appended (this block; idempotent on grep `## Pass 13.2`).
+- **AGENTS.md ## Sub-agents** cross-link now resolves (added in Pass 13.1).
+- **scripts/loop-context.sh** idempotence comment tightened (Pass 13.1: content-idempotent + first-run disk-mutation noted).
+
+### Maintainer gate
+
+- Run `bash bin/prep-push.sh` to fast-forward `origin main` to the Pass 13.2 commit.

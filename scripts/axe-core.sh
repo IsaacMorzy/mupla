@@ -117,7 +117,11 @@ EOF
 RC=$?
 
 # Markdown summary regardless of exit code (cron wants both signal + log).
-node <<'EOF'
+# NOTE: this heredoc is intentionally UNQUOTED (<<EOF, not <<'EOF') because we
+# need shell-side expansion of ${AXE_JSON} and ${AXE_MD} into actual filenames
+# before Node sees the source. The first heredoc above (the sweeper) is the
+# one that bakes literals as JS template-strings, so it stays <<'EOF'.
+node <<EOF
 const fs = require('fs');
 const json = JSON.parse(fs.readFileSync('${AXE_JSON}', 'utf8'));
 let md = '# A11y baseline — ' + json.generatedAt + '\\n\\n';

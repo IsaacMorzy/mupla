@@ -1419,3 +1419,58 @@ Recovered followups (now de-prioritised; close in future pass if Audit needs the
 
 - Pin MCP install versions OR document the un-pinned nature explicitly. (`npx -y` pulls latest; breakage risk if upstream breaks.)
 - Verify `$schema` URL against https://modelcontextprotocol.io/schemas/ before reintroducing that field.
+
+## Pass 13.6 - 2026-07-06 (axe-core.sh heredoc fix + content-area WIP commit)
+
+| Slot     | Value                                                                                               |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                                                       |
+| Pattern  | loop-engineering + read-only-WIP-staging                                                            |
+| Status   | COMPLETE - fix scripts/axe-core.sh `fi"` stray + heredoc over-quote (later over-corrected, recovered in Pass 13.7); commit the 26-file content-area WIP that was staged earlier this session |
+| Score    | +0 (no new gates; syntax-fix is quality-only)                                                       |
+| Tokens   | ~5k (well under 200k budget)                                                                        |
+
+What shipped in commit ffcfced:
+- scripts/axe-core.sh: stray `fi"` after `exit 4` removed (was tripping `bash -n` on file 14 of the loop audit); both `<<EOF` heredoc delimiters single-quoted to prevent XML/JSON literal expansion (this over-correction broke the markdown-summary heredoc's `${AXE_JSON}` / `${AXE_MD}` shell-side substitution; closed in Pass 13.7).
+- 26 staged content-area files committed (`src/content/page/*.mdx`, `src/components/{...}`, `src/styles/global.css`, `src/lib/data.ts`, etc.). No denylist paths (vercel.json, tina/__generated__/, package.json, LOOP.md, README.md, docs/safety.md, Marketing/) - explicitly held out per agent-authored scope gate.
+- Hard-gate ops (`bash bin/prep-push.sh` / `git push origin *`) preserved: maintainer paste surfaces.
+
+Maintainer gates (HUMAN-ONLY per docs/safety.md):
+- `bash bin/prep-push.sh` from a creds-loaded TTY to fast-forward `origin/main` to ffcfced.
+- After landing: `bash scripts/axe-core.sh` from a TTY to materialise the deferred `docs/agents/a11y-baseline-2026-07-XX.md` (requires Chrome installed locally).
+- `bash bin/mcp-bootstrap.sh` from a TTY to install the 3 MCP connectors (post-prep-push).
+
+Loop invariants briefly unrecorded at close:
+- `loop-run-log.md` ## Pass 13.6 entry appended in Pass 13.7 (retroactive).
+- `STATE.md` pass_id bump 13.5 -> 13.6 deferred to Pass 13.7 (avoids double-bump noise).
+
+
+## Pass 13.7 - 2026-07-06 (ledger drift closure + axe-core heredoc correction)
+
+| Slot     | Value                                                                                               |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                                                       |
+| Pattern  | loop-engineering + corrective-amendment                                                             |
+| Status   | COMPLETE - close 3 reviewer-minimax-m3 flags from the Pass 13.6 cumulative review                   |
+| Score    | +0 (corrective only)                                                                                |
+| Tokens   | ~1k (well under 200k budget)                                                                        |
+
+Reviewer flags closed:
+
+1. **TRUE REGRESSION in scripts/axe-core.sh (heredoc over-quote)** -> closed by reverting the markdown-summary heredoc delimiter from `<<'EOF'` to `<<EOF`. Rationale: the md-summary heredoc body references `${AXE_JSON}` (readFile) and `${AXE_MD}` (writeFileSync); under single-quote they would be passed literally to node, which would then call `readFileSync('${AXE_JSON}')` and silently no-op. Only the sweeper heredoc (which bakes `${AXE_CDN}` etc. as JS template-string literals) legitimately needs `<<'EOF'`. A NOTE comment block inside scripts/axe-core.sh documents which heredoc is which.
+
+2. **loop-run-log.md Pass 13.6 entry was BUFFERED, not committed** -> closed by appending ## Pass 13.6 + ## Pass 13.7 entries in a single follow-up commit (this pass).
+
+3. **STATE.md pass_id bump 13.5 -> 13.7 deferred from Pass 13.6** -> closed by str_replace on STATE.md: `Last updated: pass 13.5 - 2026-07-06` -> `Last updated: pass 13.7 - 2026-07-06`; `## Predecessor chain` extended `/ 13.5` -> `/ 13.5 / 13.6 / 13.7`.
+
+What shipped in this commit:
+- scripts/axe-core.sh: second heredoc delimiter revert `<<'EOF'` -> `<<EOF` (with NOTE comment block explaining the asymmetry).
+- STATE.md: pass_id + last_updated + Predecessor chain.
+- loop-run-log.md (this entry + the retro-fitted ## Pass 13.6 above).
+
+Maintainer gates (HUMAN-ONLY per docs/safety.md): unchanged from Pass 13.6.
+
+Pending reviewer items (deferred - low priority):
+- net ahead/behind skew acceleration: 7-behind -> 8-behind, no `git fetch`; add to next pre-push basher.
+- WIP commit MDX `template:` cross-check against `src/components/blocks/*.template.ts`: not verified post-commit; add to next pre-push basher.
+- bin/mcp-bootstrap.sh awk extractor: non-defensive to interleaved YAML keys (e.g., `prerequisite:` BEFORE `install_cmd:` silently skips); either enforce schema or fail-loud if count==0.

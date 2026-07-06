@@ -1,36 +1,258 @@
 ---
+import { Icon } from 'astro-icon/components';
 import Base from '../../layouts/Base.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Button from '../../components/ui/Button.astro';
+import Input from '../../components/ui/Input.astro';
+import Label from '../../components/ui/Label.astro';
 import { getConfig, listBlogs } from '../../lib/data';
+import type { CmsBlog } from '../../lib/data';
 
-const posts = await listBlogs();
+const posts: CmsBlog[] = await listBlogs();
 const config = (await getConfig()).data?.config ?? null;
+
+// Fall back to "Community" when an older post has no category, and to a
+// shared "author" label when none is set — keeps the visual grid uniform
+// without forcing editors to fill the new fields on every legacy post.
+const FALLBACK_CATEGORY = 'Community';
+const FALLBACK_AUTHOR = 'mupla community';
+
+const enriched = posts.map((post) => ({
+	...post,
+	_displayCategory: ((post as any).category as string | null | undefined) || FALLBACK_CATEGORY,
+	_displayAuthor: ((post as any).author as string | null | undefined) || FALLBACK_AUTHOR,
+}));
+
+// Derive the category list from the posts themselves — editors control
+// categories by setting the field in TinaCMS; this just reflects reality.
+const categoryCounts = enriched.reduce<Record<string, number>>((acc, p) => {
+	acc[p._displayCategory] = (acc[p._displayCategory] ?? 0) + 1;
+	return acc;
+}, {});
+const categories = Object.entries(categoryCounts).sort(([, a], [, b]) => b - a);
+
+const featured = enriched[0] ?? null;
+const rest = enriched.slice(1);
 ---
 
 <Base
-	title={config?.seo?.title ?? 'Blog'}
-	description={config?.seo?.description ?? 'Welcome to my website!'}
+	title={`Blog${config?.seo?.title ? ` — ${config.seo.title}` : ''}`}
+	description={config?.seo?.description ?? 'Stories, reflections, and program updates from the mupla foundation.'}
 >
-	<main class="mx-auto max-w-5xl px-6 py-12">
-		<h1 class="mb-8 text-4xl font-semibold tracking-tight">Blog</h1>
-		<ul class="grid list-none gap-6 p-0 sm:grid-cols-2">
-			{posts.map((post) => (
-				<li>
-					<a href={`/blog/${post._sys.filename}/`} class="group block overflow-hidden rounded-xl border bg-card shadow-sm transition-shadow hover:shadow-md">
-						{post.heroImage && (
-							<img width={720} height={360} src={post.heroImage} alt={post.title ?? ''} class="aspect-video w-full object-cover" />
+	<main class="mx-auto max-w-7xl px-6 pb-20 pt-12 md:pt-16">
+		<header class="mx-auto max-w-3xl text-center">
+			<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Stories &amp; reflections</p>
+			<h1 class="mt-3 text-balance text-5xl font-semibold tracking-tight md:text-6xl">From the mupla community</h1>
+			<p class="mx-auto mt-5 max-w-2xl text-balance text-muted-foreground">
+				Stories from our programs, reflections from our neighbors, and notes on the work — written by the people who show up every day.
+			</p>
+		</header>
+
+		{featured && (
+			<section class="mt-12 md:mt-16">
+				<a
+					href={`/blog/${featured._sys.filename}/`}
+					class="group block overflow-hidden rounded-2xl border border-border/60 bg-card transition-colors hover:bg-accent/30"
+				>
+					<div class="grid md:grid-cols-2">
+						{featured.heroImage && (
+							<div class="aspect-[4/3] overflow-hidden md:aspect-auto md:h-full">
+								<img
+									src={featured.heroImage}
+									alt={featured.title ?? ''}
+									width="1020"
+									height="680"
+									loading="eager"
+									fetchpriority="high"
+									class="size-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+								/>
+							</div>
 						)}
-						<div class="p-6">
-							<h2 class="font-semibold group-hover:underline">{post.title}</h2>
-							{post.pubDate && (
-								<p class="mt-1 text-sm text-muted-foreground">
-									<FormattedDate date={new Date(post.pubDate)} />
-								</p>
+						<div class="flex flex-col justify-center gap-4 p-8 md:p-10">
+							<div class="flex flex-wrap items-center gap-2">
+								<Badge variant="default">{featured._displayCategory}</Badge>
+								<span class="text-sm text-muted-foreground">Featured</span>
+							</div>
+							<h2 class="text-balance text-2xl font-semibold leading-tight transition-colors group-hover:text-primary md:text-3xl">
+								{featured.title}
+							</h2>
+							{featured.description && (
+								<p class="text-base text-muted-foreground md:text-lg">{featured.description}</p>
 							)}
+							<div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+								{featured.pubDate && <FormattedDate date={new Date(featured.pubDate)} />}
+								<span aria-hidden="true">·</span>
+								<span>{featured._displayAuthor}</span>
+							</div>
+							<div class="mt-2 flex items-center gap-2 text-sm font-medium text-primary">
+								Read the story
+								<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
+							</div>
 						</div>
-					</a>
-				</li>
-			))}
-		</ul>
+					</div>
+				</a>
+			</section>
+		)}
+
+		{categories.length > 1 && (
+			<nav class="mt-10 flex flex-wrap items-center gap-2 md:mt-14" aria-label="Filter posts by category">
+				<button
+					type="button"
+					data-category-filter=""
+					aria-pressed="true"
+					class="inline-flex items-center rounded-full border border-border bg-background px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&[aria-pressed=true]]:bg-foreground [&[aria-pressed=true]]:text-background"
+				>
+					All stories <span class="ml-1.5 text-xs text-muted-foreground [&[aria-pressed=true]]:text-background/70">{enriched.length}</span>
+				</button>
+				{categories.map(([name, count]) => (
+					<button
+						type="button"
+						data-category-filter={name}
+						aria-pressed="false"
+						class="inline-flex items-center rounded-full border border-border bg-background px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&[aria-pressed=true]]:bg-foreground [&[aria-pressed=true]]:text-background"
+					>
+						{name} <span class="ml-1.5 text-xs text-muted-foreground">{count}</span>
+					</button>
+				))}
+			</nav>
+		)}
+
+		{rest.length > 0 ? (
+			<ul
+				id="post-grid"
+				class="mt-8 grid list-none gap-6 p-0 md:grid-cols-2 md:gap-8 lg:grid-cols-3"
+			>
+				{rest.map((post) => (
+					<li data-category={post._displayCategory} class="contents">
+						<a
+							href={`/blog/${post._sys.filename}/`}
+							class="group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition-colors hover:bg-accent/30"
+						>
+							{post.heroImage && (
+								<div class="aspect-[16/10] overflow-hidden">
+									<img
+										src={post.heroImage}
+										alt={post.title ?? ''}
+										width="720"
+										height="450"
+										loading="lazy"
+										class="size-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+									/>
+								</div>
+							)}
+							<div class="flex flex-1 flex-col gap-3 p-6">
+								<div class="flex flex-wrap items-center gap-2">
+									<Badge variant="outline">{post._displayCategory}</Badge>
+									{post.pubDate && (
+										<time datetime={post.pubDate} class="text-xs text-muted-foreground">
+											<FormattedDate date={new Date(post.pubDate)} />
+										</time>
+									)}
+								</div>
+								<h3 class="text-balance text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+									{post.title}
+								</h3>
+								{post.description && (
+									<p class="line-clamp-3 text-sm text-muted-foreground">{post.description}</p>
+								)}
+								<div class="mt-auto flex items-center justify-between gap-2 pt-3 text-sm">
+									<span class="text-muted-foreground">{post._displayAuthor}</span>
+									<span class="inline-flex items-center gap-1 font-medium text-foreground/70 transition-colors group-hover:text-primary">
+										Read
+										<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
+									</span>
+								</div>
+							</div>
+						</a>
+					</li>
+				))}
+			</ul>
+		) : (
+			<p class="mt-12 text-center text-muted-foreground">No more posts yet — check back soon.</p>
+		)}
+
+		<section class="mt-20 md:mt-24">
+			<div class="mx-auto grid max-w-4xl items-center gap-8 rounded-2xl border border-border/60 bg-card px-8 py-10 md:grid-cols-[1.5fr_1fr] md:px-12 md:py-14">
+				<div>
+					<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Stay close to the work</p>
+					<h2 class="mt-3 text-balance text-2xl font-semibold leading-tight md:text-3xl">
+						Stories &amp; program updates, once a month
+					</h2>
+					<p class="mt-3 text-muted-foreground">
+						One email a month with what we're learning, what's working, and how your support is moving the work forward.
+					</p>
+				</div>
+				<form
+					class="flex flex-col gap-3 sm:flex-row"
+					data-newsletter
+					data-action=""
+					data-success="Thanks! Check your inbox to confirm your subscription."
+					data-error="Something went wrong. Please try again or email us directly."
+					novalidate
+				>
+					<div class="grid flex-1 gap-1.5">
+						<Label for={`newsletter-blog`} class="sr-only">Email address</Label>
+						<Input
+							id={`newsletter-blog`}
+							name="email"
+							type="email"
+							required
+							placeholder="you@example.com"
+						/>
+					</div>
+					<Button type="submit" size="lg">
+						Subscribe
+					</Button>
+				</form>
+			</div>
+		</section>
 	</main>
 </Base>
+
+<script>
+	// Lightweight client-side category filtering. Editors derive categories
+	// from each post in the CMS; this just toggles which cards are visible.
+	const buttons = document.querySelectorAll<HTMLButtonElement>('[data-category-filter]');
+	const cards = document.querySelectorAll<HTMLLIElement>('#post-grid > li');
+
+	if (buttons.length > 0 && cards.length > 0) {
+		const applyFilter = (filter: string) => {
+			let visibleCount = 0;
+			cards.forEach((li) => {
+				const matches = filter === '' || li.dataset.category === filter;
+				li.style.display = matches ? '' : 'none';
+				if (matches) visibleCount += 1;
+			});
+			// Reflect the current filter on the URL hash so deep-links and
+			// back/forward navigation preserve the selected category.
+			const hash = filter ? `#category=${encodeURIComponent(filter)}` : '';
+			if (location.hash !== hash) {
+				history.replaceState(null, '', hash || location.pathname + location.search);
+			}
+		};
+		const setActive = (target: string) => {
+			buttons.forEach((b) => {
+				const isActive = (b.dataset.categoryFilter ?? '') === target;
+				b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+			});
+		};
+		const targetFromHash = (): string => {
+			const m = location.hash.match(/^#category=(.+)$/);
+			return m ? decodeURIComponent(m[1]) : '';
+		};
+		// Honor the URL on first paint so deep-links work without JS round-trips.
+		const initial = targetFromHash();
+		if (initial) {
+			setActive(initial);
+			applyFilter(initial);
+		}
+		buttons.forEach((btn) => {
+			btn.addEventListener('click', () => {
+				const filter = btn.dataset.categoryFilter ?? '';
+				setActive(filter);
+				applyFilter(filter);
+			});
+		});
+	}
+</script>

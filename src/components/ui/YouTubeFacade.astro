@@ -41,8 +41,7 @@ const poster = await posterCache.get(id);
 	data-id={id}
 	data-params={params}
 	style={`background-image:url(${poster})`}
->
-	<span class="flex size-16 items-center justify-center rounded-full bg-black/70 text-white transition group-hover:scale-110 group-hover:bg-black/80">
+>		<span class="flex size-16 items-center justify-center rounded-full bg-foreground/85 text-background transition group-hover:scale-110 group-hover:bg-foreground">
 		<svg viewBox="0 0 24 24" fill="currentColor" class="size-7 translate-x-0.5" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
 	</span>
 </button>

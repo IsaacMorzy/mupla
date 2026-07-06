@@ -3,6 +3,7 @@ import TinaMarkdown from '@tinacms/astro/TinaMarkdown.astro';
 import { tinaField } from '@tinacms/astro/tina-field';
 import type { CmsBlog } from '../../lib/data';
 import FormattedDate from '../FormattedDate.astro';
+import Badge from '../ui/Badge.astro';
 import { mdxComponents } from '../mdx/components';
 
 interface Props {
@@ -10,25 +11,79 @@ interface Props {
 }
 
 const { data } = Astro.props;
+const fallbackAuthor = 'mupla community';
+const author = data?.author || fallbackAuthor;
+
+// Initial-letters avatar for the byline. Two letters, all-caps output.
+const authorInitials = author
+	.split(' ')
+	.map((w: string) => w[0])
+	.join('')
+	.slice(0, 2)
+	.toUpperCase();
+
+// Reading-time estimate (~220 words/min) computed at render time so it stays
+// accurate after TinaCMS island-refetches and isn't lost between the layout
+// and this island wrapper. Walks the TinaMarkdown rich-text tree.
+const WORDS_PER_MINUTE = 220;
+const countWords = (node: any): number => {
+	if (!node) return 0;
+	if (typeof node === 'string') return node.trim().split(/\s+/).filter(Boolean).length;
+	if (Array.isArray(node)) return node.reduce((acc, n) => acc + countWords(n), 0);
+	if (typeof node.text === 'string') return node.text.trim().split(/\s+/).filter(Boolean).length;
+	if (Array.isArray(node.children)) return countWords(node.children);
+	return 0;
+};
+const wordCount = countWords(data?.body);
+const readingMinutes = Math.max(1, Math.round(wordCount / WORDS_PER_MINUTE));
+const minutesLabel = `${readingMinutes} min read`;
 ---
 {data?.heroImage && (
-	<div data-tina-field={tinaField(data, 'heroImage')} class="mx-auto max-w-4xl px-6">
-		<img width={1020} height={510} src={data.heroImage} alt="" class="w-full rounded-2xl border shadow-lg" />
+	<div data-tina-field={tinaField(data, 'heroImage')} class="mx-auto max-w-5xl px-6">
+		<img
+			width={1200}
+			height={675}
+			src={data.heroImage}
+			alt=""
+			loading="eager"
+			fetchpriority="high"
+			class="w-full rounded-2xl border border-border/60 object-cover"
+		/>
 	</div>
 )}
 {data && (
-	<div class="mx-auto max-w-3xl px-6 py-12">
-		<div class="mb-8 text-center">
-			{data.pubDate && (
-				<div data-tina-field={tinaField(data, 'pubDate')} class="text-sm text-muted-foreground">
-					<FormattedDate date={new Date(data.pubDate)} />
-					{data.updatedDate && (
-						<span data-tina-field={tinaField(data, 'updatedDate')} class="italic"> · Last updated <FormattedDate date={new Date(data.updatedDate)} /></span>
-					)}
-				</div>
+	<div class="mx-auto max-w-3xl px-6 pt-10 pb-16 md:pt-16">
+		<header class="mb-10 text-center">
+			<div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+			{data?.category && (
+				<Badge variant="outline">{data.category}</Badge>
 			)}
-			{data.title && <h1 data-tina-field={tinaField(data, 'title')} class="mt-2 text-4xl font-semibold tracking-tight lg:text-5xl">{data.title}</h1>}
-		</div>
+				{data.pubDate && (
+					<div data-tina-field={tinaField(data, 'pubDate')} class="text-muted-foreground">
+						<FormattedDate date={new Date(data.pubDate)} />
+						{data.updatedDate && (
+							<span data-tina-field={tinaField(data, 'updatedDate')} class="italic"> · Last updated <FormattedDate date={new Date(data.updatedDate)} /></span>
+						)}
+					</div>
+				)}
+				{minutesLabel && (
+					<span class="text-muted-foreground" aria-label={`Reading time: ${minutesLabel}`}>
+						<span aria-hidden="true">·</span> {minutesLabel}
+					</span>
+				)}
+			</div>
+			{data.title && (
+				<h1 data-tina-field={tinaField(data, 'title')} class="mt-4 text-balance text-4xl font-semibold tracking-tight md:text-5xl">
+					{data.title}
+				</h1>
+			)}
+			<p class="mt-6 inline-flex items-center gap-3 text-sm text-muted-foreground">
+				<span class="flex size-7 items-center justify-center rounded-full bg-muted font-medium text-[10px] text-muted-foreground">
+					{authorInitials}
+				</span>
+				<span>By {author}</span>
+			</p>
+		</header>
 		{data.body && (
 			<div data-tina-field={tinaField(data, 'body')} class="prose prose-lg max-w-none">
 				<TinaMarkdown content={data.body} components={mdxComponents} />

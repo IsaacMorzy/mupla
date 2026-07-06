@@ -5,18 +5,51 @@ blocks:
     tagline: 'We take your privacy seriously. This page explains what information we collect, how we use it, and what choices you have.'
     _template: hero
   - body: |
-      ## What we collect
+      ## Our promise, in plain language
 
-      We collect the minimum information needed to serve you well. In practice, that means:
+      We collect the minimum information needed to serve you well, we never sell it, and we tell you exactly what we keep and why. Three things we want you to know up front:
 
-      - **Contact form messages.** When you use our contact form, we receive your name, email, and the message you wrote. We keep these in our email and records system so we can respond and follow up. We delete contact messages after 12 months unless they relate to an ongoing matter (a volunteer application, for example).
-
-      - **Newsletter signups.** If you subscribe to our newsletter, we store your email address in our email service (currently a third-party provider — see below). You can unsubscribe at any time using the link in any newsletter email.
-
-      - **Analytics.** We use privacy-respecting analytics to understand which pages on this site are most useful. We do not track individual visitors across other sites, and we do not sell any data — ever.
-
-      - **Donation records.** When you donate, our payment processor (currently Stripe) handles the transaction. We receive your name, email, donation amount, and the fund you designated. We keep donation records for 7 years as required by law.
-
+      - **We don't sell, rent, or share your information with anyone outside the small list of tools we use to run this site.** No marketing lists. No data brokers.
+      - **You can ask us anything.** Email **privacy@mupla.org** to request a copy of your data, ask questions, correct something we have wrong, or delete what we hold — subject only to the legal record-keeping we describe below.
+      - **This page is current.** When we make material changes, we'll update the date at the bottom and notify subscribers by email.
+    _template: content
+  - title: What we collect, and why
+    description: The minimum information we need to serve you well — broken down by where it comes from.
+    items:
+      - icon: forms
+        title: Forms you fill out
+        text: |
+          When you use our contact form, we receive your name, email, and the message you wrote. We keep these in our email and records system so we can respond and follow up. We delete contact messages after 12 months unless they relate to an ongoing matter.
+      - icon: mail
+        title: Newsletter signups
+        text: |
+          If you subscribe to our newsletter, we store your email in our email service. You can unsubscribe at any time using the link in any newsletter email.
+      - icon: coin
+        title: Donation records
+        text: |
+          When you donate, our payment processor (currently Stripe) handles the transaction. We receive your name, email, donation amount, and the fund you designated. We keep donation records for 7 years as required by law.
+      - icon: chart-line
+        title: Privacy-respecting analytics
+        text: |
+          We use privacy-respecting analytics to understand which pages on this site are most useful. We do not track individual visitors across other sites, and we do not sell any data — ever.
+    _template: features
+  - title: What we don't do
+    description: Practices we've intentionally avoided, because we wouldn't want them done to us.
+    items:
+      - icon: ban
+        title: No advertising cookies
+        text: |
+          We don't use advertising cookies. We don't allow third-party tracking on this site. The only cookies this site sets are the ones it needs to function.
+      - icon: cash
+        title: We never sell your data
+        text: |
+          We don't sell, rent, lease, or otherwise commercially exploit any personal information you give us — not to advertisers, not to data brokers, not to anyone.
+      - icon: shield-check
+        title: No cross-site tracking
+        text: |
+          We don't track you across other sites, and we don't build advertising profiles. Analytics on this site stay on this site.
+    _template: features
+  - body: |
       ## Cookies and similar technologies
 
       We use a small number of cookies to make this site work:
@@ -36,7 +69,8 @@ blocks:
       - **Content management** (TinaCMS) for editing this site.
 
       We do not sell, rent, or share your information with anyone outside this list.
-
+    _template: content
+  - body: |
       ## Your rights
 
       You have the right to:
@@ -56,4 +90,16 @@ blocks:
   - text: 'To request a copy of your data, ask questions about retention, or exercise any of your rights listed above, email privacy@mupla.org. We respond within 30 days.'
     url: 'mailto:privacy@mupla.org'
     _template: callout
+  - title: Related information
+    description: Other policies and resources that touch on how we handle your information.
+    actions:
+      - label: Terms of service
+        type: button
+        icon: file-text
+        link: /terms
+      - label: Frequently asked questions
+        type: link
+        icon: help
+        link: /faq
+    _template: cta
 ---

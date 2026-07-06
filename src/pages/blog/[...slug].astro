@@ -2,8 +2,12 @@
 import BlogPost from '../../layouts/BlogPost.astro';
 import TinaIsland from '@tinacms/astro/TinaIsland.astro';
 import BlogBody from '../../components/islands/BlogBody.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Icon from '../../components/ui/Icon.astro';
 import { getBlog, listBlogs } from '../../lib/data';
 import { islands } from '../../lib/islands';
+import type { CmsBlog } from '../../lib/data';
 
 export async function getStaticPaths() {
 	const posts = await listBlogs();
@@ -15,6 +19,25 @@ const blog = await getBlog(slug);
 const data = blog.data?.blog;
 if (!data) return new Response('Not Found', { status: 404 });
 
+const allPosts: CmsBlog[] = await listBlogs();
+
+// Pull 3 related posts: same category when possible, otherwise most recent that
+// isn't the current post. Cap at 3 — keeps the footer compact and on-brand.
+// `category`/`author` are present on the generated Tina Blog type as `string | null`.
+const categoryOf = (p: CmsBlog): string => (p.category ?? '');
+const currentCategory = categoryOf(data as CmsBlog);
+const related: CmsBlog[] = allPosts
+	.filter((p) => p._sys.filename !== data._sys?.filename)
+	.sort((a, b) => {
+		const aMatches = currentCategory && categoryOf(a) === currentCategory ? 1 : 0;
+		const bMatches = currentCategory && categoryOf(b) === currentCategory ? 1 : 0;
+		if (aMatches !== bMatches) return bMatches - aMatches;
+		const ad = a.pubDate ? new Date(a.pubDate).valueOf() : 0;
+		const bd = b.pubDate ? new Date(b.pubDate).valueOf() : 0;
+		return bd - ad;
+	})
+	.slice(0, 3);
+
 const layoutProps = {
 	title: data.title ?? '',
 	description: data.description ?? '',
@@ -25,7 +48,124 @@ const layoutProps = {
 ---
 
 <BlogPost {...layoutProps}>
-	<TinaIsland name="blog" wrapper={islands.blog.wrapper} params={{ slug }} primary>
-		<BlogBody data={data} />
-	</TinaIsland>
+	<article>
+		<!-- Reading-progress bar — single-line accent that grows as the user
+		     scrolls. No JS library, just one rAF loop reading scroll position. -->
+		<div
+			id="reading-progress"
+			class="fixed top-16 left-0 z-30 h-0.5 w-0 bg-primary transition-[width] duration-150 ease-out"
+			aria-hidden="true"
+		></div>
+
+		<TinaIsland name="blog" wrapper={islands.blog.wrapper} params={{ slug }} primary>
+			<BlogBody data={data} />
+		</TinaIsland>
+
+		<!-- Author + meta strip — keeps single-voice attribution visible without
+		     intruding on the prose. Pure-static; falls back gracefully if optional
+		     `author` field on the schema was never populated. -->
+		<aside class="mx-auto mt-12 max-w-3xl border-t border-border px-6 pt-8">
+			<div class="flex flex-wrap items-center gap-3 text-sm">
+			<div class="flex size-10 items-center justify-center rounded-full bg-muted font-medium text-muted-foreground">
+				{(data?.author || 'mupla community').split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
+			</div>
+			<div class="leading-tight">
+				<p class="font-medium text-foreground">{data?.author || 'mupla community'}</p>
+					<p class="text-muted-foreground">
+						{data.pubDate && <FormattedDate date={new Date(data.pubDate)} />}
+					</p>
+				</div>
+			</div>
+		</aside>
+
+		{related.length > 0 && (
+			<section class="mx-auto mt-16 max-w-6xl px-6 md:mt-20">
+				<div class="mb-8 flex items-end justify-between gap-4">
+					<div>
+						<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Keep reading</p>
+						<h2 class="mt-2 text-balance text-2xl font-semibold md:text-3xl">More from the mupla blog</h2>
+					</div>
+					<a href="/blog" class="hidden items-center gap-1 text-sm font-medium text-foreground/70 transition-colors hover:text-primary md:inline-flex">
+						All posts
+						<Icon name="arrow-right" class="size-4" />
+					</a>
+				</div>
+				<ul class="grid list-none gap-6 p-0 md:grid-cols-3 md:gap-8">
+					{related.map((post) => (
+						<li>
+							<a
+								href={`/blog/${post._sys.filename}/`}
+								class="group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition-colors hover:bg-accent/30"
+							>
+								{post.heroImage && (
+									<div class="aspect-[16/10] overflow-hidden">
+										<img
+											src={post.heroImage}
+											alt={post.title ?? ''}
+											width="720"
+											height="450"
+											loading="lazy"
+											class="size-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+										/>
+									</div>
+								)}
+								<div class="flex flex-1 flex-col gap-3 p-6">
+									<div class="flex flex-wrap items-center gap-2">
+									{post.category && (
+										<Badge variant="outline">{post.category}</Badge>
+									)}
+										{post.pubDate && (
+											<time datetime={post.pubDate} class="text-xs text-muted-foreground">
+												<FormattedDate date={new Date(post.pubDate)} />
+											</time>
+										)}
+									</div>
+									<h3 class="text-balance text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+										{post.title}
+									</h3>
+									{post.description && (
+										<p class="line-clamp-2 text-sm text-muted-foreground">{post.description}</p>
+									)}
+								</div>
+							</a>
+						</li>
+					))}
+				</ul>
+				<a href="/blog" class="mt-8 inline-flex items-center gap-1 text-sm font-medium text-foreground/70 transition-colors hover:text-primary md:hidden">
+					<Icon name="arrow-left" class="size-4" />
+					All posts
+				</a>
+			</section>
+		)}
+	</article>
 </BlogPost>
+
+<script>
+	// Update the progress bar on every animation frame while scrolling.
+	const bar = document.getElementById('reading-progress');
+	const article = document.querySelector('article');
+	if (bar && article) {
+		let ticking = false;
+		const update = () => {
+			const rect = article.getBoundingClientRect();
+			const viewport = window.innerHeight;
+			const total = rect.height - viewport;
+			if (total <= 0) {
+				bar.style.width = '100%';
+				return;
+			}
+			const scrolled = Math.min(Math.max(-rect.top, 0), total);
+			const pct = (scrolled / total) * 100;
+			bar.style.width = `${pct}%`;
+			ticking = false;
+		};
+		const onScroll = () => {
+			if (!ticking) {
+				window.requestAnimationFrame(update);
+				ticking = true;
+			}
+		};
+		window.addEventListener('scroll', onScroll, { passive: true });
+		update();
+	}
+</script>

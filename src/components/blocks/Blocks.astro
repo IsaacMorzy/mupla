@@ -9,6 +9,9 @@ import Split from './Split.astro';
 import Stats from './Stats.astro';
 import Testimonial from './Testimonial.astro';
 import Video from './Video.astro';
+import Faq from './Faq.astro';
+import Team from './Team.astro';
+import ContactForm from './ContactForm.astro';
 import ConstellationDivider from '../space/ConstellationDivider.astro';
 import type { CmsPage } from '../../lib/data';
 
@@ -31,6 +34,9 @@ const blocks = (data?.blocks ?? []).filter(b => b !== null);
 			case 'PageBlocksStats': return <Stats data={block} />;
 			case 'PageBlocksTestimonial': return <Testimonial data={block} />;
 			case 'PageBlocksVideo': return <Video data={block} />;
+			case 'PageBlocksFaq': return <Faq data={block} />;
+			case 'PageBlocksTeam': return <Team data={block} />;
+			case 'PageBlocksContact_form': return <ContactForm data={block} />;
 		}
 	})();
 	return (

@@ -26,6 +26,18 @@ export const BlogCollection: Collection = {
       type: "string",
     },
     {
+      name: "category",
+      label: "Category",
+      type: "string",
+      description: "Optional. Used for blog index filters. Examples: Reflection, Programs, Community, Ramadan, Zakat.",
+    },
+    {
+      name: "author",
+      label: "Author",
+      type: "string",
+      description: "Optional. Shown beneath the post title. Defaults to 'mupla community' if blank.",
+    },
+    {
       name: "pubDate",
       label: "Publication Date",
       type: "datetime",

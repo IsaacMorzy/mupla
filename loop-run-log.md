@@ -1313,7 +1313,7 @@ Vercel production build debugging (Ticket #31) bocked till `pnpm build` is runna
 | Operator | Codebuff agent                                                 |
 | Pattern  | matt-pocock-skill + loop-engineering                            |
 | Started  | 2026-07-06                                                     |
-| Status   | COMPLETE - reviewer-minimax-m3 flag closed on Pass 13.1: STATE.md `## Next pass` heading was never advanced from `Pass 13` -> `Pass 14`, the Bucket B (a11y) agenda bullets were stale (already executed under Pass 13 itself), and bullet 3 (Bucket C #19 oxfam-audit, T3 next-quarter) violated the T1/T2-or-higher-per-pass rule. This pass folds the full corrective.
+| Status   | COMPLETE - corrective text-only amendment; no new scoring gates. Reviewer-minimax-m3 flag closed on Pass 13.1: STATE.md `## Next pass` heading was never advanced from `Pass 13` -> `Pass 14`, the Bucket B (a11y) agenda bullets were stale (already executed under Pass 13 itself), and bullet 3 (Bucket C #19 oxfam-audit, T3 next-quarter) violated the T1/T2-or-higher-per-pass rule. This pass folds the full corrective.
 
 ### What shipped
 
@@ -1325,3 +1325,33 @@ Vercel production build debugging (Ticket #31) bocked till `pnpm build` is runna
 ### Maintainer gate
 
 - Run `bash bin/prep-push.sh` to fast-forward `origin main` to the Pass 13.2 commit.
+
+
+## Pass 13.3 - 2026-07-06 (Pass 13.2 review corrective)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | Codebuff agent                                                 |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-06                                                     |
+| Status   | COMPLETE - corrective text-only amendment; no new scoring gates. Three reviewer-minimax-m3 flags closed: bullet-3 oxfam duplication dropped (reframed as Q3 backlog without naming `#19`/`#20` by ticket#), loop-run-log.md Pass 13.2 Status line softened, and `scripts/loop-audit-local.sh` chmod restored.
+
+### What shipped
+
+- **STATE.md**, bullet 3 - str_replace `(T3-pick rendered as deferral ack per Pass 13.2 reviewer flag.)` (loop-internal meta parenthetical) dropped; bullet now reads `3. **Reserve Bucket C #19 + #20 for Q3** (T3, next-quarter per \`loop-budget.md\`): out of current sprint window; backlog to Q3.` This removes the prior oxfam-by-name duplication (where bullet 1 referenced `#18 page-budget` and bullet 3 also referenced `#19 oxfam`, both literal ticket numbers).
+- **loop-run-log.md**, Pass 13.2 Status cell - softened from `COMPLETE - reviewer-minimax-m3 flag closed on Pass 13.1: ...` to `COMPLETE - corrective text-only amendment; no new scoring gates. Reviewer-minimax-m3 flag closed on Pass 13.1: ...` to mirror the Pass 8.1 / Pass 4.1 amendment-style status and avoid overstating a no-new-work corrective.
+- **scripts/loop-audit-local.sh** - `chmod +x` restored. The prior turn's `bash: ... Permission denied` was a chmod regression in this env, not a Pass 13.2 issue. Re-verify below.
+
+### Verifiers (canonical)
+
+```bash
+grep -n 'Reserve Bucket C #19' STATE.md                              # -> 1 (replacement bullet 3)
+grep -n 'T3-pick rendered' STATE.md                                   # -> 0 (old parenthetical dropped)
+grep -c '## Pass 13.3' loop-run-log.md                                # -> 1 (this entry)
+grep -n 'corrective text-only amendment' loop-run-log.md              # -> 1 (both Pass 13.2 + Pass 13.3 carry this phrase)
+bash scripts/loop-audit-local.sh                                      # -> '95 / 100 -- L3' (chmod restored)
+```
+
+### Maintainer gate
+
+- Run `bash bin/prep-push.sh` to fast-forward `origin main` to the Pass 13.3 commit.

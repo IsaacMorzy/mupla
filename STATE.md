@@ -44,7 +44,7 @@ Live snapshot at  regenerated each pass close via [{"labels":[{"id":"LA_kwDOTOfm
 
 1. **`scripts/page-budget.sh` audit** (Bucket C #18, T2, ~25k tokens): run on Pages collection; warn if any page < 6 sections; emit `docs/agents/page-budget-2026-07-XX.md`. Score +0.
 2. **Surface `processSteps` / Zakat-variant in CMS config** (Bucket C #17, T2, ~25k tokens, `needs-info`): maintainer-info-first; re-open with concrete acceptance once maintainer answers. Score +0.
-3. **Defer Bucket C #19 `oxfam.astro` token audit** (T3, ~60k tokens, next-quarter): out of current sprint window per loop-budget.md; backlog to Q3. (T3-pick rendered as deferral ack per Pass 13.2 reviewer flag.)
+3. **Reserve Bucket C #19 + #20 for Q3** (T3, next-quarter per `loop-budget.md`): out of current sprint window; backlog to Q3.
 
 ## Onward contract (Pass N+1)
 

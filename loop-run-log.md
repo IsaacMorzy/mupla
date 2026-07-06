@@ -340,10 +340,11 @@ the developer's own pace and break the loop's append-only invariants.
 - `loop-run-log.md` (this entry)
 - `STATE.md` (overwritten for `pass_id = 4`)
 
-> **Note on amend:** Pass 4's local commit was amended once to fold reviewer-driven
-> findings into a single tree, but the SHA/append-only-contract rationale is
-> documented in `## Pass 4.1 — 2026-07-06 (Pass 4 amendment)` immediately
-> below. This entry, as historical, is not edited further.
+> **Note on amend:** Pass 4 was amended once to fold reviewer-driven findings
+> into a single tree. Amended HEAD = **`f35c31d`** (full via `git rev-parse f35c31d`).
+> The SHA + append-only-contract rationale is documented in
+> `## Pass 4.1 — 2026-07-06 (Pass 4 amendment)` immediately below. This entry,
+> as historical, is not edited further.
 
 No commit is created on `origin/main` automatically — `git push` is
 on the human-gate list (`docs/safety.md`). Local commit (`HEAD+1`)

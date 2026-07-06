@@ -1,5 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "NODE_OPTIONS='--max-old-space-size=3072' tinacms build --content=local --skip-cloud-checks -c \"astro build\"",
-  "_comment": "Remove --skip-cloud-checks from the buildCommand once TinaCloud's project collection list includes the Event collection. The flag is a temporary escape hatch for the Event-collection schema-drift mismatch — see CONTEXT-cms.md § Schema drift and sync and CONTEXT-cms.md § YAML quirks in content MDX. Re-added in commit a1ae17f."
+  "buildCommand": "NODE_OPTIONS='--max-old-space-size=3072' tinacms build --content=local --skip-cloud-checks -c \"astro build\""
 }

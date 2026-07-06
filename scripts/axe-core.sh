@@ -67,10 +67,7 @@ fi
 if ! "$PNPM" --silent exec playwright --version >/dev/null 2>&1 ; then
 	echo "[axe-core] playwright not installed; run: pnpm exec playwright install chromium" >&2
 	exit 4
-fi
-
-# Workaround: pnpm exec may not be set up; fall back to node_modules/.bin/playwright.
-PLAYWRIGHT_BIN="$(./node_modules/.bin/playwright --version 2>/dev/null && echo ./node_modules/.bin/playwright || echo playwright)"
+fi"
 
 mkdir -p "${AXE_OUT_DIR}"
 
@@ -83,7 +80,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 
 const AXE_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.10.2/axe.min.js';
-const PAGES = ${AXE_PAGES[@]@Q};
+const PAGES = ['/', '/donate', '/contact'];
 const PORT = ${PREVIEW_PORT};
 const OUT = process.argv[2] || '${AXE_JSON}';
 

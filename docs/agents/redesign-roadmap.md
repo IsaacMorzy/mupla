@@ -121,6 +121,7 @@ appends a delta here rather than overwriting §3, so historical state is
 preserved. Full pass history lives in [`../../loop-run-log.md`](../../loop-run-log.md);
 
 ### Pass 0 — 2026-07-06 (loop installation + bootstrap)
+- **Pass 12 commit (2026-07-06):** gh-issue-burst (30 issues via `bin/gh-create-issues.sh` with relaxed auth + `--body-file`) + GH Project board `mupla-front triage` (#5) with idempotent 7-column seed in `bin/gh-setup-project.sh` + top T1 ticket #? promoted to `ready-for-agent` + live snapshot at `docs/agents/gh-triage-2026-07-06-pass-12.md`.
 
 - **Loop readiness (before):** 25 / 100 (L0) per `loop-audit . --json`.
 - **Loop readiness (after):** TBD pending re-audit after the scaffolding lands.

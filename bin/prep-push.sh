@@ -20,8 +20,8 @@
 set -eu
 set -o pipefail
 
-# Hard gate: refuse silent destructive ops.
-if [[ ! -t 1 ]]; then
+# Hard gate: refuse silent destructive ops (both stdin and stdout must be a TTY).
+if [[ ! -t 0 ]] || [[ ! -t 1 ]]; then
 	echo "bin/prep-push.sh: refusing to run without a TTY." >&2
 	echo "  This script gates git push origin * and vercel deploy --prod, both of which" >&2
 	echo "  are HUMAN-ONLY per docs/safety.md. Paste it from a creds-loaded terminal." >&2

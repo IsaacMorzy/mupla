@@ -26,7 +26,8 @@ on:
         required: false
         type: string
 
-permissions: read-all
+permissions:
+  contents: read
 
 concurrency:
   group: daily-triage
@@ -75,7 +76,9 @@ jobs:
             tail -5 docs/agents/loop-audit-${GITHUB_RUN_ID}.log
           } > "${REPORT}" || true
 
-      - name: Commit (additive only, on a feature branch)
+      - name: Commit (additive only, on a feature branch; never main)
+        permissions:
+          contents: write
         run: |
           git config user.name "loop-bot"
           git config user.email "loop-bot@users.noreply.github.com"
@@ -85,7 +88,13 @@ jobs:
           git commit -m "loop(daily-triage): pass auto-${DATE} — readiness + a11y baseline + report stub" \
                       --author "loop-bot <loop-bot@users.noreply.github.com>" || \
             echo "no changes to commit"
-          git push -u origin loop/daily-triage --force-with-lease
+          # First push: branch doesn't yet exist on origin, --force-with-lease refuses.
+          # Subsequent pushes: --force-with-lease protects against stale local tips.
+          if git ls-remote --heads --quiet origin loop/daily-triage >/dev/null 2>&1 ; then
+            git push origin loop/daily-triage --force-with-lease
+          else
+            git push -u origin loop/daily-triage --force
+          fi
 
       - name: Run summary
         if: always()

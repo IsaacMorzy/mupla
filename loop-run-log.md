@@ -1168,3 +1168,32 @@ Maintainer eyeball + push of the Pass 11 commit per `bin/prep-push.sh` (HUMAN-ON
 4. #27 `donate.mdx` data-tier analytics to Plausible first-touch.
 
 Vercel production build debugging (Ticket #31) bocked till `pnpm build` is runnable in the agent environment; the local `CONTEXT-site.md` build OOM at 3072 MiB suggests the loop should run `pnpm build` on the cron path to surface incremental tu-vouses.
+
+---
+
+## Pass 12 - 2026-07-06 (gh-issue-burst + gh-project-board + Loop-Engineering stewardship)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | Codebuff agent                                                 |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-06                                                     |
+| Status   | COMPLETE - 30 issues via bin/gh-create-issues.sh + GH Project #5 (mupla-front triage) via bin/gh-setup-project.sh + top T1 ticket #? promoted to ready-for-agent + snapshot at docs/agents/gh-triage-2026-07-06-pass-12.md. |
+| Agents   | file-picker, code-reviewer-minimax-m3, basher, thinker-with-files-gemini |
+
+### What shipped
+
+- **bin/gh-create-issues.sh** - Relaxed auth check (host-level not per-repo); fixed awk column indexing ( Title / 0 Body); bold-marker regex now matches ticket #31; switched to --body-file to avoid Pass 9.1 backtick/$ hazards; --search in:title qualifier for tighter idempotency.
+- **bin/gh-setup-project.sh** - Re-written so column-seed runs in BOTH fresh + existing-project paths; gh version floor check (2.32+) surfacing field-create fallback.
+- **docs/agents/gh-triage-2026-07-06-pass-12.md** - Standalone live snapshot (30 issues + GH Project URL + 7 columns).
+- **docs/agents/redesign-roadmap.md §3.1** - Pass 12 commit bullet added under  (surgical insert landed).
+- **STATE.md** - Overwritten for pass_id=12; score 95/100 L3;  points to the snapshot.
+
+### Maintainer gate
+
+- Run  to fast-forward .
+- Then browse to https://github.com/users/IsaacMorzy/projects/5 to categorise the remaining 29 needs-triage issues.
+
+### Deferred
+
+- **#31 (Vercel production build debugging)** - User flag. Pass 13 candidate.

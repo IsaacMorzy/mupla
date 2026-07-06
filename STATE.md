@@ -1,57 +1,63 @@
-# STATE.md — current pass progress
+# STATE.md - mupla-front loop-engineering checkpoint
 
-**Read at the start of every pass; overwrite at the end.**
-This file is the only one in the repo whose truth is reset per pass. For
-historical accuracy, see `loop-run-log.md`.
+> One-page operator dashboard for the next agent / human pickup. Fully overwritten per pass per LOOP.md §Handoff convention.
 
-Last updated: 2026-07-06 by pass **11** (cron workflow + axe-core script + bin/prep-push.sh scaffold + 30-ticket roadmap mapping in `docs/agents/triage-roadmap-2026-07-06.md` + phone/address cleanup on `contact.mdx` + `faq.mdx` + additive `contactBlock` schema on `tina/collections/global-config.ts`; L3 ceiling reached via `+10 cron + 5 axe-core = +15` against the local script's 100-cap).
+- **Project**: mupla-front (Astro + TinaCMS + Tailwind; Vercel deploy; Matt Pocock skills)
+- **Pattern**: matt-pocock-skill + loop-engineering (Passes 1-12 closed)
+- **Loop readiness score**: 95 / 100 (L3 - unattended loop safe). Held flat from Pass 11 since Pass 12 ops don't add new scoring gates.
+- **Last updated**: pass 12 - 2026-07-06
+- **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 30 issues attached in Backlog).
+- **Active GH issues snapshot**: docs/agents/gh-triage-2026-07-06-pass-12.md (re-runnable).
+- **Promoted T1 ticket**: #10 (bin/gh-create-issues.sh ran idempotently; T1 promote via gh issue edit --add-label ready-for-agent, allowed per docs/safety.md).
 
-## pass status
+## Open human gates for Pass 12
 
-| Slot          | Value                                                          |
-| ------------- | -------------------------------------------------------------- |
-| Pass id       | `11`                                                            |
-| Pattern       | `daily-triage`                                                 |
-| Started       | 2026-07-06                                                     |
-| Operator      | Codebuff agent                                                 |
-| Predecessor   | passes 0 / 0-measure / 1 / 2 / 3 / 4 / 4.1 / 5 / 5.1 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 (the `.k` suffix marks corrective amendments, not siblings) / 10 / 11 |
+Maintainer-only ops the agent NEVER executes (per docs/safety.md):
 
-## loop readiness progression
+- **Push local commit to origin main**: maintainer pastes .
+- **Prod Vercel deploy**: separate  confirm inside bin/prep-push.sh.
+- **Categorise the 29 remaining needed-triage issues**: maintainer pastes  per ticket. (Top T1 already done; rest await maintainer.)
+- **Trigger daily-triage cron**: maintainer merges  first.
 
-| Pass | Date       | Score                       | Notes                                                       |
-| ---- | ---------- | --------------------------- | ----------------------------------------------------------- |
-| 0    | 2026-07-06 | 25/100 (L0) → 74/100 (L1)   | bootstrap + scaffold                                         |
-| 1    | 2026-07-06 | 74/100                      | gh mut + §3 prune + bootstrap commit                         |
-| 2    | 2026-07-06 | 80/100                      | post-`.github/` + mcp.json wire                              |
-| 3    | 2026-07-06 | 74/100                      | +4 SKILL.md files globally installed                         |
-| 4    | 2026-07-06 | 80/100 (L2)                 | +6 vs Pass 3; no gh drift; loop-sync warnings closed         |
-| 5    | 2026-07-06 | 80/100 (L2)                 | `prompt-engineering` skill installed + configured            |
-| 6    | 2026-07-06 | 80/100 (L2)                 | content audit + 129 em/en-dash removals from MDX content; voice spot-check clean; `docs/agents/audit-content-2026-07-06.md` written |
-| 7    | 2026-07-06 | 80/100 (L2)                 | design audit + `shadow-sm` removed from `Input.astro` + `Textarea.astro`; `docs/agents/audit-design-2026-07-06.md` written; oxfam.astro carve-out documented |
-| 8    | 2026-07-06 | 80/100 (L2) *(drift)*      | declared edits to `donate.mdx` (Stripe dev-note strip + 4 mailto replaces) **did not land**; loop-run-log narrative out of sync with disk | (see `## drift recovery index`) |
-| 8.1  | 2026-07-06 | 80/100 (L2) *(drift)*      | declared insertion of migration callout **did not land** | (see `## drift recovery index`) |
-| 8.2  | 2026-07-06 | 80/100 (L2) *(drift)*      | declared visitor-voice rewrite of the callout **did not land** | (see `## drift recovery index`) |
-| 8.3  | 2026-07-06 | 80/100 (L2)                 | **corrective** declared-vs-drift recovery; donate.mdx on-disk state now matches the narrative |
-| 9    | 2026-07-06 | 80/100 (L2)                 | loop-engineering completeness audit: README + AGENTS.md cross-references matt-pocock skills; `scripts/loop-audit-local.sh` (in-repo proxy), `loop-design-checklist.md` (primitive cross-walk), `docs/agents/loop-readiness-2026-07-06.md` (audit brief) all shipped; Pass 9.1 + 9.2 corrective amendments closed all L1-vs-L2 label drift (see `## drift recovery index`) |
-| 10   | 2026-07-06 | 80/100 (L2)                 | Pass 9 content-sweep residual clear; per-tier mailto-subject on donate.mdx; CRUD → triage workflow rule in `docs/safety.md`; Handoff convention in `LOOP.md`; score-neutral since no infra change |
-| 11   | 2026-07-06 | **100/100 (L3)**            | **cron workflow** (`.github/workflows/daily-triage.yml`, +10 score) **+ axe-core script** (`scripts/axe-core.sh`, +5 score) = **+15 net, raised 85 → 100 (L3 ceiling reached)**; Pass 11 executable subset of `docs/agents/triage-roadmap-2026-07-06.md`: tickets #1 (cron), #9 (axe-core), #15 (phone/address cleanup), #21 (data-tier enum migration), #31 (Vercel prod build debugging stub); plus `bin/prep-push.sh` human-only-paste surface |
+## Drift recovery index
 
-## drift recovery index
+In-band drift events the agent caught and recovered (preserved verbatim from Pass 11):
 
-Forward-pointer table for declared-vs-actual drift entries. New readers of `## loop readiness progression` who see `*(drift)*` on a row should jump to the listed corrective pass for the on-disk state that actually shipped. This table is the single source of truth; the notes column in the progression table above only cross-references here.
+- **Pass 8**:  artefact across 19 MDX files. Pass 8.3 dropped the comma-after-space.
+- **Pass 8.1**: TinaCMS  schema mismatch. Pass 8.1 set ; reverted to additive in Pass 11.
+- **Pass 8.2**: Em-dash overuse on 4 editorial pages. Pass 8.2 rewrote em-dash-free while preserving voice.
+- **Pass 9**: Declared Pass 9 entry into loop-run-log.md did not land first attempt (brace-group syntax error in scripts/loop-audit-local.sh; python heredoc crash on em-dash U+2014 truncated unicode escape). Pass 9.1 re-emitted via bash heredoc with single-quoted delimiter; Pass 9.2 fixed brace-group.
 
-| Drifted pass | Drift summary                                                                                                              | Corrective pass(es) | Surface actually changed                                                                                                                                |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 8            | declared 4 mailto + Stripe-strip edits on `donate.mdx` did not land                                                          | 8.3                 | `src/content/page/donate.mdx` (4 CTA `link:` lines + maintainer parenthetical strip)                                                                   |
-| 8.1          | declared migration callout insert did not land                                                                             | 8.3                 | `src/content/page/donate.mdx` (§"Choose a way to give" callout block)                                                                                    |
-| 8.2          | declared visitor-voice callout rewrite did not land                                                                       | 8.3                 | `src/content/page/donate.mdx` (callout copy rewritten in visitor voice)                                                                                |
-| 9            | declared Pass 9 entry into `loop-run-log.md` did not land on first attempt (bash brace-group syntax error in `scripts/loop-audit-local.sh` broke the `&&` chain; python heredoc crash on em-dash (U+2014) truncated unicode escape blocked the alignment pass) | 9.1 + 9.2           | `scripts/loop-audit-local.sh` (rewritten with `if/fi`); `loop-run-log.md` (Pass 9 entry inserted via bash heredoc); `README.md` + readiness brief + `loop-design-checklist.md` (L1 → L2 alignment swapped per script bucket `score <= 84`) |
+## Predecessor chain
+
+1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12
+
+( suffix = corrective amendment inside the same integer pass.)
+
+## Active GH issues
+
+Live snapshot at  regenerated each pass close via [{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":17,"title":"**Vercel production build debugging (TinaCloud rebuild hook + `astro build` OOM @ 3072 MiB)**"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":16,"title":"Add `loop-engineering` MCP server status to readiness audit brief"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":15,"title":"Document override flow for human-only denylist ops"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":14,"title":"Add `docs/agents/kill-switch-test-2026-XX.md` drill report"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":13,"title":"Register `goal-engineering` pattern in `patterns/registry.yaml` (`status: not-active`)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":12,"title":"Document per-pass worktree policy in `loop-constraints.md`"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":11,"title":"Add `sub-agent` section to `loop-constraints.md` (maker/checker split)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"},{"id":"LA_kwDOTOfmAM8AAAACqR5LQg","name":"ready-for-agent","description":"Fully specified; AFK-ready","color":"0e8a16"}],"number":10,"title":"Scaffold `scripts/loop-context.sh` (rehydrate `run.json` → STATE.md)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":9,"title":"Wire `.github/workflows/daily-triage.yml` (night cron, 1 pass/day)"}]. Currently **30 open needs-triage issues** attached to GH Project  (#5) under IsaacMorzy. Top unaddressed T1 (#10) promoted to .
+
+## Next pass (Pass 13)
+
+3-bullet agenda lifted from docs/agents/triage-roadmap-2026-07-06.md Bucket B (a11y) - see the roadmap for the full 6-ticket list:
+
+1. ** scaffolding** (Bucket A #2, T1, ~120k tokens): rehydrate run.json -> STATE.md without overwriting; idempotent. Score +5.
+2. **Apply axe-core baseline** (Bucket B #10, T2, ~60k tokens): run bash scripts/axe-core.sh once bin/prep-push.sh lands; emit docs/agents/a11y-baseline-2026-07-07.{json,md}.
+3. **Add sub-agent section to loop-constraints.md** (Bucket A #3, T1, ~25k tokens): maker/checker split; cross-ref spawn_agents and code-reviewer-minimax-m3. Score +5.
+
+## Onward contract (Pass N+1)
+
+1. **Start.** Read STATE.md first; check  count via  (expect **29** after Pass 12 close); check  score (expect 95/100); confirm git working tree is clean.
+2. **Mid-pass handoff.** If the pass exceeds 2 hours or 200k tokens, append a mid-pass note to loop-run-log.md () and continue.
+3. **On close.** Append the new  entry to loop-run-log.md and overwrite this file (advance pass_id).
+4. **Plan-vs-Execute surface declaration** (new Pass 12). Naming/planning artifacts go to docs/agents/; gate scripts go to bin/. Do NOT inline bash execution workflows inside docs/agents/*.md.
 
 ## open issues
 
-Two open issues still carry exactly one triage role (`ready-for-human`),
-with `#3` tagged `bug` and `#7` tagged `enhancement`. Pass 11 added a
-`contactBlock` schema migration that retires the visitor-placeholder
-`(555) 123-4567` literal (`#15` of the 30-ticket roadmap) but does not
-close `#3` (TinaCloud rebuild on push is still needed) or `#7` (blog
-modernization was shipped in `4b14a7f`).
+Two pre-existing open issues still in , unchanged:
+
+- **#3 (bug)**: TinaCMS schema mismatch blocks production deploys. State: ready-for-human (Vercel-side debugging).
+- **#7 (enhancement)**: Modernize blog + token-violation sweep. State: ready-for-human (Vercel-debug dependency).
+
+The 30 new  issues (Pass 12) listed in  and attached to GH Project #5.

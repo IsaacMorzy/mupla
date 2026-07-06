@@ -1,0 +1,68 @@
+# patterns/registry.yaml
+# Machine-readable index of loop patterns available to the loop CLIs.
+# Source of truth: `loop-cost --list`. Keep in sync if a new pattern ships.
+#
+# `status` per pattern:
+#   - active      — running on this repo
+#   - not-active  — installed but not running
+
+version: 1
+last_updated: 2026-07-06
+active_pattern: daily-triage
+
+# Only `daily-triage` is currently scheduled. The other entries below
+# are catalogued for future activation — registering them in the YAML does
+# NOT install or wire them up. See `loop-init` to bring a new pattern online.
+scheduled_patterns: [daily-triage]
+
+patterns:
+  - id: pr-babysitter
+    cost_bucket: high
+    cadence: 5m-15m
+    description: Review open PRs as they arrive; flag / approve / request changes.
+    bundled_in: "@cobusgreyling/loop-init"
+    status: not-active
+
+  - id: daily-triage
+    cost_bucket: low
+    cadence: 1d-2h
+    description: Daily review of issues, label transitions, roadmap sync.
+    bundled_in: "@cobusgreyling/loop-init"
+    status: active
+    schedule: daily
+    owner: "@IsaacMorzy"
+
+  - id: ci-sweeper
+    cost_bucket: very-high
+    cadence: 5m-15m
+    description: Sweep CI failures; re-run flaky jobs.
+    bundled_in: "@cobusgreyling/loop-init"
+    status: not-active
+
+  - id: post-merge-cleanup
+    cost_bucket: low
+    cadence: 1d-6h
+    description: Post-merge cleanup — branch deletion, label retirement, conflict resolution.
+    bundled_in: "@cobusgreyling/loop-init"
+    status: not-active
+
+  - id: dependency-sweeper
+    cost_bucket: medium
+    cadence: 6h-1d
+    description: Sweep dependency updates; bump within semver ranges.
+    bundled_in: "@cobusgreyling/loop-init"
+    status: not-active
+
+  - id: changelog-drafter
+    cost_bucket: low
+    cadence: 1d
+    description: Draft changelog from merged PRs; requires --release-notes skill.
+    bundled_in: "@cobusgreyling/loop-init"
+    status: not-active
+
+  - id: issue-triage
+    cost_bucket: low
+    cadence: 2h-1d
+    description: Companion to daily-triage focused on issue queue health.
+    bundled_in: "@cobusgreyling/loop-init"
+    status: not-active

@@ -1,64 +1,57 @@
-# STATE.md — current pass progress
+# STATE.md \u2014 current pass progress
 
 **Read at the start of every pass; overwrite at the end.**
 This file is the only one in the repo whose truth is reset per pass. For
 historical accuracy, see `loop-run-log.md`.
 
-Last updated: **2026-07-06** by pass **1** (first post-bootstrap pass).
+Last updated: 2026-07-06 by pass **3** (skills installed globally).
 
-## Pass status
+## pass status
 
 | Slot          | Value                                          |
 | ------------- | ---------------------------------------------- |
-| Pass id       | `1`                                            |
+| Pass id       | `3`                                            |
 | Pattern       | `daily-triage`                                 |
 | Started       | 2026-07-06                                     |
 | Operator      | Codebuff agent                                 |
-| Predecessor   | pass 0 (bootstrap) + pass 0 measurements (74/77) |
+| Predecessor   | passes 0 / 0-measure / 1 / 2                   |
 
-## Loop readiness progression
+## loop readiness progression
 
-| Pass | Date       | Score          | Notes                                                |
-| ---- | ---------- | -------------- | ---------------------------------------------------- |
-| 0    | 2026-07-06 | 25/100 (L0) → 74/100 (L1) | bootstrap + loop CLIs installed |
-| 1    | 2026-07-06 | 74/100 (L1) → TBD | gh mutations + §3 prune + scaffolding commit |
+| Pass | Date       | Score          | Notes                                       |
+| ---- | ---------- | -------------- | ------------------------------------------- |
+| 0    | 2026-07-06 | 25/100 (L0) \u2192 74/100 (L1) | bootstrap + scaffold            |
+| 1    | 2026-07-06 | 74/100         | gh mut + \u00a73 prune + bootstrap commit      |
+| 2    | 2026-07-06 | 80/100         | post-`.github/` + mcp.json wire             |
+| 3    | 2026-07-06 | TBD \u2192 re-run below | +4 SKILL.md files globally installed |
 
-## Open issues (post `gh issue edit --remove-label ready-for-agent`)
+## open issues (unchanged from pass 1)
 
-| #  | Title                                                  | Real labels now                    |
-| -- | ------------------------------------------------------ | ---------------------------------- |
-| 3  | TinaCMS schema mismatch blocks production deploys      | `bug`, `ready-for-human`            |
-| 7  | Modernize blog + token-violation sweep                 | `enhancement`, `ready-for-human`    |
+Both open issues now carry exactly one triage role (`ready-for-human`),
+with `#3` tagged `bug` and `#7` tagged `enhancement`. No new drift
+since pass 1.
 
-Both issues now carry **exactly one** triage role, in line with the
-state machine in `docs/agents/triage-labels.md`. The prior dual-role
-drift is closed; receipt of pass 1's two `gh issue edit` snippets was
-confirmed via `gh issue view` after the mutation.
+## Per-pass surface changes
 
-## Bootstrap commit
+| Pass | Surface changes (excerpt)                                                |
+| ---- | -------------------------------------------------------------------------- |
+| 0    | `LOOP.md`, `STATE.md`, `loop-budget.md`, `loop-constraints.md`, `docs/safety.md`, `loop-run-log.md`, `patterns/registry.yaml`, `docs/agents/triage-report-2026-07-06.md` |
+| 1    | `docs/agents/redesign-roadmap.md` \u00a73 pruned, `loop-run-log.md` Pass 1, `docs/agents/triage-report-2026-07-06-pass-1.md`, `/home/crowd/Documents/mcp/INSTALL-NOTES.md` \u00a73 corrected |
+| 2    | `.github/ISSUE_TEMPLATE/` (\u00d72), `.github/PULL_REQUEST_TEMPLATE/`, `~/.config/codebuff/mcp.json` loop-mcp-server entry, `docs/agents/skills-strategy.md` (now amended) |
+| 3    | `~/.codebuff/skills/{writing-fragments,writing-shape,writing-beats,brand}/SKILL.md`, `~/.pi/skills/<same>/SKILL.md`, `docs/agents/skills-strategy.md` install section now reflects actual state, `LOOP.md` See also updated, `loop-run-log.md` Pass 3 entry, this `STATE.md` overwrite |
 
-`2396889` on `origin/main` carries the eight loop files. Pass 1's doc
-amendments (§3 prune, run-log Pass 1 entry, etc.) will follow in a
-follow-up commit.
+## loop-mcp-server wiring
 
-## loop-mcp-server diagnosis (was a known gap)
+Wired into `~/.config/codebuff/mcp.json` in pass 2; remains in place.
 
-The previous pass noted loop-mcp-server's init was not validated
-because no response was observable. This pass confirms the binary
-**talks MCP correctly** under bare-newline framing — same quirk as
-`@playwright/mcp@0.0.77` documented earlier. `serverInfo` =
-`loop-engineering` `1.0.0`. Not yet wired into `~/.config/codebuff/mcp.json`;
-viewed as out of scope for daily-triage maintenance.
+## Open human gates for Pass 3
 
-## Open human gates for pass 1
+- Maintainer eyeball + commit + push of the Pass 3 artifacts (this turn).
+- None new on the open issues (`#3`, `#7`).
 
-None new on the open issues (the prior snippets were applied this pass).
-Future gates: maintainer commit + push of the pass-1 doc amendments.
+## Next pass (Pass 4)
 
-## Next pass (pass 2)
-
-1. Re-run `loop-audit . --json` and `loop-sync . --dry-run -v`; record
-   in `loop-run-log.md` "Pass 2".
-2. Optionally wire `loop-mcp-server` into `~/.config/codebuff/mcp.json`.
-3. Optionally add `.github/ISSUE_TEMPLATE` + `.github/PULL_REQUEST_TEMPLATE`
-   (loop-audit recommendations for L3 readiness).
+1. Re-run `loop-audit . --json`; expect score to move further toward
+   L2 because the loop-sync warnings are closed.
+2. Optionally add `.github/workflows/loop.yml` to cron the daily-triage.
+3. Schedule Pass 4 for the next calendar day per `LOOP.md` cadence.

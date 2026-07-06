@@ -1,0 +1,42 @@
+name: Feature or enhancement
+description: Request a new feature. Maintainers will triage; do not pre-label.
+title: "[enhancement] "
+labels: ["needs-triage", "enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > *This form scaffolds a GitHub Issue for the IsaacMorzy/mupla repo. The `daily-triage`
+        > loop will pick it up; the ISSUE ends at `needs-triage` first.*
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: Plain prose. Focus on the user-visible outcome, not the implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: The user value / business outcome this unlocks.
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      options:
+        - src/pages/**
+        - src/components/**
+        - src/content/**
+        - tina/collections/**
+        - multi-surface
+  - type: textarea
+    id: market-comparable
+    attributes:
+      label: Comparable / reference
+      description: Other sites or libraries that ship the feature we want. Helps the brief.
+    validations:
+      required: false

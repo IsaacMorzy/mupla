@@ -94,7 +94,8 @@ human-reviewed fix):
 
 ## See also
 
-- `STATE.md` — current-pass progress.
+- [`STATE.md`](./STATE.md) — current-pass progress. **Both files
+  are read at the start of every pass and must agree on the active pass id.**
 - `loop-budget.md` — token / time / ops caps.
 - `loop-constraints.md` — denylist on paths and ops.
 - `docs/safety.md` — human-gate policy.

@@ -1,0 +1,73 @@
+name: Bug report
+description: File a bug or a defect. Maintainers will triage; do not pre-label.
+title: "[bug] "
+labels: ["needs-triage", "bug"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > *This form scaffolds a GitHub Issue for the IsaacMorzy/mupla repo. After submit, the
+        > `daily-triage` loop will pick it up; see `docs/agents/triage-report-*.md`.*
+  - type: input
+    id: contact
+    attributes:
+      label: Contact (optional)
+      description: How can the maintainer reach you back?
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: A clear, concise description of the bug. Plain prose preferred over screenshots.
+      placeholder: When I clicked X, Y broke because...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: What did you expect to happen instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Numbered steps the maintainer can follow locally to reproduce.
+      placeholder: |
+        1. Run `pnpm install`
+        2. Run `pnpm dev`
+        3. Visit /blog/foo
+  - type: textarea
+    id: surfaces
+    attributes:
+      label: Surface(s) touched
+      description: Check all that apply. Helps the loop pinpoint the right domain doc.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      description: Which surface has the bug?
+      options:
+        - src/pages/**
+        - src/components/**
+        - src/content/**
+        - tina/collections/**
+        - src/styles/global.css
+        - multi-surface
+  - type: checkboxes
+    id: tokens
+    attributes:
+      label: Compliance
+      description: Quick self-checks against DESIGN.md.
+      options:
+        - label: Token usage is on the semantic layer (background, foreground, primary, ...), not the primitive layer
+          required: false
+        - label: No `shadow-*` or new gradients without a comment citing DESIGN.md §6 / §7
+          required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+    validations:
+      required: false

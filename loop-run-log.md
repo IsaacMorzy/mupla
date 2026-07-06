@@ -1283,3 +1283,24 @@ Vercel production build debugging (Ticket #31) bocked till `pnpm build` is runna
 ### Deferred
 
 - **Bucket B #10 axe-core baseline** - the script exists; the live-preview + Chrome env is a post-paste maintainer run.
+
+---
+
+## Pass 13.1 - 2026-07-06 (reviewer-flag corrective)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | Codebuff agent                                                 |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-06                                                     |
+| Status   | COMPLETE - applied the three reviewer-minimax-m3 flags from the Pass 13 close review: (a) created `AGENTS.md ## Sub-agents` section so the cross-ref from `loop-constraints.md` no longer 404s; (b) tightened `scripts/loop-context.sh` idempotence comment from `re-running produces identical output` to `content-idempotent; first-run writes the seed fixture`; (c) swapped `STATE.md ## Next pass (Pass 14)` bullet 3 from Bucket C #19 oxfam-token-audit (T3 next-quarter) to Bucket C #18 page-budget.sh (T2 sprint-window) so the agenda obeys the T1/T2-or-higher-per-pass rule.
+
+### What shipped
+
+- **AGENTS.md** - New `## Sub-agents` section. Catalogue of every sub-agent the orchestrator invokes via `spawn_agents`; constraints pinning HUMAN-ONLY gates per `docs/safety.md`.
+- **scripts/loop-context.sh** - Idempotence comment clarified: content-idempotent + first-run disk-mutation noted explicitly.
+- **STATE.md** - `Last updated: pass 13.1`; `Predecessor chain / 13.1`; `## Next pass (Pass 14)` bullet 3 swapped T3-and-out-of-sprint -> T2-and-in-sprint (page-budget.sh).
+
+### Maintainer gate
+
+- Run `bash bin/prep-push.sh` to fast-forward `origin main` to the Pass 13.1 commit.

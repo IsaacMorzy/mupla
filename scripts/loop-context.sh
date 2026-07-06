@@ -9,8 +9,10 @@
 #   - Exit 0 on diff-empty (state is in sync); exit 1 on differences
 #     (next-pass context has drifted from STATE.md).
 #
-# Idempotency: re-running with same FIXTURE+STATE.md inputs produces
-# identical diff output. Both inputs are kept stable per pass.
+# Idempotency: content-idempotent - re-running with the same FIXTURE+STATE.md
+# contents produces identical diff output. NOT disk-idempotent on a missing
+# FIXTURE: first run writes the seed fixture (line ~FIX_EOF); subsequent
+# runs reuse the existing fixture. To force a fresh seed, delete the file.
 #
 # Output (stdout) is a `diff -u` block; consume it via `>>docs/agents/loop-context-diff.patch`
 # or pipe to a pager for review.

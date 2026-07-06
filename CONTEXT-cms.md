@@ -39,15 +39,14 @@ Issues raised against this context follow the `triage` skill's label vocabulary 
 
 ## YAML quirks in content MDX
 
-TinaCMS reads each MDX file's frontmatter as YAML, then renders the body as Markdown. The grammar has two failure modes that recur across content authors. Both surface at build time as `js-yaml` errors that abort the entire Tina seed pass.
+Two YAML grammar traps recur across content authors. Both abort the entire Tina seed pass at `pnpm build` time.
 
 - **Inside `'…'`-single-quoted scalars, apostrophes must be `''`.**
-  YAML single-quoted strings span from `'` to the next `'`. An unescaped apostrophe terminates the string mid-content and everything after parses as YAML, which fails. Example: `'They didn't ask for ID'` → `'They didn''t ask for ID'`. Double-quoted scalars (`"…"`) do **not** have this restriction. Unquoted scalars (no surrounding quotes) are also fine for plain prose with apostrophes (e.g. `We'd love to hear from you`). Reach for `''` only when the value is already single-quoted.
-
+  A single-quoted YAML string spans from `'` to the next `'`; an unescaped `'` terminates the string mid-content and everything after parses as YAML, which fails. Example: ``'They didn''t ask for ID'``. Double-quoted (`"…"`) and unquoted scalars have no restriction.
 - **Inside `body: |` / `text: |` literal blocks, body content must stay at the block's indent unit.**
-  The pipe-style block scalar preserves content as raw text until the indentation drops below the block's indent unit. A line at column 0 terminates the block prematurely, and any trailing paragraph at lower indentation silently breaks the frontmatter. Keep all content lines at the same indent (typically 6 spaces under a `- body: |` line in a list item). Insert a blank line before `## H2`-style markdown headings inside the block to keep markdown parsers and YAML parsers happy.
+  A line at column 0 terminates the pipe-style block early, and any trailing paragraph at lower indentation silently breaks the frontmatter. Match the block's standard indent (6 spaces under `- body: |`) and put a blank line before any `## H2`-style heading inside it.
 
-When `pnpm build` dies with `can not read a block mapping entry; a multiline key may not be an implicit key` or `js-yaml: bad indentation of a sequence entry`, scan the file the build complained about for the two patterns above. The recent content expansion touched `programs.mdx`, `team.mdx`, `faq.mdx`, `donate.mdx`, `contact.mdx`, `terms.mdx`, `privacy.mdx` — rerun the build to confirm none of those regression-traps recur.
+When `pnpm build` dies with `can not read a block mapping entry; a multiline key may not be an implicit key` or `bad indentation of a sequence entry`, scan the offending file for the two patterns above. All MDX under `src/content/page/`, `src/content/blog/`, and `src/content/event/` is a candidate — `pnpm build` names the file in the error.
 
 ## Schema drift and sync
 

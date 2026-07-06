@@ -84,17 +84,84 @@ gradients on backgrounds, no pure black/white).
 
 ## 3. Triage state — every open issue
 
-| Issue | Title                                                       | State now      | Note |
-|-------|-------------------------------------------------------------|---------------|------|
-| #1    | Apply amber/gold primary shift                              | `wontfix`     | shipped — `--amber-500/700` already in `global.css` |
-| #2    | Add primitive token layer to design system                  | `wontfix`     | shipped — primitive / semantic / `@theme inline` already in place |
-| #3    | TinaCMS schema mismatch blocks production deploys            | `ready-for-human` | the human gate is `git push origin main` after #7 lands; expansion to add `category`/`author` and Faq/Team/ContactForm block types widens the drift |
-| #6    | Add blog search + RSS                                       | `wontfix`     | shipped — `/blog/search` + `/rss.xml` + `pnpm build:search` |
-| #7    | Modernize blog + token-violation sweep                      | `ready-for-human` | land-bound; push pending |
-| #8    | Close out `(data as any)` casts on related-posts comparator | `ready-for-agent` | the comparator is fixed in `4b14a7f`; closes fully once a shared `categoryOf` helper in `src/lib/data.ts` is added |
+This table is maintained by the `daily-triage` loop. See
+`docs/agents/triage-report-2026-07-06-pass-1.md` for the current pass
+report and [`../../loop-run-log.md`](../../loop-run-log.md) for the
+audit trail.
 
-Move #1, #2, #6 from `wontfix` → closed by `gh issue close <id>` once you're
-ready to clean the queue (it's reversible via `gh issue reopen`).
+| Issue | Title                                                    | State now                  | Note                                                                                                                                                                       |
+|-------|----------------------------------------------------------|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| #3    | TinaCMS schema mismatch blocks production deploys         | `bug`, `ready-for-human`   | Human gate is `git push origin main` after #7 lands. Schema additions (Faq/Team/ContactForm + `category`/`author`) widen the drift. Pass 1 dropped the redundant `ready-for-agent`. |
+| #7    | Modernize blog + token-violation sweep (DESIGN.md §6/§7) | `enhancement`, `ready-for-human` | Shipped in `4b14a7f` (already in `main`). Land-bound — push pending. Pass 1 dropped the redundant `ready-for-agent`. |
+
+**Closed issues no longer in §3** (audited via `gh issue list --state closed --limit 50
+--json number,title,closedAt,author`):
+
+- `#1` Apply amber/gold primary shift — closed; merged in the `4b14a7f` lineage.
+- `#2` Add primitive token layer to design system — closed; merged.
+- `#6` Add blog search + RSS — closed; `/blog/search` + `/rss.xml` shipped.
+- `#8` Close out `(data as any)` casts on related-posts comparator — closed; the
+  cast cleanup is in `4b14a7f`. The optional `categoryOf(p)` consolidation into
+  `src/lib/data.ts` remains informal work, not a tracked issue.
+
+**Issues never tracked in this doc** (also closed):
+
+- `#4` (unknown) — closed before any roadmap row was added.
+- `#5` (unknown) — closed before any roadmap row was added.
+
+**Open issues now carry exactly one triage role**, per the state machine
+in [`docs/agents/triage-labels.md`](./triage-labels.md). If a future
+issue arrives with two triage roles, follow the same pass-0 → pass-1
+recipe (label-edit + drift-table update).
+
+## 3.1 Loop pass deltas (daily-triage, STARTED 2026-07-06)
+
+The roadmap is now maintained inside a `daily-triage` loop. Each pass
+appends a delta here rather than overwriting §3, so historical state is
+preserved. Full pass history lives in [`../../loop-run-log.md`](../../loop-run-log.md);
+
+### Pass 0 — 2026-07-06 (loop installation + bootstrap)
+
+- **Loop readiness (before):** 25 / 100 (L0) per `loop-audit . --json`.
+- **Loop readiness (after):** TBD pending re-audit after the scaffolding lands.
+- **Triage report:** [`triage-report-2026-07-06.md`](./triage-report-2026-07-06.md).
+- **Loop infrastructure now files in the repo:**
+  [`../../LOOP.md`](../../LOOP.md), [`../../STATE.md`](../../STATE.md),
+  [`../../loop-budget.md`](../../loop-budget.md),
+  [`../../loop-constraints.md`](../../loop-constraints.md),
+  [`../../docs/safety.md`](../../docs/safety.md),
+  [`../../loop-run-log.md`](../../loop-run-log.md),
+  [`../../patterns/registry.yaml`](../../patterns/registry.yaml).
+
+**Open issues re-baselined against `gh issue list --state open`:**
+
+| #  | Title                                                          | Now (gh)               | Roadmap had  | Drift |
+| -- | -------------------------------------------------------------- | ---------------------- | ------------ | ----- |
+| 1  | Apply amber/gold primary shift                                 | NOT IN OPEN LIST       | `wontfix`    | closed out-of-band |
+| 2  | Add primitive token layer to design system                     | NOT IN OPEN LIST       | `wontfix`    | closed out-of-band |
+| 3  | TinaCMS schema mismatch blocks production deploys              | OPEN                   | `ready-for-human` | matches; **also** labeled `bug`, `ready-for-agent` |
+| 6  | Add blog search + RSS                                          | NOT IN OPEN LIST       | `wontfix`    | closed out-of-band |
+| 7  | Modernize blog + token-violation sweep                         | OPEN                   | `ready-for-human` | matches; **also** labeled `enhancement`, `ready-for-agent` |
+| 8  | Close out `(data as any)` casts on related-posts comparator    | NOT IN OPEN LIST       | `ready-for-agent` | closed out-of-band |
+
+**Maintainer hygiene recommendation (not auto-applied):**
+
+1. Run `gh issue list --state closed --limit 50 --json number,title,state,closedAt,author`
+   to recover the closure trail for #1, #2, #6, #8.
+2. Prune §3 above to drop the four closed issues entirely (preserve the
+   audit by keeping a #3.1.1 entry here).
+3. Apply the two `gh issue edit --remove-label ready-for-agent` snippets
+   in the triage report so both open issues carry exactly one triage role.
+
+### Pass 1 — pending
+
+Will:
+
+1. Re-run `loop-audit . --json` to confirm readiness moved off L0.
+2. Re-run `loop-sync . --dry-run -v` to confirm drift cleared.
+3. Re-list `gh issue list --state open` and `gh issue list --state closed --limit 50`.
+4. Re-apply the human-gated `gh issue edit --remove-label ready-for-agent`
+   snippets **only after** the maintainer pastes them.
 
 ## 4. Pending human-gated steps
 

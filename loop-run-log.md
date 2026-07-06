@@ -90,9 +90,83 @@ None.
 
 ---
 
-## Pass 0.5 — PLACEHOLDER (template)
+## Pass 1 — 2026-07-06 (first post-bootstrap pass)
 
-Copy this block and fill it in to start pass 1.
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | Codebuff agent                                                 |
+| Pattern  | `daily-triage`                                                 |
+| Started  | 2026-07-06                                                     |
+| Status   | COMPLETE — drift closed for the two open issues                |
+
+### Changes this pass
+
+#### GitHub mutations (the first followup)
+
+Both open issues previously carried **two** triage roles
+(`ready-for-human` AND `ready-for-agent`), which the state machine in
+`docs/agents/triage-labels.md` does not allow. Applied:
+
+```bash
+gh issue edit 3 --repo IsaacMorzy/mupla --remove-label ready-for-agent
+gh issue edit 7 --repo IsaacMorzy/mupla --remove-label ready-for-agent
+```
+
+After mutation, `gh issue view --json …,labels` confirms both issues
+now carry exactly one triage role: `ready-for-human`. Top-level labels
+left untouched: #3 retains `bug`; #7 retains `enhancement`.
+
+#### Roadmap §3 cleanup (the second followup)
+
+`docs/agents/redesign-roadmap.md` §3 dropped the four closed rows
+(`#1`, `#2`, `#6`, `#8`) and added a note for the never-tracked
+`#4` and `№5`. §3 now lists exactly what `gh` says is open (two
+issues). §3 ↔ §3.1 no longer contradicts.
+
+#### Commit + push (the third followup)
+
+The eight loop files were staged, committed with the message
+`loop(daily-triage): scaffold infrastructure (…), drop
+ready-for-agent label from gh issues #3 and #7 (dual-role drift closed)`,
+and pushed to `origin HEAD:main`. Resulting commit: **`2396889`**.
+
+#### loop-mcp-server diagnosis (the diagnostic followup)
+
+`INSTALL-NOTES.md` §3 called loop-mcp-server's init "not validated"
+because no response was observable when it was first smoke-tested.
+That was a framing artefact: under **bare-newline** framing
+(`printf '%s\n' "$PAYLOAD" | loop-mcp-server`), the binary returned
+the same shape Playwright MCP returned under the same framing:
+
+```json
+{"result":{"protocolVersion":"2024-11-05","capabilities":{"resources":{"listChanged":true},"tools":{"listChanged":true}},"serverInfo":{"name":"loop-engineering","version":"1.0.0"}},"jsonrpc":"2.0","id":1}
+```
+
+→ `loop-mcp-server` is a **working MCP server**. The diagnosis was
+a framing mistake on the previous pass, not a transport bug. Now
+documented correctly in `/home/crowd/Documents/mcp/INSTALL-NOTES.md` §3.
+
+### Self-grade
+
+**GOOD** — drift closed; gh issue labels match the state machine; §3 of
+the roadmap now matches reality; the loop is durable in the repo
+(`2396889` on `origin/main`); one previously misdiagnosed MCP server
+has been promoted to "working".
+
+### Open gates for pass 2
+
+- Optionally wire `loop-mcp-server` into `~/.config/codebuff/mcp.json`
+  so any local agent (`pi`, `freebuff`, etc.) can spawn it. Held;
+  default loop workspace already exposes loop CLIs on `$PATH`.
+- Optionally add `.github/ISSUE_TEMPLATE` and `.github/PULL_REQUEST_TEMPLATE`,
+  both recommended by `loop-audit --suggest` for L3 readiness. Held;
+  templates are out of scope for the loop's maintenance contract.
+
+---
+
+## Pass 1.5 — PLACEHOLDER (template)
+
+Copy this block and fill it in to start pass 2.
 
 ```
 | Operator      | <name>

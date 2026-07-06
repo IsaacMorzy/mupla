@@ -1355,3 +1355,33 @@ bash scripts/loop-audit-local.sh                                      # -> '95 /
 ### Maintainer gate
 
 - Run `bash bin/prep-push.sh` to fast-forward `origin main` to the Pass 13.3 commit.
+
+
+## Pass 13.4 - 2026-07-06 (MCP connector scaffold + 3-articles integration)
+
+| Slot     | Value                                                                                               |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                                                       |
+| Pattern  | operator-connectors + articles-synthesis                                                            |
+| Status   | COMPLETE - log entry retrofitted AFTER the Pass 13.4 initial commit 758df87 shipped the 5-file subset. Original python heredoc in the cascade was a regex-style triple-line string that lacked an explicit delimiter; retrofit uses a triple-quoted Python literal. |
+| Score    | +0 (no new gates; connectors not-active by default)                                                 |
+| Tokens   | ~5k (well under 200k budget)                                                                        |
+
+What shipped in this pass:
+
+- patterns/registry.yaml extended with mcp_connectors block (3 entries: github-mcp / playwright-mcp / puppeteer-mcp), all status: not-active.
+- .mcp.json at repo root: declarative MCP server manifest (currently mcpServers: []).
+- bin/mcp-bootstrap.sh (NEW) - TTY-gated install probe per docs/safety.md. Maintainer pastes once.
+- docs/agents/mcp-overview-2026-07-06.md (NEW) - integration brief cross-referencing the 3 articles.
+- STATE.md bumped pass_id 13.2 -> 13.4; Predecessor chain extended with / 13.4.
+- loop-run-log.md (this entry, retrofitted in the follow-up commit).
+
+Maintainer gates (HUMAN-ONLY per docs/safety.md):
+
+- bash bin/mcp-bootstrap.sh from a TTY after bin/prep-push.sh lands. That installs MCP servers, populates .mcp.json, flips not-active -> active per connector.
+- Chrome / Chromium installed locally for playwright-mcp + puppeteer-mcp (not required for github-mcp).
+- Categorise the 30 open needs-triage issues remaining: only #9, #10, #18 are ready-for-agent; rest await maintainer's --add-label ready-for-human|wontfix|needs-info pastes.
+
+Recovered tickets:
+
+- #16 / Add loop-engineering MCP server status to readiness audit brief - now reachable from patterns/registry.yaml ## mcp_connectors and docs/agents/mcp-overview-2026-07-06.md. Maintainer transition to ready-for-human remains once the manifest lights up locally.

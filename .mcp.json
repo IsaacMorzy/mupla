@@ -1,0 +1,5 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/server-manifest.v0.2.json",
+  "_comment": "mupla-front MCP server manifest. Agent does not auto-install; bin/mcp-bootstrap.sh is the maintainer paste surface (TTY-gated per docs/safety.md).",
+  "mcpServers": []
+}

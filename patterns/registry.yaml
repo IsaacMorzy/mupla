@@ -66,3 +66,30 @@ patterns:
     description: Companion to daily-triage focused on issue queue health.
     bundled_in: "@cobusgreyling/loop-init"
     status: not-active
+
+# MCP connectors - Operator Connectors slot from Cobus Greyling loop-engineering.
+# status: not-active until bin/mcp-bootstrap.sh has been pasted by the maintainer.
+mcp_connectors:
+  - id: github-mcp
+    cost_bucket: medium
+    cadence: on-demand
+    description: GitHub MCP server - exposes issues/PRs/labels as tool calls (additive to gh CLI; gh CLI remains the scriptable surface for the loop).
+    install_cmd: npx -y @modelcontextprotocol/server-github
+    bundled_in: mcp-marketplace
+    status: not-active
+  - id: playwright-mcp
+    cost_bucket: high
+    cadence: on-demand
+    description: Playwright MCP server - headless browser + Chromium; supersedes axe-core.sh bash invocation for rich a11y sweeps once wired.
+    install_cmd: npx -y @playwright/mcp-server
+    bundled_in: mcp-marketplace
+    prerequisite: chromium installed locally
+    status: not-active
+  - id: puppeteer-mcp
+    cost_bucket: high
+    cadence: on-demand
+    description: Puppeteer MCP server - alternative to playwright-mcp; pick ONE (avoid running both) when wiring loop harness for testing.
+    install_cmd: npx -y @puppeteer/mcp-server
+    bundled_in: mcp-marketplace
+    prerequisite: chromium installed locally
+    status: not-active

@@ -2,12 +2,18 @@
 import { Icon as Iconify } from 'astro-icon/components';
 
 interface Props {
-	/** Any Tabler icon name (without the `tabler:` prefix). */
+	/** Tabler icon name. Accepts either the bare name (`heart-handshake`) or the
+	 *  fully-qualified one (`tabler:heart-handshake`); a leading `tabler:` is
+	 *  stripped before the slug is re-prepended so the doubled-slug case
+	 *  (`tabler:tabler:foo`) can't reach astro-icon. */
 	name?: string | null;
 	class?: string;
 }
 
 const { name, class: className } = Astro.props;
-const iconName = name ? `tabler:${name}` : null;
+// Strip a leading `tabler:` so callers may pass either the bare name (`arrow-right`)
+// or the fully-qualified one (`tabler:arrow-right`) without producing the
+// doubled `tabler:tabler:...` slug at build time.
+const iconName = name ? `tabler:${name.replace(/^tabler:/, '')}` : null;
 ---
 {iconName && <Iconify name={iconName} class={className ?? 'size-5'} />}

@@ -1,16 +1,12 @@
 import type { APIContext } from 'astro';
 import rss from '@astrojs/rss';
 import config from '../content/config/config.json';
-import { listBlogs, listEvents } from '../lib/data';
+import { descriptionPreview, listBlogs, listEvents } from '../lib/data';
 
 export const prerender = true;
 
 export async function GET(context: APIContext) {
 	const [posts, events] = await Promise.all([listBlogs(), listEvents()]);
-
-	// Strip basic markdown so the RSS description stays plain text.
-	const stripMd = (s: string | null | undefined): string =>
-		(s ?? '').replace(/<[^>]+>/g, '').replace(/[#*_>`]/g, '').trim();
 
 	const blogItems = posts
 		.filter((post) => post.title && post.pubDate)
@@ -29,7 +25,7 @@ export async function GET(context: APIContext) {
 			description: [
 				event.location ? `Location: ${event.location}` : null,
 				event.cost ? `Cost: ${event.cost}` : null,
-				stripMd(event.description as string | undefined),
+				descriptionPreview(event.description),
 			]
 				.filter(Boolean)
 				.join('\n\n'),

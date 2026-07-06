@@ -5,7 +5,7 @@ import BlogBody from '../../components/islands/BlogBody.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Badge from '../../components/ui/Badge.astro';
 import Icon from '../../components/ui/Icon.astro';
-import { getBlog, listBlogs } from '../../lib/data';
+import { getBlog, listBlogs, categoryOf } from '../../lib/data';
 import { islands } from '../../lib/islands';
 import type { CmsBlog } from '../../lib/data';
 
@@ -24,7 +24,6 @@ const allPosts: CmsBlog[] = await listBlogs();
 // Pull 3 related posts: same category when possible, otherwise most recent that
 // isn't the current post. Cap at 3 — keeps the footer compact and on-brand.
 // `category`/`author` are present on the generated Tina Blog type as `string | null`.
-const categoryOf = (p: CmsBlog): string => (p.category ?? '');
 const currentCategory = categoryOf(data as CmsBlog);
 const related: CmsBlog[] = allPosts
 	.filter((p) => p._sys.filename !== data._sys?.filename)

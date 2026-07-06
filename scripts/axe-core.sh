@@ -67,7 +67,7 @@ fi
 if ! "$PNPM" --silent exec playwright --version >/dev/null 2>&1 ; then
 	echo "[axe-core] playwright not installed; run: pnpm exec playwright install chromium" >&2
 	exit 4
-fi"
+fi
 
 mkdir -p "${AXE_OUT_DIR}"
 
@@ -75,7 +75,7 @@ mkdir -p "${AXE_OUT_DIR}"
 # scripts/playwright-mupla.py's chrome-launch idiom but adds axe injection.
 # Output: aggregate JSON to stdout; the bash layer writes it to AXE_JSON.
 echo "[axe-core] sweeping pages: ${AXE_PAGES[*]}"
-node <<EOF
+node <<'EOF'
 const { chromium } = require('playwright');
 const fs = require('fs');
 
@@ -117,7 +117,7 @@ EOF
 RC=$?
 
 # Markdown summary regardless of exit code (cron wants both signal + log).
-node <<EOF
+node <<'EOF'
 const fs = require('fs');
 const json = JSON.parse(fs.readFileSync('${AXE_JSON}', 'utf8'));
 let md = '# A11y baseline — ' + json.generatedAt + '\\n\\n';

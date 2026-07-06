@@ -5,7 +5,7 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import Button from '../../components/ui/Button.astro';
 import Badge from '../../components/ui/Badge.astro';
 import Icon from '../../components/ui/Icon.astro';
-import { getConfig, getEvent, listEvents } from '../../lib/data';
+import { descriptionParagraphs, descriptionPreview, getConfig, getEvent, listEvents } from '../../lib/data';
 
 export async function getStaticPaths() {
 	const events = await listEvents();
@@ -21,7 +21,8 @@ const config = (await getConfig()).data?.config ?? null;
 const eventDate = data.date ? new Date(data.date) : null;
 const eventEndDate = data.endDate ? new Date(data.endDate) : null;
 const isMultiDay = Boolean(eventEndDate && eventDate && eventEndDate.toDateString() !== eventDate.toDateString());
-const descriptionText = (data.description ?? '').replace(/<[^>]+>/g, '').slice(0, 200);
+// Rich-Text AST or string → single-line plaintext snippet for meta + gcal.
+const descriptionText = descriptionPreview(data.description, 200);
 
 // Google Calendar expects dates as YYYYMMDDTHHMMSSZ (no separators).
 const toCalDate = (d: string | null | undefined): string =>
@@ -82,7 +83,9 @@ const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${en
 		)}
 
 		<div class="prose prose-lg max-w-none">
-			{data.description}
+			{descriptionParagraphs(data.description).map((paragraph) => (
+				<p>{paragraph}</p>
+			))}
 		</div>
 
 		{eventDate && (

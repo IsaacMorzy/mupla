@@ -5,17 +5,13 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import Button from '../../components/ui/Button.astro';
 import Badge from '../../components/ui/Badge.astro';
 import Icon from '../../components/ui/Icon.astro';
-import { getConfig, listEvents } from '../../lib/data';
+import { descriptionPreview, getConfig, listEvents } from '../../lib/data';
 
 const events: CmsEvent[] = await listEvents();
 const config = (await getConfig()).data?.config ?? null;
 const now = new Date();
 const upcoming: CmsEvent[] = events.filter((e: CmsEvent) => Boolean(e.date) && new Date(e.date as string) >= now);
 const past: CmsEvent[] = events.filter((e: CmsEvent) => Boolean(e.date) && new Date(e.date as string) < now);
-
-// Strip basic markdown markers from rich-text descriptions for the card preview.
-const stripMd = (s: string | null | undefined): string =>
-	(s ?? '').replace(/[#*_`>]/g, '').slice(0, 220);
 
 // Group upcoming events by YYYY-MM so callouts can sit in a compact editorial list.
 // Stable ordering: each group is sorted chronologically; groups sorted by earliest date.
@@ -107,9 +103,9 @@ const restGrouped = groupedEntries
 									<Badge variant="outline" class="font-normal">{featured.cost}</Badge>
 								)}
 							</div>
-							{featured.description && (
-								<p class="line-clamp-2 text-base text-muted-foreground">{stripMd(featured.description as string)}</p>
-							)}
+						{featured.description && (
+							<p class="line-clamp-2 text-base text-muted-foreground">{descriptionPreview(featured.description)}</p>
+						)}
 							<div class="mt-2 flex items-center gap-2 text-sm font-medium text-primary">
 								View details
 								<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
@@ -165,9 +161,9 @@ const restGrouped = groupedEntries
 									</div>										<h3 class="text-balance text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
 											{event.title}
 										</h3>
-									{event.description && (
-										<p class="line-clamp-3 text-sm text-muted-foreground">{stripMd(event.description as string)}</p>
-									)}
+								{event.description && (
+									<p class="line-clamp-3 text-sm text-muted-foreground">{descriptionPreview(event.description)}</p>
+								)}
 									<div class="mt-auto flex items-center justify-end pt-3">
 										{event.rsvpUrl ? (
 											<Button href={event.rsvpUrl} size="sm" variant="outline">

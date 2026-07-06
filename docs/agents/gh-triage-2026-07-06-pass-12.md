@@ -1,8 +1,8 @@
-# GH Triage Snapshot - 2026-07-06 (Pass 12)
+# GH Triage Snapshot - 2026-07-06 (Pass 12.1)
 
-**Snapshot generated at Pass 12 close.** Re-runnable via:
+**Snapshot generated at Pass 12.1 close.** Re-runnable via:
 ```bash
-bash bin/gh-create-issues.sh  # idempotent on title match
+bash bin/gh-create-issues.sh  # Python parser extracts all 30 roadmap rows
 bash bin/gh-setup-project.sh  # idempotent; seeds missing columns + adds items
 ```
 
@@ -33,3 +33,7 @@ Total: 9 issues.
 
 - **#3 (bug)**: TinaCMS schema mismatch blocks production deploys. State: `ready-for-human`.
 - **#7 (enhancement)**: Modernize blog + token-violation sweep. State: `ready-for-human`.
+
+## Pass 12 close-out notes
+
+Pass 12 (commit 2466f2c) created 9 issues via awk regex that matched Bucket A only. Pass 12.1 (recovery commit) restores the remaining 21 tickets via the new Python heredoc parser in `bin/gh-create-issues.sh`. Total now: 30 open `needs-triage` issues attached to GH Project #5. Top T1 candidate (loop-context.sh) promoted to `ready-for-agent` per docs/safety.md `--add-label` permission.

@@ -1197,3 +1197,33 @@ Vercel production build debugging (Ticket #31) bocked till `pnpm build` is runna
 ### Deferred
 
 - **#31 (Vercel production build debugging)** - User flag. Pass 13 candidate.
+
+---
+
+## Pass 12.1 - 2026-07-06 (gh-create-issues parser recovery)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | Codebuff agent                                                 |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-06                                                     |
+| Status   | CORRECTIVE - recovered the 21 roadmap rows missed by the awk regex in bin/gh-create-issues.sh; replaced the awk with a Python heredoc-based markdown-table parser which correctly extracts all 30 rows.
+
+### What shipped
+
+- **bin/gh-create-issues.sh** - Awk replaced with Python heredoc (single-quoted PYEOF delimiter); handles plain-N AND bold-N AND multiple table-format variants in the roadmap. Added `set +H` to disable bash history expansion (`!` in body). Switched `--label "needs-triage"` (double-quoted) to `--label 'needs-triage'` (single-quoted) to avoid the prior cascades "needs-triage: command not found" line-133 error.
+- **bin/gh-setup-project.sh** - Unchanged this pass.
+- **docs/agents/gh-triage-2026-07-06-pass-12.md** - Re-generated with all 30 issues (was 9 in the partial Pass 12 commit 2466f2c).
+- **STATE.md** - Patched (idempotent str.replace multi-line anchors): `Last updated: pass 12.1`; `## Predecessor chain` updated through `/ 12.1`; `## Active GH issues` notes the recovery.
+- **loop-run-log.md** - Pass 12.1 entry appended (this block).
+
+### Maintainer gate
+
+- Run `bash bin/prep-push.sh` to fast-forward `origin main` to the Pass 12.1 commit.
+- Browse to https://github.com/users/IsaacMorzy/projects/5 to start categorising all 30 needs-triage issues.
+
+### Recovered tickets
+
+- 21 new issues created in Buckets B (a11y), C (content), D (TinaCMS), E (DX), and the rest of Bucket A.
+- 9 from Pass 12 already exist and were skipped on title match (idempotent).
+- Top T1 ticket #<NUM> (loop-context.sh) promoted to `ready-for-agent` per `docs/safety.md` `--add-label` permission.

@@ -340,11 +340,10 @@ the developer's own pace and break the loop's append-only invariants.
 - `loop-run-log.md` (this entry)
 - `STATE.md` (overwritten for `pass_id = 4`)
 
-### Local commit (Pass 4 — content snapshot)
-
-- Amended HEAD at log-write time: `f35c31d`. (Short SHA only; retrieve full: `git rev-parse f35c31d`.)
-- Important: the amend was used once to fold reviewer-driven findings into a single tree *locally*; future passes are expected to use **fresh commits**, never `git commit --amend`, so the append-only contract holds across pushes.
-- A `## Pass 4.1` amendment entry was added immediately after this Pass 4 entry to book the amend-without-entry gap so `loop-run-log.md` ↔ `git log` reconcile.
+> **Note on amend:** Pass 4's local commit was amended once to fold reviewer-driven
+> findings into a single tree, but the SHA/append-only-contract rationale is
+> documented in `## Pass 4.1 — 2026-07-06 (Pass 4 amendment)` immediately
+> below. This entry, as historical, is not edited further.
 
 No commit is created on `origin/main` automatically — `git push` is
 on the human-gate list (`docs/safety.md`). Local commit (`HEAD+1`)
@@ -361,18 +360,41 @@ honestly classified out-of-loop; the loop continues to be append-only.
   terminal when ready.
 - Maintainer eyeballs + commits + pushes the 16 WIP modifications
   under their own narrative (out of loop's scope).
-- `loop-audit . --suggest` verbatim output (captured this pass):
+- `loop-audit . --suggest` raw output (verbatim from `/tmp/loop-suggest-raw.txt`,
+  3961 bytes this pass; full file available to maintainers; Pass 5 should re-capture
+  and replace the excerpt if the upstream template shifts):
 
 ```text
 $ loop-audit . --suggest
-Install one or more of the available loop skills to fully automate this workflow:
-  - loop-triage  (automated triage check)
-  - loop-verifier (assertions and checks for fixes)
-  - loop-constraints  (denylist enforcement)
-  - GitHub Actions integration for audit/pattern validation
+# Minimal L1 daily triage - pick your tool
+# Grok:
+cp -r starters/minimal-loop/.grok/skills/loop-triage .grok/skills/
+# Claude Code:
+cp -r starters/minimal-loop-claude/.claude/skills/loop-triage .claude/skills/
+cp starters/minimal-loop-claude/.claude/agents/loop-verifier.md .claude/agents/
+# Codex:
+cp -r starters/minimal-loop-codex/.codex/skills/loop-triage .codex/skills/
+cp starters/minimal-loop-codex/.codex/agents/verifier.toml .codex/agents/
+# Opencode:
+npx @cobusgreyling/loop-init . --pattern daily-triage --tool opencode
+# or: cp starters/minimal-loop-opencode/opencode.json.example opencode.json
+# All tools:
+cp starters/minimal-loop/STATE.md.example STATE.md   # or -claude / -codex variant
+cp starters/minimal-loop/LOOP.md .
+cp templates/loop-budget.md.template loop-budget.md
+cp templates/loop-run-log.md.template loop-run-log.md
+
+# Maker/checker verifier (Grok / generic skills dir)
+mkdir -p .grok/skills/loop-verifier
+cp templates/SKILL.md.verifier .grok/skills/loop-verifier/SKILL.md
+
+# Common minimal fix action
+mkdir -p .grok/skills/minimal-fix
+cp templates/SKILL.md.minimal-fix .grok/skills/minimal-fix/SKILL.md
 ```
 
-Each is a clear Pass 5 deliverable.
+Each top-level starter line maps to a Pass 5 deliverable (Grok/Claude/Codex/Opencode
+boilerplate skills).
 - Optionally wire the daily-triage cron as a GitHub Action under
   `.github/workflows/loop.yml`.
 
@@ -383,6 +405,7 @@ Each is a clear Pass 5 deliverable.
 | Operator | Codebuff agent                                                 |
 | Pattern  | `daily-triage`                                                 |
 | Started  | 2026-07-06                                                     |
+| Finished | 2026-07-06 (same-date amendment; loop-run-log.md and STATE.md only)        |
 | Status   | COMPLETE — editorial fixes from Pass-4 review folded into a fresh commit |
 
 ### Why this entry exists

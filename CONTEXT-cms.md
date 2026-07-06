@@ -37,6 +37,18 @@ Issues raised against this context follow the `triage` skill's label vocabulary 
 - **Generated** — code or types emitted under `tina/__generated__/` by the Tina CLI; treat as derived state, **do not edit by hand**. To regenerate after a schema change, run `tinacms build --local` (or `tinacms dev` for the equivalent without a static build).
 - **TinaCloud** — the hosted Tina backend. Until `clientId` and `token` are configured via env (`PUBLIC_TINA_CLIENT_ID` and `TINA_TOKEN`), only the `--local` mode works.
 
+## YAML quirks in content MDX
+
+TinaCMS reads each MDX file's frontmatter as YAML, then renders the body as Markdown. The grammar has two failure modes that recur across content authors. Both surface at build time as `js-yaml` errors that abort the entire Tina seed pass.
+
+- **Inside `'…'`-single-quoted scalars, apostrophes must be `''`.**
+  YAML single-quoted strings span from `'` to the next `'`. An unescaped apostrophe terminates the string mid-content and everything after parses as YAML, which fails. Example: `'They didn't ask for ID'` → `'They didn''t ask for ID'`. Double-quoted scalars (`"…"`) do **not** have this restriction. Unquoted scalars (no surrounding quotes) are also fine for plain prose with apostrophes (e.g. `We'd love to hear from you`). Reach for `''` only when the value is already single-quoted.
+
+- **Inside `body: |` / `text: |` literal blocks, body content must stay at the block's indent unit.**
+  The pipe-style block scalar preserves content as raw text until the indentation drops below the block's indent unit. A line at column 0 terminates the block prematurely, and any trailing paragraph at lower indentation silently breaks the frontmatter. Keep all content lines at the same indent (typically 6 spaces under a `- body: |` line in a list item). Insert a blank line before `## H2`-style markdown headings inside the block to keep markdown parsers and YAML parsers happy.
+
+When `pnpm build` dies with `can not read a block mapping entry; a multiline key may not be an implicit key` or `js-yaml: bad indentation of a sequence entry`, scan the file the build complained about for the two patterns above. The recent content expansion touched `programs.mdx`, `team.mdx`, `faq.mdx`, `donate.mdx`, `contact.mdx`, `terms.mdx`, `privacy.mdx` — rerun the build to confirm none of those regression-traps recur.
+
 ## Schema drift and sync
 
 TinaCMS uses "schema-as-code" — **there is no separate CLI push command** in `@tinacms/cli` v2.x. When you `git push` a schema change to the branch TinaCloud is configured to watch (typically `main`; configured in [app.tina.io](https://app.tina.io) under the project's Build settings), TinaCloud rebuilds its GraphQL schema from the current `tina/config.ts` + `src/components/blocks/*.template.ts`.

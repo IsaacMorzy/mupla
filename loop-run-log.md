@@ -288,7 +288,84 @@ no human gates outstanding on this pass.
 - Optional: complete the Hermes `Modelfile` splice so unbound Hermes has
   brand-voice on first message.
 
-## Pass 3.5 — PLACEHOLDER (template)
+---
+
+## Pass 4 — 2026-07-06 (loop-audit 80/100, no GitHub drift, WIP classified out-of-loop)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | Codebuff agent                                                 |
+| Pattern  | `daily-triage`                                                 |
+| Started  | 2026-07-06                                                     |
+| Status   | COMPLETE — Pass 3 closed; Pass 4 bookings recorded             |
+
+### Loop readiness
+
+| Metric                          | Pass 3 (after) | Pass 4 (now)   | Delta |
+| ------------------------------- | -------------: | -------------: | ----: |
+| `loop-audit . --json` (overall) | 74 / 100 (L1) | 80 / 100 (L1) | **+6** |
+| `loop-sync . --dry-run -v`      | 77 / 100       | 77 / 100       | 0      |
+
+### GitHub drift
+
+`gh issue list --state open` confirms the same two-issue surface as
+Pass 3 — **no new drift**. Both issues still carry exactly one
+triage role (`ready-for-human`); `bug` and `enhancement` top-level
+labels retained.
+
+| # | Title (excerpt)                                           | State           |
+| - | --------------------------------------------------------- | --------------- |
+| 3 | TinaCMS schema mismatch blocks production deploys         | open + bug      |
+| 7 | Modernize blog + token-violation sweep (DESIGN.md §6/§7) | open + enhancement |
+
+### Unstaged inventory classification
+
+Re-running `git status --short` against the loop's owned-path regex
+(`^(LOOP|STATE|loop|docs/safety|docs/agents/|patterns/|CONTEXT)`)
+shows:
+
+| Bucket           | Count | Files                                                                                                     |
+| ---------------- | ----: | --------------------------------------------------------------------------------------------------------- |
+| Loop-owned       | 0     | (none)                                                                                                    |
+| Modified WIP     | 16    | `AGENTS.md`, `package.json`, `src/lib/data.ts` (+77), UI/page components, `tina/tina-lock.json`, `astro.config.mjs` |
+| Untracked WIP    | 10    | `marketing/` (images + control.html + README), `scripts/playwright-mupla.py`                              |
+
+Decision: **leave the WIP unstaged**. The WIP is project-side work
+that pre-dates Pass 4; the maintainer commits it under their normal
+flow. Crediting these to a loop pass would conflate the loop with
+the developer's own pace and break the loop's append-only invariants.
+
+### Loop-owned files updated this pass
+
+- `loop-run-log.md` (this entry)
+- `STATE.md` (overwritten for `pass_id = 4`)
+
+No commit is created on `origin/main` automatically — `git push` is
+on the human-gate list (`docs/safety.md`). Local commit (`HEAD+1`)
+captures Pass 4's loop-owned artefacts.
+
+### Self-grade
+
+**GOOD** — loop score moved 74 → 80; no new GitHub drift; WIP is
+honestly classified out-of-loop; the loop continues to be append-only.
+
+### Open gates for Pass 5
+
+- Maintainer pastes `git push origin HEAD:main` at a creds-loaded
+  terminal when ready.
+- Maintainer eyeballs + commits + pushes the 16 WIP modifications
+  under their own narrative (out of loop's scope).
+- `loop-audit . --suggest` captured this pass. Top findings (verbatim):
+  *(a) install `loop-triage` to automate per-issue triage traces,*
+  *(b) add a verifier agent (`loop-verifier`) so assertion findings*
+  *don't depend on a human reviewer, (c) hoist the safety denylist*
+  *into a runtime constraint via `loop-constraints` skills,*
+  *(d) add `.github/workflows/loop-audit.yml` to enforce auditability*
+  *per PR.* Each is a clear Pass 5 deliverable.
+- Optionally wire the daily-triage cron as a GitHub Action under
+  `.github/workflows/loop.yml`.
+
+## Pass 4.5 — PLACEHOLDER (template)
 
 Copy this block and fill it in to start pass 4.
 

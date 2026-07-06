@@ -22,49 +22,88 @@
 
 ## 2. Color Palette & Roles
 
-All values in OKLCH (perceptual, theme-portable). Current tokens live in `src/styles/global.css` under `:root` and `.dark`.
+All values in OKLCH (perceptual, theme-portable). Tokens live in `src/styles/global.css`. Three layers: **primitives** (raw OKLCH values, mode-agnostic) → **semantic** (purpose-bound aliases) → **component** (Tailwind class bindings via `@theme inline`). Primitives are the source of truth for new color decisions; semantic aliases are what UI code consumes.
 
-### Light mode (Anthropic-paper)
+### Primitive scale
 
-| Token | OKLCH | Role | Notes |
-|-------|-------|------|-------|
-| `--background` | `oklch(0.985 0.008 75)` | Page canvas | Warm ivory, near-white with a paper tint. Never `#fff`. |
-| `--foreground` | `oklch(0.26 0.025 60)` | Body text | Deep sepia-black, not pure black. Passes WCAG AA on background. |
-| `--card` | `oklch(0.995 0.006 75)` | Card surface | One step lighter than background; subtle, not a stark card. |
-| `--muted` | `oklch(0.94 0.012 75)` | Muted surface (badges, code blocks) | The "quiet" surface. |
-| `--muted-foreground` | `oklch(0.5 0.025 60)` | Secondary text | Captions, metadata. |
-| `--border` | `oklch(0.88 0.015 75)` | Hairlines | Visible but not loud. |
-| `--primary` | `oklch(0.55 0.1 38)` | **Primary accent — clay/rust** | Muted terracotta. *See §10: pending amber/gold shift.* |
-| `--accent` | `oklch(0.92 0.025 50)` | Hover/selected surface | Warmer than muted, no text. |
-| `--destructive` | `oklch(0.55 0.15 22)` | Errors, delete actions | Slightly more red than primary. |
+Mode-agnostic OKLCH values defined once in `:root` and consumed by both light and dark semantic aliases. Naming follows Tailwind's `scale-N` lightness steps; intermediates (`--paper-75`, `--paper-alpha-N`, `--night-900`) are added where needed.
 
-### Dark mode (sepia night)
+| Primitive | OKLCH | Role |
+|---|---|---|
+| `--paper-50` | `oklch(0.985 0.008 75)` | Light page canvas (warm ivory) |
+| `--paper-75` | `oklch(0.95 0.012 75)` | Dark foreground (off-white) |
+| `--paper-100` | `oklch(0.94 0.012 75)` | Light quiet surface (secondary / muted) |
+| `--paper-200` | `oklch(0.88 0.015 75)` | Light hairline (border / input) |
+| `--paper-700` | `oklch(0.5 0.025 60)` | Light secondary text (captions, metadata) |
+| `--paper-800` | `oklch(0.34 0.03 60)` | Light secondary-foreground |
+| `--paper-900` | `oklch(0.26 0.025 60)` | Light body text (deep sepia). WCAG AA on `--paper-50`. |
+| `--night-900` | `oklch(0.2 0.018 60)` | Dark page canvas (deep sepia, not `#000`) |
+| `--paper-alpha-14` | `oklch(0.95 0.012 75 / 14%)` | Dark hairline (additive white) |
+| `--paper-alpha-18` | `oklch(0.95 0.012 75 / 18%)` | Dark input stroke (additive white) |
+| `--amber-500` | `oklch(0.62 0.12 78)` | **Primary light — SHIPPED amber/gold** |
+| `--amber-700` | `oklch(0.8 0.11 80)` | Primary dark (lighter amber that pops on sepia) |
+| `--rose-500` | `oklch(0.55 0.15 22)` | Destructive light (rose, not clay) |
+| `--rose-700` | `oklch(0.65 0.16 22)` | Destructive dark |
+| `--chart-warm-1` | `oklch(0.7 0.13 78)` | Warm chart spectrum step 1 |
+| `--chart-warm-2` | `oklch(0.55 0.1 75)` | step 2 |
+| `--chart-warm-3` | `oklch(0.4 0.05 50)` | step 3 |
+| `--chart-warm-4` | `oklch(0.78 0.13 75)` | step 4 |
+| `--chart-warm-5` | `oklch(0.68 0.13 30)` | step 5 |
 
-| Token | OKLCH | Role |
-|-------|-------|------|
-| `--background` | `oklch(0.2 0.018 60)` | Deep sepia, not `#000` |
-| `--foreground` | `oklch(0.95 0.012 75)` | Warm off-white text |
-| `--card` | `oklch(0.24 0.022 60)` | One step lighter than background |
-| `--card-foreground` | `oklch(0.95 0.012 75)` | Same as foreground |
+`--chart-warm-1..5` are the same warm spectrum in both modes by design (see functional rules below).
+
+### Semantic mapping — light mode (`Anthropic-paper`)
+
+| Semantic | Resolves to | Notes |
+|---|---|---|
+| `--background` | `var(--paper-50)` | Page canvas |
+| `--foreground` | `var(--paper-900)` | Body text — WCAG AA on `--paper-50` |
+| `--card` | `oklch(0.995 0.006 75)` | One step lighter than background (inline near-tint) |
+| `--card-foreground` | `var(--paper-900)` | |
+| `--popover` | `oklch(0.995 0.006 75)` | Same as card |
+| `--popover-foreground` | `var(--paper-900)` | |
+| `--primary` | `var(--amber-500)` | **Primary accent** — amber/gold (shipped, not pending) |
+| `--primary-foreground` | `var(--paper-50)` | |
+| `--secondary` | `var(--paper-100)` | |
+| `--secondary-foreground` | `var(--paper-800)` | |
+| `--muted` | `var(--paper-100)` | |
+| `--muted-foreground` | `var(--paper-700)` | |
+| `--accent` | `oklch(0.92 0.025 50)` | Warm hover (inline — not on a scale) |
+| `--accent-foreground` | `oklch(0.3 0.04 50)` | |
+| `--destructive` | `var(--rose-500)` | |
+| `--border` | `var(--paper-200)` | |
+| `--input` | `var(--paper-200)` | |
+| `--ring` | `var(--amber-500)` | Matches primary |
+| `--chart-1..5` | `var(--chart-warm-1..5)` | Warm spectrum (identical in dark mode) |
+
+### Semantic mapping — dark mode (sepia night)
+
+| Semantic | Resolves to | Notes |
+|---|---|---|
+| `--background` | `var(--night-900)` | Deep sepia (not `#000`) |
+| `--foreground` | `var(--paper-75)` | Warm off-white |
+| `--card` | `oklch(0.24 0.022 60)` | One step lighter than background (inline near-tint) |
+| `--card-foreground` | `var(--paper-75)` | |
 | `--popover` | `oklch(0.24 0.022 60)` | Same as card |
-| `--popover-foreground` | `oklch(0.95 0.012 75)` | Same as foreground |
-| `--primary` | `oklch(0.78 0.1 40)` | Lighter clay that pops on dark |
-| `--primary-foreground` | `oklch(0.2 0.018 60)` | Same as background (inverted) |
-| `--secondary` | `oklch(0.3 0.03 60)` | Darker than card |
-| `--secondary-foreground` | `oklch(0.95 0.012 75)` | Same as foreground |
-| `--muted` | `oklch(0.3 0.03 60)` | Same as secondary |
-| `--muted-foreground` | `oklch(0.72 0.025 65)` | Slightly desaturated foreground |
-| `--accent` | `oklch(0.32 0.04 50)` | Warmer hover surface |
-| `--accent-foreground` | `oklch(0.95 0.012 75)` | Same as foreground |
-| `--destructive` | `oklch(0.65 0.16 22)` | Slightly brighter than light mode |
-| `--border` | `oklch(0.95 0.012 75 / 14%)` | White at 14% (additive on dark) |
-| `--input` | `oklch(0.95 0.012 75 / 18%)` | White at 18% |
-| `--ring` | `oklch(0.78 0.1 40)` | Same as primary |
+| `--popover-foreground` | `var(--paper-75)` | |
+| `--primary` | `var(--amber-700)` | **Primary accent** — amber/gold, dark side |
+| `--primary-foreground` | `var(--night-900)` | Inverted |
+| `--secondary` | `oklch(0.3 0.03 60)` | Darker than card (inline) |
+| `--secondary-foreground` | `var(--paper-75)` | |
+| `--muted` | `oklch(0.3 0.03 60)` | |
+| `--muted-foreground` | `oklch(0.72 0.025 65)` | Slightly desaturated foreground (inline) |
+| `--accent` | `oklch(0.32 0.04 50)` | Dark warm hover (inline) |
+| `--accent-foreground` | `var(--paper-75)` | |
+| `--destructive` | `var(--rose-700)` | |
+| `--border` | `var(--paper-alpha-14)` | Hairline |
+| `--input` | `var(--paper-alpha-18)` | |
+| `--ring` | `var(--amber-700)` | Matches primary |
 
 ### Functional rules
 - **Never** use the primary color for body text — only for links, CTAs, focus rings, and key accents.
 - **Never** use pure black (`#000`) or pure white (`#fff`). Always tinted.
-- **Charts** use a 5-step warm spectrum (chart-1 through chart-5), not a rainbow palette.
+- **Charts** use a 5-step warm spectrum (`--chart-1..5` alias `--chart-warm-1..5`), not a rainbow palette.
+- **NEVER alias `--clay-*` to anything.** The shipped primary is amber/gold; clay was a stale reference from the pre-amber documentation. If you find any `--clay-*` primitive in `global.css`, that's a bug.
 
 ---
 
@@ -254,48 +293,58 @@ When asking an AI agent to build or modify UI in this project, include this bloc
 
 ```text
 Read /DESIGN.md first. Use the Anthropic-paper warm palette (OKLCH, hue 60-75,
-no pure black/white). Headings are serif (Charter/Iowan/Georgia stack); UI is
-Inter. Restrained chroma — only the primary accent is saturated. Use surface
-tinting for hierarchy, not shadows. No gradients, no green/emerald, no
-reintroduced cosmic-chrome elements. Buttons default to rounded-lg. Section vertical rhythm is py-12 (blocks
-compose vertically for separation). Test in both light and dark mode.
+no pure black/white). The current primary is amber/gold (`--amber-500` light,
+`--amber-700` dark) — see §10 for rationale and §2 for the token mapping.
+Headings are serif (Charter/Iowan/Georgia stack); UI is Inter. Restrained
+chroma — only the amber/gold accent is saturated. Use surface tinting for
+hierarchy, not shadows. No gradients, no green/emerald, no reintroduced
+cosmic-chrome elements. Buttons default to rounded-lg. Section vertical
+rhythm is py-12 (blocks compose vertically for separation). Test in both
+light and dark mode.
 ```
 
 ### Quick color reference (for one-off prompts)
 
-- Background: warm ivory `oklch(0.985 0.008 75)`
-- Foreground: deep sepia `oklch(0.26 0.025 60)`
-- Primary: muted clay `oklch(0.55 0.1 38)` (pending amber/gold shift — see §10)
-- Border: warm hairline `oklch(0.88 0.015 75)`
+- Background: warm ivory `oklch(0.985 0.008 75)` (`--paper-50`)
+- Foreground: deep sepia `oklch(0.26 0.025 60)` (`--paper-900`)
+- Primary (light): amber/gold `oklch(0.62 0.12 78)` (`--amber-500`) — shipped, see §10
+- Primary (dark): `oklch(0.8 0.11 80)` (`--amber-700`)
+- Border: warm hairline `oklch(0.88 0.015 75)` (`--paper-200`)
+- Destructive (light): rose `oklch(0.55 0.15 22)` (`--rose-500`)
 - Serif headings, Inter body, never both at the same weight on the same line
 
 ---
 
-## 10. Pending Direction: Amber/Gold Shift (Muslim Theme)
+## 10. Shipped Direction: Amber/Gold Primary (Muslim Theme)
 
-The current primary is a generic muted clay. For a Muslim foundation site, a small shift to **amber/gold** sits in the same warm hue family (so it reads as a refinement, not a rebrand) and carries cultural resonance from Islamic illumination manuscripts and lantern light.
+The site's primary sits in a warm amber/gold family — the same warm hues the rest of the palette lives in. The shift from a generic muted clay to amber was a single-hue refinement, not a rebrand; the move carried cultural resonance from Islamic illumination manuscripts and lantern light.
 
-**Proposed token change** (single hue shift, no architectural change):
+### Current values (live in `src/styles/global.css`)
 
 ```css
-/* Light — current → proposed */
---primary: oklch(0.55 0.1 38)   →   oklch(0.62 0.12 78)   /* clay → amber-gold */
---ring:    oklch(0.55 0.1 38)   →   oklch(0.62 0.12 78)
+/* Light */
+--primary: oklch(0.62 0.12 78);   /* --amber-500 */
+--ring:    oklch(0.62 0.12 78);
 
-/* Dark — current → proposed */
---primary: oklch(0.78 0.1 40)   →   oklch(0.8 0.11 80)     /* clay → amber-gold */
---ring:    oklch(0.78 0.1 40)   →   oklch(0.8 0.11 80)
+/* Dark */
+--primary: oklch(0.8 0.11 80);    /* --amber-700 — pops on sepia */
+--ring:    oklch(0.8 0.11 80);
+
+/* Charts — same warm spectrum, hue 78 */
+--chart-1: oklch(0.7 0.13 78);    /* --chart-warm-1 */
+--chart-4: oklch(0.78 0.13 75);   /* --chart-warm-4 */
 ```
 
-Charts shift similarly: chart-1 stays warm but moves from hue 38 → 78.
+### Why amber, not alternatives
 
-**Why amber, not alternatives:**
 - **Stays in the warm hue family** the site already lives in (background hue 75, border hue 75). No jarring cool/warm contrast.
 - **Culturally resonant** without being literal: gold leaf on Qur'anic pages, lantern light, the warmth of mosque interiors at sunset.
 - **Works in both modes** — the dark-mode amber at L=0.8 pops on the sepia background; the light-mode amber at L=0.62 is muted enough to not feel luxurious.
 - **Avoids the green/emerald trap** that signals "Muslim-themed site" too literally and fights the editorial tone.
 
-**If you want bolder:** peacock teal (hue 200, the most iconic Islamic-coded non-green) requires also shifting the background from warm to neutral. Save that for a future rebrand, not a primary-token swap.
+### If you want bolder
+
+Peacock teal (hue 200, the most iconic Islamic-coded non-green) requires shifting the background from warm to neutral. Save that for a future rebrand, not a primary-token swap. The current amber/gold is the live direction until the editorial positioning changes.
 
 ---
 

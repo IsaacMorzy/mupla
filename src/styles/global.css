@@ -65,56 +65,83 @@
 
 :root {
 	--radius: 0.5rem;
-	/* Warm paper-ivory light mode (replaces the prior indigo 285 hue family)
-	   — calmer, editorial, additive at print scale. */
-	--background: oklch(0.985 0.008 75);
-	--foreground: oklch(0.26 0.025 60);
-	--card: oklch(0.995 0.006 75);
-	--card-foreground: oklch(0.26 0.025 60);
+
+	/* === Primitive scale (mode-agnostic warm palette) === */
+	/* paper-N — the warm neutrals (cream → sepia). One primitive per visual stop. */
+	--paper-50:  oklch(0.985 0.008 75);   /* light page canvas */
+	--paper-75:  oklch(0.95 0.012 75);   /* dark foreground off-white */
+	--paper-100: oklch(0.94 0.012 75);   /* light secondary/muted surface */
+	--paper-200: oklch(0.88 0.015 75);   /* light hairline (border / input) */
+	--paper-700: oklch(0.5 0.025 60);    /* light secondary text (captions, metadata) */
+	--paper-800: oklch(0.34 0.03 60);    /* light secondary-foreground */
+	--paper-900: oklch(0.26 0.025 60);   /* light body text (deep sepia, not pure black). WCAG AA on --paper-50. */
+	--night-900: oklch(0.2 0.018 60);    /* dark page canvas (deep sepia, not pure black) */
+	--paper-alpha-14: oklch(0.95 0.012 75 / 14%);  /* dark hairline (additive white) */
+	--paper-alpha-18: oklch(0.95 0.012 75 / 18%);  /* dark input stroke (additive white) */
+
+	/* amber-N — amber/gold primary. SHIPPED (this is the current state, not pending). */
+	--amber-500: oklch(0.62 0.12 78);    /* PRIMARY light — the SHIPPED amber/gold */
+	--amber-700: oklch(0.8 0.11 80);     /* PRIMARY dark — lighter amber that pops on sepia */
+
+	/* rose-N — destructive. Rose, NOT clay. */
+	--rose-500:  oklch(0.55 0.15 22);    /* destructive light */
+	--rose-700:  oklch(0.65 0.16 22);    /* destructive dark */
+
+	/* chart-warm — 5-step warm spectrum. Inherited unchanged in dark mode (per §2 rule). */
+	--chart-warm-1: oklch(0.7 0.13 78);
+	--chart-warm-2: oklch(0.55 0.1 75);
+	--chart-warm-3: oklch(0.4 0.05 50);
+	--chart-warm-4: oklch(0.78 0.13 75);
+	--chart-warm-5: oklch(0.68 0.13 30);
+
+	/* === Semantic aliases — Light mode (Anthropic-paper) === */
+	--background: var(--paper-50);
+	--foreground: var(--paper-900);
+	--card: oklch(0.995 0.006 75);                  /* one step lighter than background (inline near-tint) */
+	--card-foreground: var(--paper-900);
 	--popover: oklch(0.995 0.006 75);
-	--popover-foreground: oklch(0.26 0.025 60);
-	/* Amber/gold primary — warm, lantern-lit, resonant with Islamic
-	   illumination manuscripts. Single-hue shift from the prior clay/rust. */
-	--primary: oklch(0.62 0.12 78);
-	--primary-foreground: oklch(0.985 0.008 75);
-	--secondary: oklch(0.94 0.012 75);
-	--secondary-foreground: oklch(0.34 0.03 60);
-	--muted: oklch(0.94 0.012 75);
-	--muted-foreground: oklch(0.5 0.025 60);
-	--accent: oklch(0.92 0.025 50);
+	--popover-foreground: var(--paper-900);
+	--primary: var(--amber-500);                    /* MUST be amber — never --clay-* */
+	--primary-foreground: var(--paper-50);
+	--secondary: var(--paper-100);
+	--secondary-foreground: var(--paper-800);
+	--muted: var(--paper-100);
+	--muted-foreground: var(--paper-700);
+	--accent: oklch(0.92 0.025 50);                 /* warm hover surface (inline — not on a scale) */
 	--accent-foreground: oklch(0.3 0.04 50);
-	--destructive: oklch(0.55 0.15 22);
-	--border: oklch(0.88 0.015 75);
-	--input: oklch(0.88 0.015 75);
-	--ring: oklch(0.62 0.12 78);
-	/* Charts shifted from rainbow to a warm amber spectrum so data viz stays on-tone. */
-	--chart-1: oklch(0.7 0.13 78);
-	--chart-2: oklch(0.55 0.1 75);
-	--chart-3: oklch(0.4 0.05 50);
-	--chart-4: oklch(0.78 0.13 75);
-	--chart-5: oklch(0.68 0.13 30);
+	--destructive: var(--rose-500);
+	--border: var(--paper-200);
+	--input: var(--paper-200);
+	--ring: var(--amber-500);                      /* matches primary */
+	--chart-1: var(--chart-warm-1);
+	--chart-2: var(--chart-warm-2);
+	--chart-3: var(--chart-warm-3);
+	--chart-4: var(--chart-warm-4);
+	--chart-5: var(--chart-warm-5);
 }
 
 /* Sepia-tinted dark — calm, sincere, fade-resistant at night. */
 .dark {
-	--background: oklch(0.2 0.018 60);
-	--foreground: oklch(0.95 0.012 75);
-	--card: oklch(0.24 0.022 60);
-	--card-foreground: oklch(0.95 0.012 75);
+	/* === Semantic aliases — Dark mode === */
+	--background: var(--night-900);
+	--foreground: var(--paper-75);                 /* off-white (paper-75, not paper-50 — primitives are not overridden) */
+	--card: oklch(0.24 0.022 60);                   /* one step lighter than background (inline near-tint) */
+	--card-foreground: var(--paper-75);
 	--popover: oklch(0.24 0.022 60);
-	--popover-foreground: oklch(0.95 0.012 75);
-	--primary: oklch(0.8 0.11 80);
-	--primary-foreground: oklch(0.2 0.018 60);
-	--secondary: oklch(0.3 0.03 60);
-	--secondary-foreground: oklch(0.95 0.012 75);
+	--popover-foreground: var(--paper-75);
+	--primary: var(--amber-700);                    /* MUST be amber-700 — never --clay-* */
+	--primary-foreground: var(--night-900);
+	--secondary: oklch(0.3 0.03 60);                /* darker than card (inline — not on the paper scale) */
+	--secondary-foreground: var(--paper-75);
 	--muted: oklch(0.3 0.03 60);
-	--muted-foreground: oklch(0.72 0.025 65);
-	--accent: oklch(0.32 0.04 50);
-	--accent-foreground: oklch(0.95 0.012 75);
-	--destructive: oklch(0.65 0.16 22);
-	--border: oklch(0.95 0.012 75 / 14%);
-	--input: oklch(0.95 0.012 75 / 18%);
-	--ring: oklch(0.8 0.11 80);
+	--muted-foreground: oklch(0.72 0.025 65);       /* slightly desaturated foreground (inline) */
+	--accent: oklch(0.32 0.04 50);                 /* warmer hover surface (inline) */
+	--accent-foreground: var(--paper-75);
+	--destructive: var(--rose-700);
+	--border: var(--paper-alpha-14);               /* hairline — additive white at 14% on the sepia background */
+	--input: var(--paper-alpha-18);                /* input stroke — additive white at 18% */
+	--ring: var(--amber-700);
+	/* Charts inherit from :root (--chart-warm-1..5). The 5-step warm spectrum is identical in both modes by design (see DESIGN.md §2 functional rules). */
 }
 
 @layer base {
@@ -165,4 +192,3 @@
 	--tw-prose-th-borders: var(--border);
 	--tw-prose-td-borders: var(--border);
 }
-

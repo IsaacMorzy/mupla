@@ -18,7 +18,7 @@ This is the editor-facing side of mupla. Tina Cloud (or the local Tina client) w
 
 - This context owns schemas, not rendering — the [`site` context](./CONTEXT-site.md) picks up the rendered output.
 - Editor changes flow: Tina UI → JSON / MDX writes → git diff → site re-renders on the next build.
-- The build path `tinacms build --local --skip-cloud-checks -c "astro build"` runs two peak phases in series: Tina's pre-build (graph + types) and Astro's bundle. Both share the `NODE_OPTIONS` script-level cap. See the [site context memory note](./CONTEXT-site.md#workflow-boundary).
+- The build path `tinacms build --local -c "astro build"` runs two peak phases in series: Tina's pre-build (graph + types) and Astro's bundle. Both share the `NODE_OPTIONS` script-level cap. See the [site context memory note](./CONTEXT-site.md#workflow-boundary).
 
 ## Triage integration
 
@@ -36,6 +36,21 @@ Issues raised against this context follow the `triage` skill's label vocabulary 
 - **Field** — single named entry in a schema. The visual editor surfaces each field with the `label` you declared.
 - **Generated** — code or types emitted under `tina/__generated__/` by the Tina CLI; treat as derived state, **do not edit by hand**. To regenerate after a schema change, run `tinacms build --local` (or `tinacms dev` for the equivalent without a static build).
 - **TinaCloud** — the hosted Tina backend. Until `clientId` and `token` are configured via env (`PUBLIC_TINA_CLIENT_ID` and `TINA_TOKEN`), only the `--local` mode works.
+
+## Schema drift and sync
+
+TinaCMS uses "schema-as-code" — **there is no separate CLI push command** in `@tinacms/cli` v2.x. When you `git push` a schema change to the branch TinaCloud is configured to watch (typically `main`; configured in [app.tina.io](https://app.tina.io) under the project's Build settings), TinaCloud rebuilds its GraphQL schema from the current `tina/config.ts` + `src/components/blocks/*.template.ts`.
+
+The `tina/config.ts` `branch` setting (`GITHUB_BRANCH` → `VERCEL_GIT_COMMIT_REF` → `HEAD` → `main`) is a **different control**: it tells Tina's GraphQL query which branch's CONTENT to fetch at build time — **not** which branch TinaCloud watches for schema rebuilds.
+
+When `tinacms build --content=local` fails with `[BREAKING - FIELD_REMOVED]` or `FIELD_ADDED`, local and TinaCloud schemas have drifted. Recovery:
+
+1. Confirm the schema change is committed in this repo (`git status` clean, `git log -p` shows the field add/remove).
+2. `git push origin <branch>` to the branch TinaCloud is configured to watch (typically `main` — confirm in app.tina.io under Build settings). The `tina/config.ts` `branch` setting is unrelated; see the previous paragraph.
+3. Wait for TinaCloud to rebuild the project — visible in [app.tina.io](https://app.tina.io) under the project's Build logs.
+4. Re-run the build locally to confirm the cloud/local disagreement is gone.
+
+If builds must succeed while TinaCloud is catching up, run `pnpm build:local` (uses `--skip-cloud-checks`, suitable for local iteration only) or temporarily extend `vercel.json`'s `buildCommand` with `--skip-cloud-checks`. **Remove the workaround as soon as TinaCloud is back in sync** — leaving the bypass in production silently hides future schema drift.
 
 ## When the schema changes
 

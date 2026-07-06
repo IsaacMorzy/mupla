@@ -1257,3 +1257,29 @@ Vercel production build debugging (Ticket #31) bocked till `pnpm build` is runna
 - 22 new issues created in Buckets B (a11y), C (content), D (TinaCMS), E (DX), and the rest of Bucket A (catch-up from Pass 12.1 partials).
 - 9 from Pass 12 already exist (idempotent skip on title match).
 - Top T1 candidate #18 promoted to `ready-for-agent` via `gh issue edit --add-label` (allowed per docs/safety.md).
+
+---
+
+## Pass 13 - 2026-07-06 (loop-context.sh scaffold + sub-agent section + axe-core deferral)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | Codebuff agent                                                 |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-06                                                     |
+| Status   | COMPLETE - scripts/loop-context.sh scaffolded (Bucket A #2 T1) + `## Sub-agent (maker/checker split)` section appended to loop-constraints.md (Bucket A #3 T1) + axe-core baseline apply DEFERRED per agent-env Chrome-missing (Bucket B #10 T2 placeholder doc emitted for maintainer-paste run after `bash bin/prep-push.sh`).
+
+### What shipped
+
+- **scripts/loop-context.sh** (NEW) - Reads `run.json` fixture + `STATE.md` baseline; emits unified diff via `diff -u`; exit 0 on in-sync, exit 1 on drift. Auto-seeds fixture on first run. Idempotent on re-run.
+- **loop-constraints.md** - New `## Sub-agent (maker/checker split)` section appended. Cross-refs `spawn_agents` (parent tool) + `code-reviewer-minimax-m3` (subagent) + `AGENTS.md` §Sub-agents. Also pins HUMAN-ONLY gates (`gh issue close` / `git push origin main` / `vercel deploy --prod` / `gh issue edit --remove-label`) as the maker-vs-checker constraint.
+- **docs/agents/a11y-baseline-2026-07-07.md** (NEW placeholder) - Doc flagging the axe-core baseline deferral + a maintainer-paste snippet for after `bash bin/prep-push.sh` lands. Lists acceptance criteria (zero WCAG 2.1 AA violation on `/`, `/donate`, `/contact`).
+
+### Maintainer gate
+
+- Run `bash bin/prep-push.sh` to fast-forward `origin main` to the Pass 13 commit.
+- After landing: run `pnpm install && pnpm build && pnpm preview &` then `bash scripts/axe-core.sh` to materialise the a11y baseline doc.
+
+### Deferred
+
+- **Bucket B #10 axe-core baseline** - the script exists; the live-preview + Chrome env is a post-paste maintainer run.

@@ -74,6 +74,31 @@ never auto-bundles overrides.
 
 ## Why some ops are NOT denylisted
 
+## Sub-agent (maker/checker split)
+
+The loop uses a maker/checker pattern: the orchestrating agent (Buffy) writes the
+plan + invokes  for parallel work, and a separate 
+sub-agent inspects each non-trivial change before the orchestrator commits. This split
+isolates the (often stylized) intent of the maker from the verifiability of the
+checker.
+
+**Cross-refs**:  is the parent tool that fans out to specialist agents
+(basher, file-picker, code-searcher, etc.);  is the dedicated
+sub-agent returned for each non-trivial code change. Both are documented in
+ §Sub-agents.
+
+**Example workflow**:
+1. Orchestrator writes  updates + writes the next-pass script.
+2. Orchestrator spawns basher (runs the script) + code-reviewer (reads both
+   the script + STATE.md) IN PARALLEL.
+3. Orchestrator receives feedback + applies reviewer fixes + commits.
+4. Orchestrator overwrites STATE.md  and exits.
+
+**Constraint**: the maker never runs , , ,
+or . These are documented as HUMAN-ONLY gates in
+. The checker (reviewer) flags any structural drift but does not
+modify state.
+
 - `pnpm install` (and `pnpm add`) — allowed; package changes are
   reviewed per the project conventions.
 - `loop-audit`, `loop-sync`, `loop-cost`, `loop-init --dry-run` —

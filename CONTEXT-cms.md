@@ -42,7 +42,10 @@ Issues raised against this context follow the `triage` skill's label vocabulary 
 Two YAML grammar traps recur across content authors. Both abort the entire Tina seed pass at `pnpm build` time.
 
 - **Inside `'…'`-single-quoted scalars, apostrophes must be `''`.**
-  A single-quoted YAML string spans from `'` to the next `'`; an unescaped `'` terminates the string mid-content and everything after parses as YAML, which fails. Example: ``'They didn''t ask for ID'``. Double-quoted (`"…"`) and unquoted scalars have no restriction.
+  A single-quoted YAML string spans from `'` to the next `'`; an unescaped `'` terminates the string mid-content and everything after parses as YAML, which fails.
+  - ❌ ``'They didn't ask for ID'`` — the apostrophe in `didn't` terminates the string early.
+  - ✅ ``'They didn''t ask for ID'`` — the doubled `''` is the canonical YAML escape.
+  Double-quoted (`"…"`) and unquoted scalars have no restriction.
 - **Inside `body: |` / `text: |` literal blocks, body content must stay at the block's indent unit.**
   A line at column 0 terminates the pipe-style block early, and any trailing paragraph at lower indentation silently breaks the frontmatter. Match the block's standard indent (6 spaces under `- body: |`) and put a blank line before any `## H2`-style heading inside it.
 

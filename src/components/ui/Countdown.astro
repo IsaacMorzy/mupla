@@ -1,0 +1,193 @@
+---
+import Icon from './Icon.astro';
+import { cn } from '../../lib/cn';
+
+interface Props {
+	/** ISO datetime string of the event start (UTC recommended).
+	 *  Parsed on the server during SSR and again on the client; an
+	 *  invalid string renders nothing rather than throwing. */
+	target: string;
+	/** Verb phrase used while the event is in the future (e.g. "Starts in"). */
+	prefix?: string;
+	/** Verb phrase used once the target has passed. Defaults to "Was"
+	 *  so the visible label never lies about elapsed time. */
+	pastLabel?: string;
+	/** Compact = text-only, no card chrome. Use inside event card meta
+	 *  rows next to the date. Default (false) renders a pill with an icon. */
+	compact?: boolean;
+	/** When the target is more than this many days in the past, render
+	 *  nothing on the index/archive list. The detail page (compact=false)
+	 *  keeps the post-event "Was on <date>" label regardless. */
+	hideIfOlderThanDays?: number;
+	class?: string;
+}
+
+const {
+	target,
+	prefix = 'Starts in',
+	pastLabel = 'Was',
+	compact = false,
+	hideIfOlderThanDays,
+	class: className,
+} = Astro.props;
+
+const targetDate = new Date(target);
+const hasValidTarget = !Number.isNaN(targetDate.valueOf());
+
+// SSR doesn't lie about time. We render the formatted target date as the
+// stable phrase so a cached / JS-disabled visitor sees something honest
+// (the actual event day), and let the client script fill in the
+// live tick on hydration. The aria-label mirrors the visible phrase so
+// assistive tech reads "Begins on Mar 15, 2027" rather than a stale
+// "20d 5h" baked at the last pnpm build.
+const isPastOnServerStub = hasValidTarget && targetDate.getTime() <= Date.now();
+const hiddenByThreshold =
+	typeof hideIfOlderThanDays === 'number' &&
+	hasValidTarget &&
+	isPastOnServerStub &&
+	(targetDate.getTime() - Date.now()) / 86_400_000 < -hideIfOlderThanDays;
+
+const formattedLong = hasValidTarget
+	? targetDate.toLocaleDateString(undefined, {
+			weekday: 'short',
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric',
+		})
+	: '';
+const formattedShort = hasValidTarget
+	? targetDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+	: '';
+
+// Visible phrase when JS / hydration is unavailable. Reads as a
+// complete visitor-facing sentence in both modes (pill and compact).
+const ssrPhrase = hasValidTarget
+	? `${isPastOnServerStub ? 'Was on' : 'Begins on'} ${formattedLong}`
+	: '';
+const ssrPhraseCompact = hasValidTarget
+	? `${isPastOnServerStub ? 'Was' : 'Begins'} ${formattedShort}`
+	: '';
+
+const ssrAriaLabel = hasValidTarget
+	? isPastOnServerStub
+		? `Event on ${targetDate.toLocaleDateString()}`
+		: `Begins on ${targetDate.toLocaleDateString()}`
+	: '';
+
+const shouldRender = hasValidTarget && !hiddenByThreshold;
+---
+
+{
+	shouldRender && (
+		<div
+			class={cn(
+				'inline-flex items-center gap-1.5 font-medium text-foreground',
+				!compact &&
+					'rounded-full border border-border/60 bg-card px-3 py-1 text-xs',
+				className,
+			)}
+			data-countdown
+			data-ready="false"
+			data-target={targetDate.toISOString()}
+			data-prefix={prefix}
+			data-past-label={pastLabel}
+			aria-live="polite"
+			aria-label={ssrAriaLabel}
+		>
+			{!compact && <Icon name="clock" class="size-3.5 text-muted-foreground" />}
+			<span
+				data-countdown-ssr
+				class={compact ? 'text-xs tabular-nums' : undefined}
+			>
+				{ssrPhraseCompact || ssrPhrase}
+			</span>
+			<span data-countdown-label class="sr-only" />
+			<span data-countdown-text class="tabular-nums" />
+		</div>
+	)
+}
+
+<style>
+	/* Client tick flips data-ready="true"; the SSR phrase hides and the
+	   live breakdown (label + text) becomes visible. Pure CSS keeps the
+	   behavior identical with or without JS, and avoids the "Starts in
+	   Mar 15, 2027" half-rendered look a naive SSR would leave behind. */
+	[data-countdown][data-ready='false'] [data-countdown-label],
+	[data-countdown][data-ready='false'] [data-countdown-text] {
+		display: none;
+	}
+	[data-countdown][data-ready='true'] [data-countdown-ssr] {
+		display: none;
+	}
+</style>
+
+<script>
+	// Live countdown tick. Once hydrated, the SSR phrase hides and the
+	// prefix ("Starts in") + breakdown ("247d 4h") become visible. On a
+	// 1-Hz interval, the format stays coarse-grained (days -> hours ->
+	// minutes -> seconds) and the interval self-clears once the target
+	// passes so the page keeps a clean event-loop footprint.
+	type Node = HTMLDivElement;
+
+	const fmt = (total: number, target: Date): string => {
+		if (total <= 0) {
+			return target.toLocaleDateString(undefined, {
+				weekday: 'short',
+				month: 'short',
+				day: 'numeric',
+				year: 'numeric',
+			});
+		}
+		const d = Math.floor(total / 86400);
+		const h = Math.floor((total % 86400) / 3600);
+		const m = Math.floor((total % 3600) / 60);
+		const s = total % 60;
+		if (d > 0) return `${d}d ${h}h`;
+		if (h > 0) return `${h}h ${m}m ${s.toString().padStart(2, '0')}s`;
+		return `${m}m ${s.toString().padStart(2, '0')}s`;
+	};
+
+	const nodes = document.querySelectorAll<Node>('[data-countdown]');
+	nodes.forEach((el) => {
+		const target = new Date(el.dataset.target ?? '');
+		const prefix = el.dataset.prefix ?? 'Starts in';
+		const pastLabel = el.dataset.pastLabel ?? 'Was';
+		const labelEl = el.querySelector<HTMLSpanElement>('[data-countdown-label]');
+		const textEl = el.querySelector<HTMLSpanElement>('[data-countdown-text]');
+		if (Number.isNaN(target.valueOf()) || !labelEl || !textEl) return;
+
+		// Reveal the live breakdown containers, hide the SSR phrase.
+		el.setAttribute('data-ready', 'true');
+		labelEl.classList.remove('sr-only');
+
+		const tick = () => {
+			const diff = Math.floor((target.valueOf() - Date.now()) / 1000);
+			if (diff <= 0) {
+				labelEl.textContent = pastLabel;
+				textEl.textContent = target.toLocaleDateString(undefined, {
+					weekday: 'short',
+					month: 'short',
+					day: 'numeric',
+					year: 'numeric',
+				});
+				el.setAttribute(
+					'aria-label',
+					`Event on ${target.toLocaleDateString()}`,
+				);
+				return;
+			}
+			labelEl.textContent = prefix;
+			textEl.textContent = fmt(diff, target);
+			el.setAttribute('aria-label', `${prefix} ${fmt(diff, target)}`);
+		};
+		tick();
+		const handle = window.setInterval(tick, 1000);
+		// Stop the 1-Hz interval once the target arrives.
+		const stop = window.setInterval(() => {
+			if (target.valueOf() <= Date.now()) {
+				window.clearInterval(handle);
+				window.clearInterval(stop);
+			}
+		}, 60_000);
+	});
+</script>

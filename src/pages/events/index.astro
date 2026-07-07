@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Button from '../../components/ui/Button.astro';
 import Badge from '../../components/ui/Badge.astro';
+import Countdown from '../../components/ui/Countdown.astro';
 import Icon from '../../components/ui/Icon.astro';
 import { descriptionPreview, getConfig, listEvents } from '../../lib/data';
 
@@ -19,6 +20,25 @@ const groupKey = (iso: string) => {
 	const d = new Date(iso);
 	if (Number.isNaN(d.valueOf())) return 'TBA';
 	return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long' });
+};
+
+// Past-tense relative time ("3 months ago", "yesterday", "last week") for the
+// archive list. `Intl.RelativeTimeFormat` with `numeric: 'auto'` uses locale
+// phrasing for the special buckets (yesterday / last week / last month / last
+// year) and falls back to numeric for everything else. Buckets are sized so
+// "today" never shows up in the past list (it can't — past is filtered by
+// `date < now`) and so the smallest meaningful tag is "1 day ago" /
+// "yesterday".
+const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+const relativePast = (iso: string): string => {
+	const event = new Date(iso);
+	if (Number.isNaN(event.valueOf())) return '';
+	const days = Math.round((now.valueOf() - event.valueOf()) / (1000 * 60 * 60 * 24));
+	if (days <= 0) return 'today';
+	if (days < 7) return rtf.format(-days, 'day');
+	if (days < 30) return rtf.format(-Math.floor(days / 7), 'week');
+	if (days < 365) return rtf.format(-Math.floor(days / 30), 'month');
+	return rtf.format(-Math.floor(days / 365), 'year');
 };
 const grouped = upcoming.reduce<Record<string, CmsEvent[]>>((acc, e) => {
 	const k = groupKey(e.date as string);
@@ -89,20 +109,21 @@ const restGrouped = groupedEntries
 							<h2 class="text-balance text-2xl font-semibold leading-tight transition-colors group-hover:text-primary md:text-3xl">
 								{featured.title}
 							</h2>
-							<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-								<time datetime={featured.date} class="font-medium text-foreground">
-									<FormattedDate date={new Date(featured.date)} />
-								</time>
-								{featured.location && (
-									<span class="flex items-center gap-1">
-										<Icon name="map-pin" class="size-3.5" />
-										{featured.location}
-									</span>
-								)}
-								{featured.cost && (
-									<Badge variant="outline" class="font-normal">{featured.cost}</Badge>
-								)}
-							</div>
+						<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+							<time datetime={featured.date} class="font-medium text-foreground">
+								<FormattedDate date={new Date(featured.date)} />
+							</time>
+							<Countdown compact target={featured.date} />
+							{featured.location && (
+								<span class="flex items-center gap-1">
+									<Icon name="map-pin" class="size-3.5" />
+									{featured.location}
+								</span>
+							)}
+							{featured.cost && (
+								<Badge variant="outline" class="font-normal">{featured.cost}</Badge>
+							)}
+						</div>
 						{featured.description && (
 							<p class="line-clamp-2 text-base text-muted-foreground">{descriptionPreview(featured.description)}</p>
 						)}
@@ -149,6 +170,7 @@ const restGrouped = groupedEntries
 										<time datetime={event.date} class="font-medium text-foreground">
 											<FormattedDate date={new Date(event.date)} />
 										</time>
+										<Countdown compact target={event.date} hideIfOlderThanDays={30} />
 										{event.location && (
 											<span class="flex items-center gap-1">
 												<Icon name="map-pin" class="size-3.5" />
@@ -203,6 +225,7 @@ const restGrouped = groupedEntries
 								</h3>
 									<p class="mt-1 text-sm text-muted-foreground">
 										<FormattedDate date={new Date(event.date)} />
+										<span class="ml-1 text-muted-foreground/80" title={new Date(event.date).toLocaleDateString()}>· {relativePast(event.date)}</span>
 										{event.location && ` · ${event.location}`}
 									</p>
 								</div>

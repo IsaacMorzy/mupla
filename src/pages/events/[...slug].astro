@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Button from '../../components/ui/Button.astro';
 import Badge from '../../components/ui/Badge.astro';
+import Countdown from '../../components/ui/Countdown.astro';
 import Icon from '../../components/ui/Icon.astro';
 import { descriptionParagraphs, descriptionPreview, getConfig, getEvent, listEvents } from '../../lib/data';
 
@@ -53,6 +54,7 @@ const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${en
 						)}
 					</time>
 				)}
+				{eventDate && <Countdown target={data.date} />}
 				{data.location && (
 					<span class="flex items-center gap-1">
 						<Icon name="map-pin" class="size-3.5" />

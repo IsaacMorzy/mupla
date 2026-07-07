@@ -1726,3 +1726,73 @@ GOOD — 2 reviewer flags closed; Countdown SSR fallback is real (not a rename);
 - Maintainer categorises GH tracking issue #46 (`needs-triage`) into `ready-for-agent` / `wontfix` / `needs-info` after eyeballing the rolled-up Pass 14 + 14.1 + 14.2 diff.
 - After paste lands: `.github/workflows/daily-triage.yml` cron (Pass 11) continues to fire nightly; `bash scripts/axe-core.sh` (Pass 11 Bucket B #10) remains the next high-ROI T1 deferred per Pass 13 because of the agent env's missing Chrome.
 - Year-conditional in `ssrPhraseCompact` (reviewer item C): deferred to Pass 15 backlog — the events index's surrounding `<time>` already carries the full date in the same meta row, so dropping the year from the compact phrase is mild drift, not a regression.
+---
+
+## Pass 15 — 2026-07-07 (page-budget.sh audit script + Pages collection sweep)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | `daily-triage` + `matt-pocock-skill` (Bucket C #18 T2 page-hygiene audit) |
+| Started  | 2026-07-07                                                     |
+| Status   | COMPLETE — scripts/page-budget.sh shipped + 10/10 Pages-collection files PASS at threshold 6; closes Bucket C #18 from STATE.md `## Next pass (Pass 15)` bullet 2 |
+| Score    | +0 (audit-class script per STATE.md `## Onward contract` bullet 4 lives in scripts/, not bin/; non-scoring) |
+| Tokens   | ~25k (in Pass 15 budget per STATE.md)                          |
+
+### Why this entry exists
+
+The user picked "Pass 15: page-budget audit" as the next-action after the Pass 14 / 14.1 / 14.2 chain concluded (commit 9c3820a shipped to local main; awaiting maintainer paste of `bash bin/prep-push.sh`). Bucket C #18 T2 from STATE.md `## Next pass (Pass 15)` bullet 2 was the chosen piece of work.
+
+### What shipped
+
+- `scripts/page-budget.sh` (NEW, ~120 lines) — bash 3.x portable; counts `_template:` blocks per MDX in `src/content/page/`; warns if any page falls below the per-run threshold (default 6). 3-tier exit code: 0 = clean PASS, 1 = WARN, 2 = EX_USAGE. Mirrors the `loop-audit-local.sh` `set +e` + score-style pattern.
+- `docs/agents/page-budget-2026-07-07.md` (NEW brief) — companion to writing-pass-2026-07-07*.md briefs; documents the audit result, the script invocation surface, the reviewer-flag closure history, and the verifier bash output.
+
+### Audit result (canonical run: threshold 6)
+
+| page | sections | threshold | status |
+| ---- | -------: | --------: | :----- |
+| src/content/page/about.mdx | 6 | 6 | PASS |
+| src/content/page/contact.mdx | 7 | 6 | PASS |
+| src/content/page/donate.mdx | 8 | 6 | PASS |
+| src/content/page/faq.mdx | 7 | 6 | PASS |
+| src/content/page/get-involved.mdx | 7 | 6 | PASS |
+| src/content/page/home.mdx | 7 | 6 | PASS |
+| src/content/page/privacy.mdx | 8 | 6 | PASS |
+| src/content/page/programs.mdx | 6 | 6 | PASS |
+| src/content/page/team.mdx | 7 | 6 | PASS |
+| src/content/page/terms.mdx | 8 | 6 | PASS |
+
+10/10 pages PASS. Mean 7.1, max 8 (donate, privacy, terms — the legal/transactional pages with the most content sections), min 6 (about, programs). Threshold 6 floors are well-supported across the surface.
+
+### Reviewer-flag closure history (4 iterations)
+
+1. **Docstring/signature mismatch + bash 4+ mapfile**: `THRESHOLD="${1:-6}"`, ROOT hardcoded to `.`; `mapfile` replaced with `while IFS= read -r line; do ... done < <(find ... | sort)`. macOS bash 3.2 compat restored.
+2. **Hardcoded ROOT lost loop-audit-local.sh convention**: dual-mode root/threshold detection with explicit fail-loud on ambiguous args. `bash scripts/page-budget.sh [threshold | /path] [threshold]` is the canonical invocation.
+3. **Silent-fallback on typo'd path**: case-statement partition (`"" / *[!0-9]* / *`) that explicitly errors arg-as-neither-and-exits-2 (EX_USAGE) when the path doesn't exist.
+4. **Root-cause stderr noise `printf: --: invalid option` at line 106**: bash's printf builtin was mis-parsing the format string `'-------\n'` (the Summary separator line) as option-args. Defensive `printf -- 'fmt'` prefix applied uniformly across every literal printf call. Plus symmetric `exit 2` for the wrong-cwd branch (was silent `exit 0`), `mean=0.0` for type-consistency with the populated case, and the latent `n_pages=0 → WARN + exit 1` guard so an empty pages dir doesn't silently PASS.
+
+Final reviewer pass confirmed A-F all clean: A/E = blocker-turned-fix, B/D/C = non-issues, F = future-follow-up `--allow-empty` flag deliberately unsuppressed for Pass 15's regression-detection goal.
+
+### Verifiers (canonical, post-fix)
+
+```bash
+bash -n scripts/page-budget.sh                  # -> exit 0 (no syntax errors)
+bash scripts/page-budget.sh /home/.../mupla-front 6   # -> exit 0, all PASS, 10/10 page rows
+bash scripts/page-budget.sh /home/.../mupla-front 8   # -> exit 1, 7/10 WARN at stricter threshold
+bash scripts/page-budget.sh 6                    # (from /tmp) -> exit 2 with fail-loud hint
+bash scripts/page-budget.sh /nonexistent/path 6  # -> exit 2 with arg-incompatibility error
+```
+
+Stderr invariant: **zero** `printf: --: invalid option` lines anywhere in steps 1-4 of the verifier sequence. Steps 5-6 stderr carries only the fail-loud messages from the case-statement and the pages-dir guard — both intended diagnostic surface.
+
+### Self-grade
+
+GOOD — Bucket C #18 T2 work fully shipped. 4 reviewer flags closed over 4 iterations; the script is now bash 3.x portable, fail-loud on usage errors, and won't silently PASS when the pages dir is empty or the wrong-cwd. Typecheck (`bash -n`) clean; canonical-run exit 0 with all 10 pages PASS at threshold 6.
+
+### Open gates for Pass 16
+
+- Maintainer pastes `bash bin/prep-push.sh` (HUMAN-ONLY per `docs/safety.md`) from a creds-loaded TTY to fast-forward `origin/main` to the local Pass 14+14.1+14.2+15 commit chain and trigger Vercel auto-deploy. Once the build clears, every Pass 14 refactored page + the re-paired tier names + the new events countdown + the page-budget.sh audit are visible at https://mupla.org.
+- Maintainer categorises GH tracking issue #46 (`needs-triage`) into `ready-for-agent` / `wontfix` / `needs-info` after eyeballing the rolled-up Pass 14 + 14.1 + 14.2 + 15 diff on the loop branch.
+- Highest-ROI Pass 16 candidate left in the bucket: Bucket C #16 (contact-block rewire, T1, ~20k tokens) — replace the `[phone-add-in-tina-admin]` placeholder on `contact.mdx` + `faq.mdx` with real Tina fields wired through `tina/collections/global-config.ts`.
+- Backlog (non-T1): `.github/workflows/page-budget.yml` to cron page-budget.sh nightly + write to docs/agents/; `--allow-empty` flag for the n_pages=0 → WARN branch.

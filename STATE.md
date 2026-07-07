@@ -5,7 +5,7 @@
 - **Project**: mupla-front (Astro + TinaCMS + Tailwind; Vercel deploy; Matt Pocock skills)
 - **Pattern**: matt-pocock-skill + loop-engineering (Passes 1-12 closed)
 - **Loop readiness score**: 95 / 100 (L3 - unattended loop safe). Held flat from Pass 11 since Pass 12 ops don't add new scoring gates.
-- **Last updated**: pass 14.2 - 2026-07-07 (Pass 14.1 review-flag closures: tier-name drift in donate.mdx (Companion -> Supporter) + Countdown SSR-stable label rewrite + compact-mode JS-disabled fix; 2 reviewer flags closed)
+- **Last updated**: pass 15 - 2026-07-07 (Bucket C #18 T2 page-budget.sh audit script: 10/10 pages PASS at threshold 6; bash 3.x portable; 3-tier exit code (0/1/2); closes 4 reviewer flags over 4 iterations; matched loop-audit-local.sh ROOT/threshold convention)
 - **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 30 issues attached in Backlog).
 - **Active GH issues snapshot**: docs/agents/gh-triage-2026-07-06-pass-12.md (re-runnable).
 - **Promoted T1 ticket**: #10 (bin/gh-create-issues.sh ran idempotently; T1 promote via gh issue edit --add-label ready-for-agent, allowed per docs/safety.md).
@@ -30,7 +30,7 @@ In-band drift events the agent caught and recovered (preserved verbatim from Pas
 
 ## Predecessor chain
 
-1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2 / 13.4 / 13.5 / 13.6 / 13.7 / 13.8 / 13.9 / 13.8 / 13.9 / 14 / 14.1 / 14.2
+1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2 / 13.4 / 13.5 / 13.6 / 13.7 / 13.8 / 13.9 / 13.8 / 13.9 / 14 / 14.1 / 14.2 / 15
 
 ( suffix = corrective amendment inside the same integer pass.)
 

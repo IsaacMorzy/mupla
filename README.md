@@ -54,3 +54,21 @@ Set `SITE_URL` to your production URL — it feeds the sitemap, RSS, and OpenGra
 ## Want to learn more?
 
 Read the [TinaCMS documentation](https://tina.io/docs) and the [Astro documentation](https://docs.astro.build), or come and say hello in the [TinaCMS Discord server](https://discord.gg/cG2UNREu).
+
+## Loop engineering orientation
+
+This repo is maintained under a `daily-triage` loop lifted from the [loop-engineering](https://github.com/cobusgreyling/loop-engineering) methodology (matrix of primitives, phased L1 → L2 → L3 readiness, machine-readable pattern registry). For every PR or issue, the loop runs read-only reporting and surfaces human-pasted commands; nothing auto-merges.
+
+| Slot | Value |
+| --- | --- |
+| Loop pattern | `daily-triage` (1 pass/day, L2, assisted fixes land) |
+| Loop readiness (current) | 80 / 100 (L2). See `docs/agents/loop-readiness-2026-07-06.md` and `bash scripts/loop-audit-local.sh` |
+| Pattern registry | `patterns/registry.yaml` (7 patterns; 1 active, 6 catalogued for the future) |
+| Cross-walk to loop-engineering primitives | [`loop-design-checklist.md`](./loop-design-checklist.md) |
+| Local-readiness audit | `bash scripts/loop-audit-local.sh` |
+| Active pattern cadence | `LOOP.md` §"Pattern: daily-triage" |
+| Memory / state | `STATE.md` (current pass; reset per pass) + `loop-run-log.md` (append-only history) |
+| Skill that gates followup suggestions | `~/.agents/skills/prompt-engineering/scripts/verify-card.sh` |
+| matt-pocock skill surface wired into this repo | see `AGENTS.md` §"Agent skills → matt-pocock skills" |
+
+For details on what each pass changes, see `loop-run-log.md` (one entry per pass) and the per-pass audit briefs under `docs/agents/` (e.g. `audit-content-2026-07-06.md`, `audit-design-2026-07-06.md`, `loop-readiness-2026-07-06.md`).

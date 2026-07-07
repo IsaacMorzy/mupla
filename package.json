@@ -7,8 +7,8 @@
   },
   "scripts": {
     "dev": "NODE_OPTIONS='--max-old-space-size=3072' tinacms dev -c \"astro dev\"",
-    "build": "NODE_OPTIONS='--max-old-space-size=3072' tinacms build --content=local -c \"astro build\"",
-    "build:local": "NODE_OPTIONS='--max-old-space-size=3072' tinacms build --local --skip-cloud-checks -c \"astro build\"",
+    "build": "NODE_OPTIONS='--max-old-space-size=3072' tinacms build --content=local && NODE_OPTIONS='--max-old-space-size=3072' astro build",
+    "build:local": "NODE_OPTIONS='--max-old-space-size=3072' tinacms build --local --skip-cloud-checks && NODE_OPTIONS='--max-old-space-size=3072' astro build",
     "build:search": "NODE_OPTIONS='--max-old-space-size=3072' tinacms search-index",
     "preview": "astro preview",
     "astro": "astro"
@@ -37,6 +37,8 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@tinacms/cli": "^2.4.4",
+    "@tsconfig/node18": "^18.2.6",
+    "@tsconfig/node22": "^22.0.5",
     "@types/node": "^25.9.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

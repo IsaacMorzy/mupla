@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1500">
+<title>mupla-front — Twitter/X Header</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1500px; height: 500px; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    background:
+      radial-gradient(120% 80% at 10% 20%, #6a5cff 0%, transparent 40%),
+      radial-gradient(90% 70% at 90% 60%, #2f27cd 0%, transparent 50%),
+      linear-gradient(120deg, #0b0d22 0%, #18184f 100%);
+    color: #ffffff;
+    overflow: hidden;
+    position: relative;
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 70% at center, black 30%, transparent 70%);
+  }
+  .glass {
+    position: absolute;
+    left: 90px; top: 50%; transform: translateY(-50%);
+    width: 780px; height: 340px;
+    background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 28px;
+    backdrop-filter: blur(18px);
+    box-shadow: 0 30px 80px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.15);
+    padding: 56px 64px;
+  }
+  .eyebrow {
+    font-size: 13px; letter-spacing: .22em; text-transform: uppercase;
+    color: #a8b4ff; opacity: .9;
+  }
+  h1 {
+    margin-top: 18px;
+    font-size: 86px; line-height: 1.05; font-weight: 800; letter-spacing: -.03em;
+    background: linear-gradient(180deg,#ffffff 30%,#c7cbf0 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  p {
+    margin-top: 20px;
+    font-size: 24px; line-height: 1.35; color: #d5d8f5;
+    max-width: 660px; font-weight: 400;
+  }
+  .accent {
+    position: absolute;
+    right: 90px; top: 50%; transform: translateY(-50%);
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, #7aa3ff 0%, #5b4bff 40%, transparent 70%);
+    filter: blur(40px);
+    opacity: .25;
+  }
+  .cta {
+    display: inline-block; margin-top: 22px;
+    padding: 14px 26px; border-radius: 999px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.25);
+    color: white; font-weight: 600; font-size: 16px; letter-spacing: .02em;
+  }
+  .wordmark {
+    position: absolute; right: 90px; bottom: 34px;
+    font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: #a9b8ff;
+  }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="accent"></div>
+  <div class="glass">
+    <div class="eyebrow">Frontend Studio for Teams</div>
+    <h1>mupla-front</h1>
+    <p>From design mockup to production frontend in minutes. Review, version, and ship without the translation layer.</p>
+    <div class="cta">See how it works →</div>
+  </div>
+  <div class="wordmark">by fluone</div>
+</body>
+</html>

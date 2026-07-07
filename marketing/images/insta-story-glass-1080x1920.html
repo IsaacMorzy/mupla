@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<title>mupla-front — Instagram Story</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    background:
+      radial-gradient(110% 70% at 0% 10%, #7c6bff 0%, transparent 42%),
+      radial-gradient(90% 60% at 100% 90%, #3b30d0 0%, transparent 44%),
+      linear-gradient(160deg, #090a1f 0%, #18184f 100%);
+    color: #ffffff; overflow: hidden; position: relative;
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 38%, black 25%, transparent 70%);
+  }
+  .glass {
+    position: absolute; left: 80px; top: 50%; transform: translateY(-50%);
+    width: 920px; height: 1700px;
+    background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 40px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 60px 140px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.14);
+    padding: 120px 100px;
+    display: flex; flex-direction: column; gap: 28px;
+  }
+  .eyebrow { font-size: 18px; letter-spacing: .28em; text-transform: uppercase; color: #b7c3ff; }
+  h1 {
+    font-size: 150px; line-height: 1.05; font-weight: 800; letter-spacing: -.04em;
+    background: linear-gradient(180deg,#ffffff 30%,#d1d5f8 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  p {
+    font-size: 48px; line-height: 1.35; color: #dbe0ff; max-width: 760px; font-weight: 400;
+  }
+  .cta {
+    display: inline-block; margin-top: 40px; padding: 22px 34px; border-radius: 999px;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.24);
+    color: white; font-weight: 700; font-size: 24px; width: max-content;
+  }
+  .wordmark { position: absolute; right: 80px; bottom: 140px; font-size: 16px; letter-spacing: .18em; text-transform: uppercase; color: #b7c9ff; }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="glass">
+    <div class="eyebrow">Frontend Studio for Teams</div>
+    <h1>mupla-front</h1>
+    <p>From design mockup to production frontend in minutes. The missing layer between Figma and your repo.</p>
+    <div class="cta">Try it free →</div>
+  </div>
+  <div class="wordmark">by fluone</div>
+</body>
+</html>

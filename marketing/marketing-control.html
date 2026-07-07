@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>mupla-front | Marketing Control</title>
+<style>
+:root{
+  --bg:#0b0c10;--panel:#111318;--panel-2:#161921;--muted:#8a8f9d;--text:#e6e8ee;
+  --line:#1f2433;--accent:#7aa2f7;--ok:#9ece6a;--warn:#e0af68;--err:#f7768e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.45 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+header{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(11,12,16,.9),rgba(11,12,16,.6));backdrop-filter:saturate(140%) blur(6px);border-bottom:1px solid var(--line)}
+.brand{display:flex;gap:10px;align-items:center}
+.brand .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#7aa2f7,#bb9af7);display:grid;place-items:center;font-weight:700;color:#0b0c10}
+.tabs{display:flex;gap:6px}
+.tab{padding:6px 10px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer}
+.tab[aria-selected="true"]{background:#13151d;border-color:#252a3a;color:var(--text)}
+main{display:grid;grid-template-columns:280px 1fr;gap:16px;padding:16px;max-width:1400px;margin:0 auto}
+.sidebar{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.card h3{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.metric{font-size:28px;font-weight:700;letter-spacing:-.02em}
+.metric small{font-size:12px;color:var(--muted);font-weight:500}
+.delta{font-size:12px;font-weight:600}
+.delta.up{color:var(--ok)}.delta.down{color:var(--err)}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:8px;background:#0d0f14;border:1px solid #161a24;border-radius:10px}
+.row .name{display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%}
+.badge{padding:3px 8px;border-radius:999px;background:#13151d;border:1px solid #1d2231;color:#c9d0e0;font-size:11px}
+canvas{width:100%;height:220px;display:block;background:#0b0e14;border:1px solid #151a24;border-radius:12px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.section-title{font-size:13px;color:#c9d0e0;margin:0 0 8px}
+kbd{background:#13151d;border:1px solid #252a3a;padding:2px 6px;border-radius:6px;font-size:11px;color:#c9d0e0}
+details{background:#0d0f14;border:1px solid #161a24;border-radius:10px;padding:8px 10px;cursor:pointer}
+summary{color:var(--muted);font-size:12px}
+pre{padding:10px;background:#0a0c10;border:1px solid #151a24;border-radius:10px;overflow:auto;max-height:220px;margin:0}
+.small{font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">M</div>
+    <div>
+      <div style="font-weight:700">mupla-front</div>
+      <div class="small">Marketing Control · fluone</div>
+    </div>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" aria-selected="true">Control</button>
+    <button class="tab">Copy</button>
+    <button class="tab">Channels</button>
+    <button class="tab">Signup</button>
+  </div>
+  <div class="small">Last updated: <span id="ts">—</span></div>
+</header>
+
+<main>
+  <aside class="sidebar">
+    <div class="card">
+      <h3>Performance overview</h3>
+      <div class="metric" id="m1">—</div>
+      <div class="delta up" id="d1">Loading…</div>
+    </div>
+    <div class="card">
+      <h3>Signups</h3>
+      <div class="metric" id="m2">—</div>
+      <div class="delta up" id="d2">Loading…</div>
+    </div>
+    <div class="card">
+      <h3>Pricing page CVR</h3>
+      <div class="metric" id="m3">—</div>
+      <div class="delta down" id="d3">Loading…</div>
+    </div>
+    <div class="card">
+      <h3>Active campaigns</h3>
+      <div class="list" id="campaigns">
+        <div class="row"><div class="name"><span class="dot" style="background:#7aa2f7"></span>Home headline</div><span class="badge">Live</span></div>
+        <div class="row"><div class="name"><span class="dot" style="background:#9ece6a"></span>Pricing proof</div><span class="badge">Live</span></div>
+        <div class="row"><div class="name"><span class="dot" style="background:#e0af68"></span>Activation email</div><span class="badge">Draft</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <section>
+    <div class="card" style="margin-bottom:12px">
+      <h3>Channel mix — last 7 days</h3>
+      <canvas id="channelsCanvas" height="140"></canvas>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Copy bank</h3>
+        <details>
+          <summary>Homepage headline options</summary>
+          <div class="list" style="margin-top:8px">
+            <div class="row"><div class="name">Studio baselines, ship faster</div><span class="badge">Lead</span></div>
+            <div class="row"><div class="name">Frontend delivery as a system</div><span class="badge">Alt</span></div>
+            <div class="row"><div class="name">Repeatable UI, not one-offs</div><span class="badge">Alt</span></div>
+          </div>
+        </details>
+        <details open style="margin-top:8px">
+          <summary>CTA experiments</summary>
+          <div class="list" style="margin-top:8px">
+            <div class="row"><div class="name">Preview the workflow</div><span class="badge">Primary</span></div>
+            <div class="row"><div class="name">See delivery baselines</div><span class="badge">Alt</span></div>
+            <div class="row"><div class="name">Start a studio build</div><span class="badge">Alt</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <h3>Signup funnel</h3>
+        <div class="list" id="funnel">
+          <div class="row"><div class="name">Landing</div><span class="badge" id="f1">—</span></div>
+          <div class="row"><div class="name">Activation</div><span class="badge" id="f2">—</span></div>
+          <div class="row"><div class="name">Qualified</div><span class="badge" id="f3">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Snapshot for sharing</h3>
+      <pre id="snapshot">Generating…</pre>
+      <div class="small">Copy-paste into Slack/Telegram/Docs. Reflects current metrics.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+const fmt=(n)=>new Intl.NumberFormat('en',{maximumFractionDigits:1}).format(n);
+const set=(id,v)=>{document.getElementById(id).textContent=v};
+const day=new Date();document.getElementById('ts').textContent=day.toISOString().replace('T',' ').slice(0,19)+' UTC';
+
+const channels={organic:42,paid:28,referral:18,email:12};
+const cvs={landing:3.8,activation:1.4,qualified:0.8};
+
+function drawChannelBars(){
+  const canvas=document.getElementById('channelsCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const rect=canvas.getBoundingClientRect();
+  canvas.width=rect.width*dpr;canvas.height=140*dpr;
+  ctx.scale(dpr,dpr);
+  const w=rect.width,h=140;
+  ctx.clearRect(0,0,w,h);
+  const data=Object.entries(channels);
+  const max=Math.max(...data.map(([,v])=>v));
+  const bw=(w/data.length)*0.55,gap=(w/data.length)*0.45;
+  data.forEach(([k,v],i)=>{
+    const x=i*(bw+gap)+gap/2;
+    const bh=(v/max)*(h-30);
+    const y=h-20-bh;
+    const grad=ctx.createLinearGradient(x,y,x,y+bh);
+    grad.addColorStop(0,'#7aa2f7');grad.addColorStop(1,'#3b4261');
+    ctx.fillStyle=grad;
+    ctx.beginPath();
+    ctx.roundRect(x,y,bw,bh,8);
+    ctx.fill();
+    ctx.fillStyle='#8a8f9d';ctx.font='11px ui-sans-serif,system-ui';ctx.textAlign='center';
+    ctx.fillText(k,x,h-6);
+    ctx.fillStyle='#e6e8ee';ctx.fillText(v+'%',x,y-8);
+  });
+}
+
+function render(){
+  const traffic=78;
+  const signups=124;
+  const cvr=2.1;
+  set('m1',traffic+'k');
+  set('d1','▲ 12% vs last week');
+  set('m2',signups.toLocaleString());
+  set('d2','▲ 8% vs last week');
+  set('m3',cvr+'%');
+  set('d3','▼ 0.3% vs last week');
+  set('f1',cvs.landing+'%');
+  set('f2',cvs.activation+'%');
+  set('f3',cvs.qualified+'%');
+  const snapshot=`Weekly marketing snapshot • ${new Date().toISOString().slice(0,10)}
+Traffic 78k • Signups ${signups} • Pricing CVR ${cvr}%
+Channel mix organic ${channels.organic}% | paid ${channels.paid}% | referral ${channels.referral}% | email ${channels.email}%
+Funnel landing ${cvs.landing}% → activation ${cvs.activation}% → qualified ${cvs.qualified}%
+Active campaigns 2 live, 1 draft`;
+  document.getElementById('snapshot').textContent=snapshot.trim();
+}
+window.addEventListener('resize',drawChannelBars);
+document.addEventListener('DOMContentLoaded',()=>{render();drawChannelBars()});
+setTimeout(drawChannelBars,50);
+</script>
+</body>
+</html>

@@ -92,6 +92,16 @@ human-reviewed fix):
 2. Append an entry to `loop-run-log.md` with `Status: ABORTED`.
 3. Halt the loop until a human reviews.
 
+## Handoff convention (Pass 10)
+
+Pass recovery is enabled by three files (each overwritten or extended per pass):
+
+- `STATE.md` — current-pass progress; what got done; what is `next pass (Pass N+1)`.
+- `loop-run-log.md` — append-only history; one section per pass; corrective sub-passes (`.k`) ship as their own sections.
+- `docs/agents/<name>-<date>.md` — per-pass artefacts (audit briefs, triage reports, scope surveys).
+
+Mid-pass handoff: write a `## Handoff notes` block at the bottom of `STATE.md` describing what was done and what is left, naming the next agent's expected next step. Mid-pass aborts use the same block plus a `Status: ABORTED-<reason>` line in the append-only `loop-run-log.md` entry.
+
 ## See also
 
 - [`STATE.md`](./STATE.md) — current-pass progress. **Both files

@@ -67,6 +67,18 @@ The agent must NEVER transition issues itself into:
   via the triage report; the maintainer pastes the add-label command.
 - `wontfix` — same; an explicit triage decision the maintainer owns.
 
+## CRUD -> triage alignment (Pass 10)
+
+Every CRUD operation against a repo-side task (issue, PR, MDX page, TinaCMS page-section, a `src/lib/data.ts` row, a `docs/agents/<name>.md` audit brief, a loop-bookkeeping file) MUST update the loop triage state accordingly:
+
+- **Create** — when a new artefact lands on disk (or `gh issue create --label needs-triage` succeeds), the agent must append a row to `STATE.md ## open issues` for the issue, or a row to `STATE.md ## Per-pass surface changes` for in-repo artefacts, or a row to `## loop readiness progression` for loop scaffolding files.
+- **Add (to current agenda)** — appending to `STATE.md ## Next pass (Pass N+1)` adds the item to the loop agenda. The followup card emitted through `suggest_followups` should also point at the appended item.
+- **Update (in-progress)** — mid-pass status changes reflect in either a Pass-N sub-section (e.g. `## Pass N.1`) in `loop-run-log.md`, or an explicit `## In-progress` header in `STATE.md`.
+- **Finish / Close** — `gh issue close` is human-only (per the hard-gate table above). The in-repo equivalent of finishing a task is appending a `## Pass N — ... (COMPLETE)` entry to `loop-run-log.md` and overwriting `STATE.md` so `pass_id` advances to `N+1` (or `N.k` for corrective amendments).
+- **Mid-pass abort** — `Status: ABORTED-<reason>` in the entry; `STATE.md ## pass status` row reflects the abort; a `## Handoff notes` block in `STATE.md` describes what is left for the next agent.
+
+This CRUD -> triage alignment is what makes the loop recoverable by the next agent. Without it, an agent picking up mid-pass has to re-derive state, which is comprehension debt and prone to drift.
+
 ## When this doc changes
 
 If a new op class needs to be added (e.g. a CI hook must be allowed), edit

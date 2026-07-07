@@ -38,6 +38,13 @@ jobs:
     name: loop audit + a11y baseline + STATE write
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Hoisted from step-level: GH Actions rejects `permissions:` at the
+    # individual-step level (Line 80, Col 9 schema parse error). Job-level
+    # override means the audit job as a whole has contents: write; only the
+    # step that actually pushes (`git push -u origin loop/daily-triage`)
+    # uses it, and branch protection controls the rest.
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -77,8 +84,6 @@ jobs:
           } > "${REPORT}" || true
 
       - name: Commit (additive only, on a feature branch; never main)
-        permissions:
-          contents: write
         run: |
           git config user.name "loop-bot"
           git config user.email "loop-bot@users.noreply.github.com"

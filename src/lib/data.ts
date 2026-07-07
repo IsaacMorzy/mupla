@@ -45,7 +45,10 @@ export async function listPages() {
 export async function listBlogs() {
 	const result = await client.queries.blogConnection();
 	return (result.data.blogConnection.edges ?? [])
-		.flatMap((edge) => (edge?.node ? [edge.node] : []))
+		.flatMap((edge) => (edge?.node ? [edge.node] : []))                // Drop build-placeholder posts (see HIDDEN_BLOG_FILENAMES) so they
+                // never surface in the public blog index, RSS, or search index. The
+                // file still exists on disk for TinaCMS's content-index reconciliation.
+                .filter((node) => !(HIDDEN_BLOG_FILENAMES as readonly string[]).includes(node._sys.filename))
 		.sort((a, b) => {
 			const ad = a.pubDate ? new Date(a.pubDate).valueOf() : 0;
 			const bd = b.pubDate ? new Date(b.pubDate).valueOf() : 0;
@@ -96,6 +99,21 @@ export type StatItem = NonNullable<NonNullable<StatsBlock['stats']>[number]>;
 export type TestimonialItem = NonNullable<NonNullable<TestimonialBlock['testimonials']>[number]>;
 export type FaqItem = NonNullable<NonNullable<FaqBlock['items']>[number]>;
 export type TeamMember = NonNullable<NonNullable<TeamBlock['members']>[number]>;
+
+/**
+ * Blog posts whose filenames appear here are excluded from every public
+ * surface — blog index, RSS, search — even though the file remains on
+ * disk. Today the only entry is a build-pipeline placeholder
+ * (`why-tinacms.mdx`) that exists solely to satisfy TinaCloud's stale
+ * per-branch content index so `tinacms build` can complete. The cloud
+ * index cannot currently be reconciled from the CLI (the `tinacms` CLI
+ * exposes no reconciliation flag; `tinacms audit` reports orphans but
+ * leaves them in place). Until the entry is removed from TinaCloud's
+ * content index via the dashboard, this filter is the lowest-cost way to
+ * keep the placeholder out of visitors' sight. Once the index has been
+ * reconciled, delete the file outright and drop the array entry.
+ */
+const HIDDEN_BLOG_FILENAMES = ['why-tinacms'] as const;
 
 /**
  * Stable string view of a post's category for comparators (related-posts etc.).

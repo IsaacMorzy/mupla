@@ -1474,3 +1474,69 @@ Pending reviewer items (deferred - low priority):
 - net ahead/behind skew acceleration: 7-behind -> 8-behind, no `git fetch`; add to next pre-push basher.
 - WIP commit MDX `template:` cross-check against `src/components/blocks/*.template.ts`: not verified post-commit; add to next pre-push basher.
 - bin/mcp-bootstrap.sh awk extractor: non-defensive to interleaved YAML keys (e.g., `prerequisite:` BEFORE `install_cmd:` silently skips); either enforce schema or fail-loud if count==0.
+
+## Pass 13.8 - 2026-07-06 (capture untracked loop scripts + 6 untracked loop docs)
+
+| Slot     | Value                                                                                               |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                                                       |
+| Pattern  | loop-engineering + WIP-capture                                                                       |
+| Status   | COMPLETE - capture 8 untracked files into git so post-prep-push future agents inherit them          |
+| Score    | +0 (no new gates; capture is housekeeping)                                                          |
+| Tokens   | ~3k (well under 200k budget)                                                                         |
+
+What shipped in commit 17d37d9:
+- scripts/loop-audit-local.sh - the in-repo loop-audit proxy that produces the 95/100 L3 headline. Was on disk but never tracked since Pass 9; capture so post-prep-push future agents inherit this file.
+- scripts/playwright-mupla.py - Playwright driver for scripts/axe-core.sh. Untracked; capture with the script that depends on it.
+- docs/agents/audit-content-2026-07-06.md - Pass 6 / Pass 8 export. On disk but untracked; now tracked.
+- docs/agents/audit-design-2026-07-06.md - Pass 7 export. Same.
+- docs/agents/loop-followup-strategy.md - Pass 5 export. Same.
+- docs/agents/loop-readiness-2026-07-06.md - Pass 9 / Pass 9.2 export. Same.
+- docs/agents/triage-report-2026-07-06-pass-12.md - Pass 12 / Pass 12.2 export. Same.
+- loop-design-checklist.md - Pass 9 cross-walk. Same.
+
+Denylist paths held out (per docs/safety.md; not staged this commit):
+- bin/__pycache__/, marketing/, vercel.json, package.json, tina/tina-lock.json, LOOP.md, README.md, docs/safety.md - NOT staged this pass; explicitly out-of-scope for agent-authored work per the Pass 13.6 carve-out.
+
+Why this pass exists:
+The post-fetch git status diagnostic (during the prior turn) revealed that 8 files critical to the loop were on disk but untracked. Without this pass, `bash bin/prep-push.sh` would NOT include them in the pushed tree, and the next agent to wake up post-push would not have scripts/loop-audit-local.sh available.
+
+Loop invariant briefly unrecorded at close: STATE.md pass_id bump DEFERRED to Pass 13.9 (this pass); loop-run-log.md ## Pass 13.8 entry DEFERRED to Pass 13.9 (this pass). Net: 1-commit lag; closure logged here.
+
+Maintainer gates (HUMAN-ONLY per docs/safety.md):
+- `bash bin/prep-push.sh` from a creds-loaded TTY to fast-forward origin/main through 758df87 -> 5b126d3 -> a31c877 -> ffcfced -> f445d53 -> 17d37d9 -> <Pass 13.9 SHA> + Vercel auto-deploy.
+- After landing: `bash bin/mcp-bootstrap.sh` (TTY-gated; lights github-mcp/playwright-mcp/puppeteer-mcp).
+- After landing + Chrome installed: `bash scripts/axe-core.sh` to materialise docs/agents/a11y-baseline-2026-07-XX.md (deferred since Pass 13).
+
+Reviewer-flag drift pointers (deferred to future pass on maintenance brief):
+- docs/agents/loop-readiness-2026-07-06.md calls score 80/L2; live script now says 95/100 L3. Drift noted.
+- docs/agents/triage-report-2026-07-06-pass-12.md enumerates 30 issues; live state per Pass 12.2 is 31. Drift noted; rename or banner needed.
+- docs/agents/audit-content-2026-07-06.md + audit-design-2026-07-06.md list followups since closed by Pass 8.3 + Pass 10. Drift noted; trim "Open gates".
+
+## Pass 13.9 - 2026-07-06 (Pass 13.8 ledger drift closure)
+
+| Slot     | Value                                                                                                                                  |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                                                                                          |
+| Pattern  | loop-engineering + corrective-amendment                                                                                                |
+| Status   | COMPLETE - close Pass 13.8 reviewer-flag must-fix items (4 + 5): STATE.md pass_id bump + chain extension + loop-run-log ## Pass 13.8 entry retro-fitted |
+| Score    | +0 (corrective only)                                                                                                                   |
+| Tokens   | ~1k (well under 200k budget)                                                                                                           |
+
+Reviewer flags closed (from Pass 13.8 reviewer-minimax-m3 cumulative review):
+
+1. **STATE.md pass_id bump DEFERRED from Pass 13.8** -> closed by str_replace (sed -i):
+   - `Last updated: pass 13.7 - 2026-07-06` -> `Last updated: pass 13.9 - 2026-07-06`
+   - `## Predecessor chain` extended `/ 13.7` -> `/ 13.7 / 13.8 / 13.9`
+
+2. **loop-run-log.md ## Pass 13.8 entry DEFERRED** -> closed by idempotent append (both ## Pass 13.8 + ## Pass 13.9).
+
+What shipped in this commit:
+- STATE.md: pass_id + last_updated + Predecessor chain (single sed -i substitution, idempotent on grep).
+- loop-run-log.md: ## Pass 13.8 entry retro-fitted (was awaiting); ## Pass 13.9 entry appended (this record).
+
+Maintainer gates (HUMAN-ONLY per docs/safety.md): unchanged from Pass 13.8.
+
+Pending reviewer items (deferred to next pass maintenance brief - non-blocking):
+- The 3 stale-doc drift pointers flagged by the Pass 13.8 reviewer (loop-readiness L-bucket mismatch; triage-report stale issue count; audit-content/audit-design closure drift).
+- net ahead/behind skew: 10-behind -> 11-behind after this commit. Add `git fetch` to next pre-push basher.

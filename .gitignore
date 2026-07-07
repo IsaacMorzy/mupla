@@ -69,3 +69,7 @@ deno.lock
 .wrangler
 dist
 .env*
+
+# Python bytecode cache (bin/_gh-roadmap-parse.py emits these)
+__pycache__/
+*.pyc

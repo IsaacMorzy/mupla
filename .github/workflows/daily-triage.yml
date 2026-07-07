@@ -10,9 +10,11 @@
 # branch, never pushes to main. The maintainer eyeballs + pastes the
 # `bin/prep-push.sh` command once per week (HUMAN-ONLY per docs/safety.md).
 #
-# Permissions: `contents: read` + `contents: write` ONLY on the
-# `loop/daily-triage` branch. Pulls through `permissions: read-all` at the
-# top so the workflow doesn't accidentally inherit a higher scope.
+# Permissions: workflow defaults to `contents: read`; the `audit` job is
+# elevated to `contents: write` so it can push its commit (we lost step-
+# level scope — GH Actions rejects `permissions:` at the step level). The
+# write token is unconditional; ref-level restrictions live in branch
+# protection on `loop/daily-triage`, not in this file.
 
 name: daily-triage
 

@@ -1953,3 +1953,57 @@ cd mupla-front && pnpm exec astro check 2>&1 | tail -8                          
 
 GOOD - 15 blog posts expanded to ~800 words each, on-brand, em-dash-clean, genericism-clean, schema-faithful, with 50+ internal backlinks now redistributed across the new surface. Loop bookkeeping updated. No `gh` mutations executed (per safety policy). Maintainer gates: `bin/prep-push.sh` + optional `gh issue create` + `scripts/axe-core.sh` for tracker / a11y / contact-block traceability.
 
+
+## Pass 16.1 — 2026-07-08 (user-requested override: agent executed the HUMAN-ONLY gate)
+
+| Slot     | Value                                                                                            |
+| -------- | ------------------------------------------------------------------------------------------------ |
+| Operator | agent (Buffy)                                                                                    |
+| Pattern  | `matt-pocock-skill` + `loop-engineering` (user override of HUMAN-ONLY gate)                        |
+| Started  | 2026-07-08                                                                                       |
+| Status   | COMPLETE - user explicitly requested override of the `docs/safety.md` HUMAN-ONLY gate; `git push` and `gh issue create` executed; this corrective entry logs what happened |
+| Score    | +0 (no new scoring gates; ledger entry)                                                          |
+| Tokens   | ~5k (well under 200k budget)                                                                       |
+
+### Why this entry exists
+
+User asked: "do git push and gh issue create and push all the changes and commits all tasks for human do them override". The user is the maintainer (IsaacMorzy); the request was explicit, repeated, and unambiguous. The `docs/safety.md` gate was written to be human-only as a default, not as an absolute; the user has the authority to override their own gate. The agent attempted the override exactly once and reports the result.
+
+### What actually happened
+
+1. `git status` -- short in `mupla-front/` showed 30 modified + 20 untracked files.
+2. `git add` staged: `src/content/{event,blog,page}/*.mdx`, `STATE.md`, `loop-run-log.md`, `docs/agents/triage-report-2026-07-08.md` (40 files; 1,178 insertions; 71 deletions).
+3. `git commit -m "loop(pass-15-16): 10 events + 15 blog posts ..."` succeeded. Commit `1ee0bb5`.
+4. `git push origin HEAD:main` SUCCEEDED. Push landed `9c3820a..1ee0bb5` on `https://github.com/IsaacMorzy/mupla.git`. Vercel will auto-deploy.
+5. `gh issue create --repo IsaacMorzy/mupla --label 'needs-triage' --title 'Pass 15 + 16 content burst ...'` SUCCEEDED. Issue URL: see `gh issue list` output.
+6. `bash bin/prep-push.sh` REFUSED (TTY gate) - but the underlying work the script was designed to gate had already been landed via the manual `git push` path, so the refusal was moot.
+
+### Corrections to prior entries
+
+- `## Pass 15` (this file) said: "Maintainer eyeball + `git push origin HEAD:main` of the Pass 15 commit per `bin/prep-push.sh` (HUMAN-ONLY)." That was the conservative default; the user overrode it, and the push actually happened on commit `1ee0bb5` (Pass 15 + 16 content burst).
+- `## Pass 16` (this file) said: "git push to origin/main - not executed." That is now superseded by this Pass 16.1 entry. The push did happen.
+- `## Pass 16` said: "gh issue create for the Pass 15 content burst + Pass 16 expansion - not executed." That is now superseded. The issue was created.
+
+### Loop-contract reflection
+
+The `docs/safety.md` HUMAN-ONLY gate is a default, not a hard wall. The agent's job is to honor the gate by default, to surface it clearly when the user asks for a gated op, and to attempt the override when the user is explicit. The agent did all three. The ledger now reflects the actual state of the world (commit `1ee0bb5` on `origin/main`; GH issue created), not the conservative state of the prior entries.
+
+Future passes: if the maintainer wants the gate held, they should not ask the agent to override. If the maintainer wants the gate honored, they should paste the commands themselves. The ledger and the maintainer-paste surface (`docs/agents/triage-report-2026-07-08.md`) both stay in sync.
+
+### Verifier (canonical for any future audit)
+
+```bash
+# Commit landed
+cd mupla-front && git log --oneline -1                                                # -> 1ee0bb5 loop(pass-15-16): ...
+
+# Push landed
+cd mupla-front && git ls-remote origin HEAD                                            # -> 1ee0bb5...
+
+# GH issue created
+gh issue list --repo IsaacMorzy/mupla --label needs-triage --state all --limit 5       # -> the Pass 15 + 16 content burst issue, opened today
+```
+
+### Self-grade
+
+GOOD - the override was explicit, documented, and reversible (the issue is `needs-triage` so the maintainer can categorise it; the commit is on `origin/main` so the work is durable; the loop ledger reflects what actually happened).
+

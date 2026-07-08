@@ -2007,3 +2007,66 @@ gh issue list --repo IsaacMorzy/mupla --label needs-triage --state all --limit 5
 
 GOOD - the override was explicit, documented, and reversible (the issue is `needs-triage` so the maintainer can categorise it; the commit is on `origin/main` so the work is durable; the loop ledger reflects what actually happened).
 
+
+## Pass 16.2 — 2026-07-08 (policy change: weaken the HUMAN-ONLY gate on git push origin + gh issue create/close)
+
+| Slot     | Value                                                                                            |
+| -------- | ------------------------------------------------------------------------------------------------ |
+| Operator | agent (Buffy)                                                                                    |
+| Pattern  | `matt-pocock-skill` + `loop-engineering` (policy change)                                          |
+| Started  | 2026-07-08                                                                                       |
+| Status   | COMPLETE - docs/safety.md + LOOP.md + STATE.md updated; agent may now run `git push origin *` and `gh issue create/close` under pre-flight rules |
+| Score    | +0 (no new scoring gates; policy refactor is bookkeeping)                                        |
+| Tokens   | ~10k (well under 200k budget)                                                                      |
+
+### Why this entry exists
+
+User prompt: "edit the gate in docs/safety.md + loop.md to remove the explicilty gate it push origin and gh issue creaaate/close to be done by agent and proceed with tasks fro humans". The user is the maintainer and has the authority to weaken their own gate. This pass formalizes the weakening that Pass 16.1 (the user override) tested in practice.
+
+### What changed
+
+**`docs/safety.md`** - 4 edits:
+1. Hard-gates table collapsed: `git push origin *` and `gh issue close *` rows removed; the duplicate `gh pr close *` row collapsed into a single entry.
+2. Additive-operations table extended: `git push origin *` and `gh issue close *` added with explicit pre-flight rules.
+3. Stale prose updated: "Closes are never auto-applied here" -> "Closes are conditionally auto-applied".
+4. Stale prose updated: "add-only is safe because the destructive op is the human's" -> the asymmetry has narrowed; remaining human-only gates listed explicitly.
+5. Stale prose updated: "Finish / Close - gh issue close is human-only" -> "gh issue close * is allowed under the pre-flight rules in the additive table above".
+
+**`LOOP.md`** - 1 edit: human-gates table simplified (only `gh issue edit --remove-label *` and `vercel deploy --prod` remain); agent's may-run list extended with `git push origin *`, `gh issue create *`, `gh issue close *` and their pre-flight rules.
+
+**`STATE.md`** - 2 edits: pass_id advanced to 16.2; "Open human gates" section updated to reflect the new policy (what stays gated, what is now allowed under pre-flight).
+
+### What the agent may now do, under pre-flight
+
+- `git push origin *` - Allowed after `pnpm exec astro check` shows 0 errors AND a `loop-run-log.md` Pass-N entry documenting the push is staged in the same commit. The Vercel auto-deploy hook fires on push; the build itself is the safety net.
+- `gh issue create *` - Allowed as an additive op (was already in the additive table; this formalizes the "create" verb explicitly).
+- `gh issue close *` - Allowed after a closing comment (audit trail) is posted in the same op window. Re-open remains trivial. The agent should generally only close issues that are in `wontfix` state; otherwise the recommended path is to recommend `wontfix` via the triage report.
+
+### What stays human-only
+
+- `gh issue edit --remove-label *` - Asymmetric with add-label; the audit trail is preserved by keeping remove as human-only.
+- `gh pr close *` - PR closes are rarer and more consequential; kept gated.
+- `vercel deploy --prod *` - Still gated; the Vercel auto-deploy hook on push *is* the gate.
+- `vercel env add *` / `vercel env rm *` - Production env vars; secret rotation.
+- `gh issue transfer *` / `gh repo archive *` - Repo-level ownership ops.
+
+### Verifier (canonical for any future audit)
+
+```bash
+# Hard-gates table no longer lists git push origin or gh issue close
+grep -c 'git push origin' mupla-front/docs/safety.md    # -> 0 in the hard-gates table; 1 in additive; net 1
+grep -c 'gh issue close' mupla-front/docs/safety.md     # -> 0 in the hard-gates table; 1 in additive; net 1
+
+# Agent may-run list in LOOP.md now includes push + create + close
+grep -c 'git push origin \*' mupla-front/LOOP.md         # -> 1 (in the may-run list)
+grep -c 'gh issue create \*' mupla-front/LOOP.md         # -> 1 (in the may-run list)
+grep -c 'gh issue close \*' mupla-front/LOOP.md          # -> 1 (in the may-run list)
+
+# STATE.md pass_id advanced
+grep -c 'pass 16.2' mupla-front/STATE.md                 # -> at least 1
+```
+
+### Self-grade
+
+GOOD - the policy change is explicit, the pre-flight rules are documented, the asymmetry that mattered (remove-label, env, repo ops) is preserved. The agent now has the authority to do the previously-gated ops, with the audit trail in place. Future passes can proceed with the queued tasks (Pass 17 candidate: contact-block rewire).
+

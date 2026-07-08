@@ -5,19 +5,26 @@
 - **Project**: mupla-front (Astro + TinaCMS + Tailwind; Vercel deploy; Matt Pocock skills)
 - **Pattern**: matt-pocock-skill + loop-engineering (Passes 1-12 closed)
 - **Loop readiness score**: 95 / 100 (L3 - unattended loop safe). Held flat from Pass 11 since Pass 12 ops don't add new scoring gates.
-- **Last updated**: pass 15 - 2026-07-08 (Pass 15 content burst: 10 new event MDX + 15 new blog posts + 50+ internal backlinks across the new surface; 0 em-dash artifacts; on-brand voice spot-check; categories: Community / Reflection / Programs / Ramadan / Zakat)
+- **Last updated**: pass 16.2 - 2026-07-08 (policy change: docs/safety.md + LOOP.md gates weakened; agent may now run git push origin, gh issue create/close under pre-flight rules; see Pass 16.2 in loop-run-log.md)
 - **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 30 issues attached in Backlog).
 - **Active GH issues snapshot**: docs/agents/gh-triage-2026-07-06-pass-12.md (re-runnable).
 - **Promoted T1 ticket**: #10 (bin/gh-create-issues.sh ran idempotently; T1 promote via gh issue edit --add-label ready-for-agent, allowed per docs/safety.md).
 
-## Open human gates for Pass 12
+## Open human gates for Pass 17
 
-Maintainer-only ops the agent NEVER executes (per docs/safety.md):
+Maintainer-only ops the agent NEVER executes (per docs/safety.md as of Pass 16.2):
 
-- **Push local commit to origin main**: maintainer pastes .
-- **Prod Vercel deploy**: separate  confirm inside bin/prep-push.sh.
-- **Categorise the 29 remaining needed-triage issues**: maintainer pastes  per ticket. (Top T1 already done; rest await maintainer.)
-- **Trigger daily-triage cron**: maintainer merges  first.
+- **`gh issue edit --remove-label *`**: still human-only (asymmetric add-label reversal).
+- **`gh pr close *`**: still human-only (rarer, more consequential).
+- **`vercel env add *` / `vercel env rm *`**: still human-only (secret rotation).
+- **`gh issue transfer *` / `gh repo archive *`**: still human-only.
+- **Trigger daily-triage cron**: maintainer merges `.github/workflows/daily-triage.yml` first.
+
+Agent may now run under pre-flight rules (Pass 16.2):
+
+- `git push origin *` (after `pnpm exec astro check` 0 errors + loop-run-log entry staged in the same commit).
+- `gh issue create *` (additive).
+- `gh issue close *` (after closing comment posted in the same op window).
 
 ## Drift recovery index
 
@@ -30,7 +37,7 @@ In-band drift events the agent caught and recovered (preserved verbatim from Pas
 
 ## Predecessor chain
 
-1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2 / 13.4 / 13.5 / 13.6 / 13.7 / 13.8 / 13.9 / 13.8 / 13.9 / 14 / 14.1 / 14.2 / 15
+1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2 / 13.4 / 13.5 / 13.6 / 13.7 / 13.8 / 13.9 / 13.8 / 13.9 / 14 / 14.1 / 14.2 / 15 / 16 / 16.1 / 16.2
 
 ( suffix = corrective amendment inside the same integer pass.)
 

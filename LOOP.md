@@ -70,8 +70,6 @@ explicit per-pass override:
 
 | Op                                     | Why it's gated                                                |
 | -------------------------------------- | -------------------------------------------------------------- |
-| `git push origin *`                    | TinaCloud rebuilds the schema on push; broken pushes can take the live site offline. |
-| `gh issue close *`                     | Closes regress invisibly; re-open is the only undo.            |
 | `gh issue edit --remove-label *`       | Removes triage intent; add-label reversal is asymmetric.       |
 | `vercel deploy --prod`                 | Vercel prod is wired to the TinaCloud push hook — that *is* the gate. |
 
@@ -81,6 +79,9 @@ The agent **may** run:
 - `gh pr list` / `view` (read)
 - `gh label list` (read)
 - `gh issue edit --add-label <label>` (additive; see `docs/safety.md`)
+- `gh issue create *` (additive; see `docs/safety.md`)
+- `gh issue close *` (additive; pre-flight: closing comment + `wontfix` label, see `docs/safety.md`)
+- `git push origin *` (additive; pre-flight: `pnpm exec astro check` 0 errors + `loop-run-log.md` Pass-N entry staged in the same commit, see `docs/safety.md`)
 
 ## Kill switch
 

@@ -72,16 +72,23 @@ explicit per-pass override:
 | -------------------------------------- | -------------------------------------------------------------- |
 | `gh issue edit --remove-label *`       | Removes triage intent; add-label reversal is asymmetric.       |
 | `vercel deploy --prod`                 | Vercel prod is wired to the TinaCloud push hook — that *is* the gate. |
+| `gh pr close *`                        | PR closes are rarer and more consequential; gated separately. |
+| `gh issue transfer *`                  | Moves ownership to another repo / org without the maintainer's view. |
+| `gh repo archive *`                    | Freezes the repo (reversible through settings, but a surprising UX). |
+| `vercel env add *` / `vercel env rm *` | Writes / deletes production env vars; equivalent to secret rotation. |
 
 The agent **may** run:
 
 - `gh issue list` / `view` / `search` (read)
 - `gh pr list` / `view` (read)
-- `gh label list` (read)
+- `gh label list` / `view` (read)
+- `gh repo view` (read)
 - `gh issue edit --add-label <label>` (additive; see `docs/safety.md`)
 - `gh issue create *` (additive; see `docs/safety.md`)
 - `gh issue close *` (additive; pre-flight: closing comment + `wontfix` label, see `docs/safety.md`)
+- `gh label create` / `gh label edit` (idempotent; see `docs/safety.md`)
 - `git push origin *` (additive; pre-flight: `pnpm exec astro check` 0 errors + `loop-run-log.md` Pass-N entry staged in the same commit, see `docs/safety.md`)
+- `loop-audit`, `loop-sync`, `loop-cost`, `loop-init --dry-run` (read; see `docs/safety.md`)
 
 ## Kill switch
 

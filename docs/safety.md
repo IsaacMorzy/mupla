@@ -68,7 +68,12 @@ The agent must NEVER transition issues itself into:
 
 - `ready-for-human` — this is a maintainer call. The agent can *recommend*
   via the triage report; the maintainer pastes the add-label command.
-- `wontfix` — same; an explicit triage decision the maintainer owns.
+
+The agent **may** transition into `wontfix` under the pre-flight rule for
+`gh issue close *` in the additive table above: the agent may add the
+`wontfix` label and close in the same op window, with a closing comment
+posted as the audit trail. Outside that op window, `wontfix` remains a
+maintainer call.
 
 ## CRUD -> triage alignment (Pass 10)
 

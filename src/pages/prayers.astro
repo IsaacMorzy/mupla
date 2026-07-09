@@ -8,16 +8,13 @@ import { getConfig } from '../lib/data';
 
 const config = (await getConfig()).data?.config ?? null;
 
-// Fetch Quranic supplications from fawazahmed0/quran-api at build time.
-// Each verse is a well-known dua: Al-Baqarah 201, Aal-e-Imran 8, Al-Hashr 10.
-// Per-item fallback: if one API call fails, only that verse uses hardcoded text.
+// ── Fetch Quranic supplications from fawazahmed0/quran-api ──
 const supplicationDefs = [
 	{ surah: 2, ayah: 201, ref: 'Surah Al-Baqarah, verse 201', arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ', english: 'Our Lord, grant us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.' },
 	{ surah: 3, ayah: 8,   ref: 'Surah Aal-e-Imran, verse 8', arabic: 'رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً إِنَّكَ أَنتَ الْوَهَّابُ', english: 'Our Lord, let not our hearts deviate after You have guided us, and grant us from Yourself mercy. Indeed, You are the Bestower.' },
 	{ surah: 59, ayah: 10, ref: 'Surah Al-Hashr, verse 10', arabic: 'رَبَّنَا اغْفِرْ لَنَا وَلِإِخْوَانِنَا الَّذِينَ سَبَقُونَا بِالْإِيمَانِ', english: 'Our Lord, forgive us and our brothers who preceded us in faith.' },
 ];
 
-// Fetch all in parallel, with per-item fallback
 const displaySupplications = await Promise.all(supplicationDefs.map(async (def) => {
 	try {
 		const [arabicRes, englishRes] = await Promise.all([
@@ -35,23 +32,61 @@ const displaySupplications = await Promise.all(supplicationDefs.map(async (def) 
 	} catch { /* fall through to hardcoded */ }
 	return { arabic: def.arabic, english: def.english, ref: def.ref };
 }));
+
+// ── Fetch 3 random duas from UmmahAPI at build time ──
+// Fetch 3 random duas from UmmahAPI in parallel
+const duas: { arabic: string; translation: string; title: string; category: string }[] = [];
+const duaResults = await Promise.allSettled(
+	Array.from({ length: 3 }, () => fetch('https://ummahapi.com/api/duas/random'))
+);
+for (const result of duaResults) {
+	if (result.status === 'fulfilled' && result.value.ok) {
+		try {
+			const json = await result.value.json();
+			if (json.success && json.data) {
+				duas.push({
+					arabic: json.data.arabic || '',
+					translation: json.data.translation || json.data.transliteration || '',
+					title: json.data.title || 'Dua',
+					category: json.data.category || '',
+				});
+			}
+		} catch { /* skip */ }
+	}
+}
+
+// ── Fetch a random hadith from UmmahAPI at build time ──
+let hadith: { text: string; source: string; narrator: string } | null = null;
+try {
+	const res = await fetch('https://ummahapi.com/api/hadith/random');
+	if (res.ok) {
+		const json = await res.json();
+		if (json.success && json.data) {
+			hadith = {
+				text: json.data.english || json.data.text || '',
+				source: json.data.collection_name || json.data.collection || '',
+				narrator: json.data.narrator || json.data.grade || '',
+			};
+		}
+	}
+} catch { /* skip failed fetch */ }
 ---
 
 <Base
 	title={`Prayer times${config?.seo?.title ? ` · ${config.seo.title}` : ''}`}
-	description="Daily prayer times and a collection of morning and evening duas for the Muslim community."
+	description="Daily prayer times, duas, hadith, and Quranic supplications for the Muslim community."
 >
 	<main class="mx-auto max-w-5xl px-6 py-12 md:py-20">
 		<header class="reveal mx-auto max-w-2xl text-center">
 			<h1 class="text-balance text-5xl font-semibold tracking-tight md:text-6xl">Prayer times</h1>
 			<p class="mx-auto mt-5 max-w-xl text-balance text-muted-foreground">
-				Daily prayer times and selected duas from the Quran and Sunnah to carry through your day.
+				Daily prayer times, selected duas, and a hadith to carry through your day — all from UmmahAPI and the Quran.
 			</p>
 		</header>
 
 		<IslamicDivider variant="single" class="max-w-4xl mx-auto mt-12 mb-8" />
 
-		<!-- Prayer times: loaded client-side from AlAdhan API -->
+		<!-- Prayer times: loaded client-side from UmmahAPI -->
 		<Section class="relative overflow-hidden" background="bg-secondary">
 			<div aria-hidden="true" class="pointer-events-none absolute -right-16 top-0 hidden md:block">
 				<GeometricMedallion size={180} weight="thin" variant="twin" class="opacity-[0.10] animate-spin-slower" />
@@ -60,17 +95,72 @@ const displaySupplications = await Promise.all(supplicationDefs.map(async (def) 
 				<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Today's prayer times</h2>
 				<p id="prayer-date" class="mt-3 text-center text-muted-foreground">Loading...</p>
 				<div id="prayer-times" class="mt-8 grid gap-3 sm:grid-cols-3 md:grid-cols-6">
-					<!-- Populated by client JS -->
+					<!-- Populated by client JS from UmmahAPI -->
 				</div>
 				<p class="mt-6 text-center text-xs text-muted-foreground">
-					Times based on your IP location. For accurate local times, use a mosque timetable or a dedicated prayer app.
+					Times from UmmahAPI (Muslim World League method). For accurate local times, allow location access or use a mosque timetable.
 				</p>
 			</div>
 		</Section>
 
 		<IslamicDivider variant="arch" class="max-w-4xl mx-auto" />
 
-		<!-- Morning duas -->
+		<!-- Daily Hadith from UmmahAPI -->
+		{hadith && (
+			<>
+			<Section>
+				<div class="reveal mx-auto max-w-3xl">
+					<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Hadith of the day</h2>
+					<p class="mt-4 text-center text-muted-foreground">
+						A saying of the Prophet Muhammad, peace be upon him, refreshed each build.
+					</p>
+					<div class="mt-10 rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+						<blockquote class="space-y-4">
+							<p class="italic leading-relaxed text-foreground">
+								{hadith.text}
+							</p>
+						</blockquote>
+						<footer class="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+							{hadith.narrator && <span class="font-medium text-foreground">{hadith.narrator}</span>}
+							{hadith.source && <span>— {hadith.source}</span>}
+						</footer>
+					</div>
+				</div>
+			</Section>
+			<IslamicDivider variant="single" class="max-w-4xl mx-auto" />
+			</>
+		)}
+
+		<!-- Duas from UmmahAPI -->
+		{duas.length > 0 && (
+			<>
+			<Section background="bg-secondary">
+				<div class="reveal mx-auto max-w-3xl">
+					<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Selected duas</h2>
+					<p class="mt-4 text-center text-muted-foreground">
+						Authentic supplications from the Sunnah, fetched from UmmahAPI. Refreshed with each build.
+					</p>
+					<div class="mt-10 space-y-8">
+						{duas.map((d) => (
+						<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+							<blockquote class="space-y-4">
+								<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">{d.arabic}</p>
+								<p class="italic leading-relaxed text-muted-foreground">{d.translation}</p>
+							</blockquote>
+							<footer class="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+								<span class="font-medium text-foreground">{d.title}</span>
+								{d.category && <span>· {d.category}</span>}
+							</footer>
+						</div>
+						))}
+					</div>
+				</div>
+			</Section>
+			<IslamicDivider variant="single" class="max-w-4xl mx-auto" />
+			</>
+		)}
+
+		<!-- Morning duas (curated, hardcoded from authentic sources) -->
 		<Section>
 			<div class="reveal mx-auto max-w-3xl">
 				<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Morning remembrances</h2>
@@ -180,75 +270,78 @@ const displaySupplications = await Promise.all(supplicationDefs.map(async (def) 
 			</div>
 		</Section>
 
-		<!-- Quranic prayers -->
-		<Section>
-			<div class="reveal mx-auto max-w-3xl">
-				<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Quranic supplications</h2>
-				<p class="mt-4 text-center text-muted-foreground">
-					Prayers and supplications from the Quran that the prophets and the righteous made.
-				</p>
-
-				<div class="mt-10 space-y-8">
-					{displaySupplications.map((s) => (
-					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
-						<blockquote class="space-y-4">
-							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">{s.arabic}</p>
-							<p class="italic leading-relaxed text-muted-foreground">{s.english}</p>
-						</blockquote>
-						<footer class="mt-4 text-xs text-muted-foreground">{s.ref}</footer>
+		{displaySupplications.length > 0 && (
+			<>
+			<IslamicDivider variant="arch" class="max-w-4xl mx-auto" />
+			<Section>
+				<div class="reveal mx-auto max-w-3xl">
+					<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Quranic supplications</h2>
+					<p class="mt-4 text-center text-muted-foreground">
+						Prayers and supplications from the Quran that the prophets and the righteous made — fetched from the Quran API.
+					</p>
+					<div class="mt-10 space-y-8">
+						{displaySupplications.map((s) => (
+						<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+							<blockquote class="space-y-4">
+								<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">{s.arabic}</p>
+								<p class="italic leading-relaxed text-muted-foreground">{s.english}</p>
+							</blockquote>
+							<footer class="mt-4 text-xs text-muted-foreground">{s.ref}</footer>
+						</div>
+						))}
 					</div>
-					))}
 				</div>
-			</div>
-		</Section>
+			</Section>
+			</>
+		)}
 	</main>
 </Base>
 
 <script>
-	// Fetch prayer times from AlAdhan API based on IP geolocation.
-	// Falls back to London coordinates if geolocation fails.
+	// Fetch prayer times from UmmahAPI with a sensible default location.
+	// Uses the browser's timezone for date display; Makkah calculation method.
 	async function loadPrayerTimes() {
 		const container = document.getElementById('prayer-times');
 		const dateEl = document.getElementById('prayer-date');
 		if (!container || !dateEl) return;
 
 		try {
-			// Get coordinates from IP-based geolocation with fallback to London
-			let city = 'London';
-			let country = 'UK';
+			// Try browser geolocation first, fall back to London
 			let lat = 51.5074;
 			let lng = -0.1278;
-
 			try {
-				const geoRes = await fetch('https://api.ipify.org?format=json');
-				const { ip } = await geoRes.json();
-				const locRes = await fetch(`https://ipapi.co/${ip}/json/`);
-				if (locRes.ok) {
-					const loc = await locRes.json();
-					city = loc.city || city;
-					country = loc.country_name || country;
-					lat = loc.latitude || lat;
-					lng = loc.longitude || lng;
+				if (navigator.geolocation) {
+					const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+						navigator.geolocation.getCurrentPosition(resolve, reject, {
+							enableHighAccuracy: false,
+							timeout: 5000,
+							maximumAge: 300000,
+						});
+					});
+					lat = pos.coords.latitude;
+					lng = pos.coords.longitude;
 				}
-			} catch {
-				// Geolocation failed - use London defaults
-			}
-
-			dateEl.textContent = `${city}, ${country} · ${new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}`;
+			} catch { /* use London defaults */ }
 
 			const res = await fetch(
-				`https://api.aladhan.com/v1/timings/${Math.floor(Date.now() / 1000)}?latitude=${lat}&longitude=${lng}&method=2`
+				`https://ummahapi.com/api/prayer-times?lat=${lat}&lng=${lng}&method=MuslimWorldLeague`
 			);
-			const data = await res.json();
-			const timings = data.data.timings;
+			if (!res.ok) throw new Error('API error');
+			const json = await res.json();
+			if (!json.success) throw new Error(json.message || 'API error');
+
+			const times = json.data.prayer_times;
+			const meta = json.data;
+
+			dateEl.textContent = `${meta.date?.readable || ''} · ${meta.calculation_method || 'Makkah method'}`;
 
 			const prayers = [
-				{ name: 'Fajr', time: timings.Fajr, icon: 'tabler:sunrise' },
-				{ name: 'Sunrise', time: timings.Sunrise, icon: 'tabler:sun' },
-				{ name: 'Dhuhr', time: timings.Dhuhr, icon: 'tabler:sun-high' },
-				{ name: 'Asr', time: timings.Asr, icon: 'tabler:sunset' },
-				{ name: 'Maghrib', time: timings.Maghrib, icon: 'tabler:sunset-2' },
-				{ name: 'Isha', time: timings.Isha, icon: 'tabler:moon' },
+				{ name: 'Fajr', time: times.fajr ?? '--:--', icon: 'tabler:sunrise' },
+				{ name: 'Sunrise', time: times.sunrise ?? '--:--', icon: 'tabler:sun' },
+				{ name: 'Dhuhr', time: times.dhuhr ?? '--:--', icon: 'tabler:sun-high' },
+				{ name: 'Asr', time: times.asr ?? '--:--', icon: 'tabler:sunset' },
+				{ name: 'Maghrib', time: times.maghrib ?? '--:--', icon: 'tabler:sunset-2' },
+				{ name: 'Isha', time: times.isha ?? '--:--', icon: 'tabler:moon' },
 			];
 
 			container.innerHTML = prayers.map(p => `

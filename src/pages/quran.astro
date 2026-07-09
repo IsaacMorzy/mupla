@@ -39,7 +39,7 @@ try {
 		<header class="reveal mx-auto max-w-2xl text-center">
 			<h1 class="text-balance text-5xl font-semibold tracking-tight md:text-6xl">The Quran</h1>
 			<p class="mx-auto mt-5 max-w-xl text-balance text-muted-foreground">
-				Browse all 114 surahs in Arabic Uthmani Hafs script with English Abdel Haleem translation. Click a surah to read its verses.
+				Browse all 114 surahs in Arabic Uthmani Hafs script with English Abdel Haleem translation. Click a surah to read its verses, then play audio recitation from AlQuran.cloud.
 			</p>
 		</header>
 
@@ -79,6 +79,28 @@ try {
 				<!-- Verse reader panel: hidden until a surah is clicked -->
 				<Section id="verse-reader" class="hidden mt-10" background="bg-secondary">
 					<div class="reveal mx-auto max-w-3xl">
+						<!-- Audio reciter selector -->
+						<div id="audio-controls" class="mb-6 hidden items-center gap-3">
+							<label for="reciter-select" class="text-xs text-muted-foreground">Reciter:</label>
+							<select id="reciter-select" class="rounded-xl border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-[3px] focus:ring-ring/50">
+								<option value="ar.alafasy">Mishary Alafasy</option>
+								<option value="ar.abdulbasitmurattal">Abdul Basit</option>
+								<option value="ar.abdurrahmaansudais">Abdurrahman As-Sudais</option>
+								<option value="ar.husary">Mahmoud Al-Husary</option>
+								<option value="ar.shaatree">Abu Bakr Ash-Shaatree</option>
+								<option value="ar.ahmedajamy">Ahmed Al-Ajamy</option>
+							</select>
+							<button
+								type="button"
+								id="play-audio"
+								class="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-1.5 text-sm font-medium transition-colors hover:bg-accent"
+								title="Play recitation"
+							>
+								<Icon name="tabler:player-play" class="size-4" />
+								Play
+							</button>
+							<audio id="audio-player" class="hidden" controls></audio>
+						</div>
 						<div class="mb-8 flex items-center justify-between">
 							<button
 								type="button"
@@ -154,8 +176,13 @@ try {
 
 	function hideReader() {
 		reader.classList.add('hidden');
+		audioPlayer?.pause();
+		const audioControls = document.getElementById('audio-controls');
+		if (audioControls) audioControls.classList.add('hidden');
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
+
+	let currentSurah = 0;
 
 	function renderVerse(index: number) {
 		const a = arabicVerses[index];
@@ -166,6 +193,13 @@ try {
 		counter.textContent = `${currentVerse} / ${totalAyahs}`;
 		prevBtn.disabled = currentVerse <= 1;
 		nextBtn.disabled = currentVerse >= totalAyahs;
+
+		// Update audio play button to target the current verse
+		const playBtn = document.getElementById('play-audio') as HTMLButtonElement;
+		if (playBtn) {
+			playBtn.dataset.surah = String(currentSurah);
+			playBtn.dataset.verse = String(currentVerse);
+		}
 
 		content.innerHTML = `
 			<div class="text-center">
@@ -239,11 +273,15 @@ try {
 		btn.addEventListener('click', () => {
 			const surah = parseInt(btn.dataset.surah!, 10);
 			const ayahs = parseInt(btn.dataset.ayahs!, 10);
-				currentVerse = 1;
+			currentSurah = surah;
+			currentVerse = 1;
 			totalAyahs = ayahs;
 			const name = btn.dataset.name || '';
 			const nameHeading = document.getElementById('verse-surah-name');
 			if (nameHeading) nameHeading.textContent = name;
+			// Show audio controls when reader is active
+			const audioControls = document.getElementById('audio-controls');
+			if (audioControls) audioControls.classList.remove('hidden');
 			loadSurah(surah);
 		});
 	});
@@ -257,5 +295,48 @@ try {
 	});
 	nextBtn.addEventListener('click', () => {
 		if (currentVerse < totalAyahs) renderVerse(currentVerse);
+	});
+
+	// Audio playback via AlQuran.cloud
+	const playBtn = document.getElementById('play-audio') as HTMLButtonElement;
+	const audioPlayer = document.getElementById('audio-player') as HTMLAudioElement;
+	const reciterSelect = document.getElementById('reciter-select') as HTMLSelectElement;
+
+	playBtn?.addEventListener('click', async () => {
+		const surah = playBtn.dataset.surah;
+		const verse = playBtn.dataset.verse;
+		const reciter = reciterSelect?.value || 'ar.alafasy';
+		if (!surah || !verse) return;
+
+		playBtn.disabled = true;
+		playBtn.innerHTML = '<span class="inline-block size-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span> Loading...';
+
+		try {
+			const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${verse}/${reciter}`);
+			const json = await res.json();
+			if (json.data?.audio) {
+				audioPlayer.src = json.data.audio;
+				audioPlayer.classList.remove('hidden');
+				await audioPlayer.play();
+			} else {
+				// Fallback: try CDN URL pattern (zero-padded verse numbers)
+				const paddedVerse = String(parseInt(verse)).padStart(3, '0');
+				audioPlayer.src = `https://cdn.islamic.network/quran/audio/128/${reciter}/${surah}${paddedVerse}.mp3`;
+				audioPlayer.classList.remove('hidden');
+				await audioPlayer.play();
+			}
+		} catch {
+			// Silent fail - user can try again
+		} finally {
+			playBtn.disabled = false;
+			playBtn.innerHTML = '<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
+		}
+	});
+
+	// Stop audio when navigating away
+	document.getElementById('verse-back')?.addEventListener('click', () => {
+		audioPlayer?.pause();
+		const audioControls = document.getElementById('audio-controls');
+		if (audioControls) audioControls.classList.add('hidden');
 	});
 </script>

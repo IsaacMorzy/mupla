@@ -2070,3 +2070,34 @@ grep -c 'pass 16.2' mupla-front/STATE.md                 # -> at least 1
 
 GOOD - the policy change is explicit, the pre-flight rules are documented, the asymmetry that mattered (remove-label, env, repo ops) is preserved. The agent now has the authority to do the previously-gated ops, with the audit trail in place. Future passes can proceed with the queued tasks (Pass 17 candidate: contact-block rewire).
 
+
+---
+
+## Pass 24 — 2026-07-09 (multi-API Quran integration: UmmahAPI + AlQuran.cloud + fawazahmed0)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-09                                                     |
+| Status   | COMPLETE — UmmahAPI prayer times + duas + hadith; AlQuran.cloud audio; fawazahmed0 text; QuranVerse eyebrow dropped |
+| Score    | +0 (content + integration; no new scoring gates)               |
+
+### What shipped
+
+- **prayers.astro**: UmmahAPI prayer times (MuslimWorldLeague) with browser geolocation + London fallback; 3 random duas in parallel; 1 random hadith; morning/evening adhkar + Quranic supplications retained.
+- **quran.astro**: AlQuran.cloud audio reciter selector (6 reciters), play button per verse with loading spinner + CDN fallback.
+- **QuranVerse.astro**: Dropped "Qur'anic wisdom" eyebrow (per design-taste-frontend).
+- **404.astro**: Added /quran and /prayers to popular pages nav.
+
+### APIs in tandem
+
+| API | Used for | Auth |
+| --- | -------- | ---- |
+| fawazahmed0/quran-api (jsDelivr CDN) | Quran text | None |
+| UmmahAPI | Prayer times, duas, hadith | None (5k/15min) |
+| AlQuran.cloud | Audio recitations (37 reciters) | None |
+
+### Self-grade
+
+GOOD — three free APIs working in tandem; browser geolocation; parallel fetches; design taste applied.

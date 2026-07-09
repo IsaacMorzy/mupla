@@ -1,0 +1,32 @@
+---
+/**
+ * StarMark — a single 8-pointed star ornament. Two nested squares
+ * rotated 45° apart form the star; a small centre dot adds depth.
+ *
+ * Used by IslamicDivider, GeometricMedallion, and anywhere a
+ * manuscript-style star motif is needed.
+ *
+ * Accepts an optional `class` to layer additional Tailwind classes
+ * (e.g. custom size, colour overrides) on top of the defaults.
+ */
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="-16 -16 32 32"
+	width="20"
+	height="20"
+	class:list={['ornament-stroke animate-breathe', className]}
+	stroke-width="1"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+>
+	<rect x="-10" y="-10" width="20" height="20" rx="1" />
+	<rect x="-10" y="-10" width="20" height="20" rx="1" transform="rotate(45)" />
+	<circle cx="0" cy="0" r="3" opacity="0.5" />
+</svg>

@@ -10,58 +10,103 @@ interface Props { data: HeroBlock }
 
 const { data } = Astro.props;
 const actions = (data.actions ?? []).filter(a => a !== null);
+const hasImage = Boolean(data.image?.src);
 ---
 
-<Section class="relative overflow-hidden bg-default">
-	<!-- Decorative geometric ornament: slow-rotating eight-pointed star
-	     receding into the upper-right corner. Sized at 24vw clamped to a
-	     maximum so it stays proportional at every breakpoint, with a
-	     minimum so the lines render crisply on small screens. The class
-	     honours prefers-reduced-motion through the keyframe gate in
-	     global.css (animation: none in reduce mode).
-	     
-	     Twin medallions create a manuscript-frame effect: clockwise in
-	     the upper-right, counter-clockwise in the lower-left. -->
-	<div aria-hidden="true" class="pointer-events-none absolute -right-24 -top-24 hidden md:block">
-		<GeometricMedallion
-			size={420}
-			weight="thin"
-			variant="solo"
-			class="opacity-[0.18] animate-spin-slower"
+{hasImage ? (
+	<section class="relative flex min-h-[60dvh] items-center justify-center overflow-hidden md:min-h-[70dvh]">
+		<img
+			data-tina-field={tinaField(data, 'image')}
+			src={data.image!.src}
+			alt={data.image!.alt ?? ''}
+			width="1920"
+			height="1080"
+			fetchpriority="high"
+			loading="eager"
+			decoding="async"
+			class="absolute inset-0 size-full object-cover"
 		/>
-	</div>
-	<div aria-hidden="true" class="pointer-events-none absolute -bottom-32 -left-24 hidden md:block">
-		<GeometricMedallion
-			size={340}
-			weight="thin"
-			variant="solo"
-			class="opacity-[0.10] animate-spin-slow"
-		/>
-	</div>
+		<div class="absolute inset-0 bg-gradient-to-b from-background/85 via-background/70 to-background/85"></div>
+
+		<div class="reveal relative z-10 mx-auto max-w-4xl px-6 py-20 text-center md:py-28">
+			{data.headline && (
+				<h1
+					data-tina-field={tinaField(data, 'headline')}
+					class="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-foreground drop-shadow-sm md:text-5xl lg:text-6xl"
+				>
+					{data.headline}
+				</h1>
+			)}
+			{data.tagline && (
+				<p
+					data-tina-field={tinaField(data, 'tagline')}
+					class="mx-auto mt-6 max-w-2xl text-balance text-base text-foreground drop-shadow-sm md:text-lg"
+				>
+					{data.tagline}
+				</p>
+			)}
+			{actions.length > 0 && (
+				<div class="reveal-stagger mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+					{actions.map((action, i) => (
+						<div
+							data-tina-field={tinaField(action)}
+							class="reveal"
+							style={`--reveal-i: ${i}`}
+						>
+							<Button
+								href={action.link}
+								size="lg"
+								variant={action.type === 'link' ? 'outline' : 'default'}
+								class="rounded-xl px-6 text-base shadow-lg"
+							>
+								{action.icon && <Icon name={action.icon} class="size-4" />}
+								<span class="text-nowrap">{action.label}</span>
+							</Button>
+						</div>
+					))}
+				</div>
+			)}
+		</div>
+	</section>
+) : (
+	<Section class="relative overflow-hidden bg-default">
+		<div aria-hidden="true" class="pointer-events-none absolute -right-24 -top-24 hidden md:block">
+			<GeometricMedallion
+				size={420}
+				weight="thin"
+				variant="solo"
+				class="opacity-[0.18] animate-spin-slower"
+			/>
+		</div>
+		<div aria-hidden="true" class="pointer-events-none absolute -bottom-32 -left-24 hidden md:block">
+			<GeometricMedallion
+				size={340}
+				weight="thin"
+				variant="solo"
+				class="opacity-[0.10] animate-spin-slow"
+			/>
+		</div>
 
 	<div class="reveal relative text-center sm:mx-auto lg:mr-auto">
-		<div data-tina-field={tinaField(data, 'image')} class="mx-auto mb-8 size-64 md:size-80">
-			{data.image?.src
-				? <img src={data.image.src} alt={data.image.alt ?? ''} width="320" height="320" fetchpriority="high" loading="eager" decoding="async" class="size-full rounded-2xl object-cover" />
-				: ''}
-		</div>
+		<div data-tina-field={tinaField(data, 'image')} class="sr-only">Add a hero image to enable the full-width background hero.</div>
 		{data.headline && <h1 data-tina-field={tinaField(data, 'headline')} class="text-balance text-5xl md:text-6xl xl:text-7xl font-semibold leading-[1.05] tracking-tight">{data.headline}</h1>}
-		{data.tagline && <p data-tina-field={tinaField(data, 'tagline')} class="mx-auto mt-6 max-w-2xl text-balance text-base text-muted-foreground md:text-lg">{data.tagline}</p>}
-		{actions.length > 0 && (
-			<div class="reveal-stagger mt-10 flex flex-col items-center justify-center gap-2 md:flex-row">
-				{actions.map((action, i) => (
-					<div
-						data-tina-field={tinaField(action)}
-						class="reveal"
-						style={`--reveal-i: ${i}`}
-					>
-						<Button href={action.link} size="lg" variant={action.type === 'link' ? 'outline' : 'default'} class="rounded-xl px-5 text-base">
-							{action.icon && <Icon name={action.icon} class="size-4" />}
-							<span class="text-nowrap">{action.label}</span>
-						</Button>
-					</div>
-				))}
-			</div>
-		)}
-	</div>
-</Section>
+			{data.tagline && <p data-tina-field={tinaField(data, 'tagline')} class="mx-auto mt-6 max-w-2xl text-balance text-base text-muted-foreground md:text-lg">{data.tagline}</p>}
+			{actions.length > 0 && (
+				<div class="reveal-stagger mt-10 flex flex-col items-center justify-center gap-2 md:flex-row">
+					{actions.map((action, i) => (
+						<div
+							data-tina-field={tinaField(action)}
+							class="reveal"
+							style={`--reveal-i: ${i}`}
+						>
+							<Button href={action.link} size="lg" variant={action.type === 'link' ? 'outline' : 'default'} class="rounded-xl px-5 text-base">
+								{action.icon && <Icon name={action.icon} class="size-4" />}
+								<span class="text-nowrap">{action.label}</span>
+							</Button>
+						</div>
+					))}
+				</div>
+			)}
+		</div>
+	</Section>
+)}

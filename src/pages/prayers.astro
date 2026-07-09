@@ -21,8 +21,8 @@ const supplicationDefs = [
 const displaySupplications = await Promise.all(supplicationDefs.map(async (def) => {
 	try {
 		const [arabicRes, englishRes] = await Promise.all([
-			fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmani/${def.surah}/${def.ayah}.json`),
-			fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-muntakhab/${def.surah}/${def.ayah}.json`),
+			fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmanihaf/${def.surah}/${def.ayah}.json`),
+			fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-abdelhaleem/${def.surah}/${def.ayah}.json`),
 		]);
 		if (arabicRes.ok && englishRes.ok) {
 			const [arabicData, englishData] = await Promise.all([arabicRes.json(), englishRes.json()]);

@@ -46,10 +46,10 @@ try {
 			// Fetch Arabic and English in parallel
 			const [arabicRes, englishRes] = await Promise.all([
 				fetch(
-					`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmani/${surah.number}/${ayahNum}.json`,
+					`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmanihaf/${surah.number}/${ayahNum}.json`,
 				),
 				fetch(
-					`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-muntakhab/${surah.number}/${ayahNum}.json`,
+					`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-abdelhaleem/${surah.number}/${ayahNum}.json`,
 				),
 			]);
 

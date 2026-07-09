@@ -39,7 +39,7 @@ try {
 		<header class="reveal mx-auto max-w-2xl text-center">
 			<h1 class="text-balance text-5xl font-semibold tracking-tight md:text-6xl">The Quran</h1>
 			<p class="mx-auto mt-5 max-w-xl text-balance text-muted-foreground">
-				Browse all 114 surahs in Arabic Uthmani script with English Muntakhab translation. Click a surah to read its verses.
+				Browse all 114 surahs in Arabic Uthmani Hafs script with English Abdel Haleem translation. Click a surah to read its verses.
 			</p>
 		</header>
 
@@ -186,8 +186,8 @@ try {
 
 		try {
 			const [arabicRes, englishRes] = await Promise.all([
-				fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmani/surah/${surah}.json`),
-				fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-muntakhab/surah/${surah}.json`),
+				fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmanihaf/${surah}.json`),
+				fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-abdelhaleem/${surah}.json`),
 			]);
 
 			if (!arabicRes.ok || !englishRes.ok) throw new Error('Fetch failed');
@@ -198,13 +198,16 @@ try {
 			const arabicData = await arabicRes.json();
 			const englishData = await englishRes.json();
 
-			const extractAyahs = (data: any): any[] => {
-				if (Array.isArray(data)) return data;
-				if (data.ayahs) return data.ayahs;
-				if (data.surahs?.[0]?.ayahs) return data.surahs[0].ayahs;
-				if (data.surah?.ayahs) return data.surah.ayahs;
-				return [];
-			};
+		const extractAyahs = (data: any): any[] => {
+			if (Array.isArray(data)) return data;
+			// Per-surah endpoint shape: { chapter: [ {chapter, verse, text}, ... ] }
+			if (data.chapter) return data.chapter;
+			// Alternative shapes from different endpoints
+			if (data.ayahs) return data.ayahs;
+			if (data.surahs?.[0]?.ayahs) return data.surahs[0].ayahs;
+			if (data.surah?.ayahs) return data.surah.ayahs;
+			return [];
+		};
 
 			const arabicAyahs = extractAyahs(arabicData);
 			const englishAyahs = extractAyahs(englishData);

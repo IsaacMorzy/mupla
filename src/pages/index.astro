@@ -7,6 +7,7 @@ import Section from '../components/ui/Section.astro';
 import IslamicDivider from '../components/ui/IslamicDivider.astro';
 import IslamicPattern from '../components/ui/IslamicPattern.astro';
 import QuranVerse from '../components/ui/QuranVerse.astro';
+import ArabicCalligraphy from '../components/ui/ArabicCalligraphy.astro';
 import GeometricMedallion from '../components/ui/GeometricMedallion.astro';
 import Badge from '../components/ui/Badge.astro';
 import Icon from '../components/ui/Icon.astro';
@@ -113,6 +114,10 @@ const testimonials = [
 	<TinaIsland name="page" wrapper={islands.page.wrapper} params={{ slug }} primary>
 		<PageBody data={data} />
 	</TinaIsland>
+
+	<div class="mx-auto max-w-3xl px-6 py-8" aria-hidden="true">
+		<ArabicCalligraphy variant="bismillah" class="mx-auto block" size={400} />
+	</div>
 
 	<!-- Impact stats - the numbers behind the work -->
 	<Section class="relative overflow-hidden">

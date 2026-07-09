@@ -2101,3 +2101,27 @@ GOOD - the policy change is explicit, the pre-flight rules are documented, the a
 ### Self-grade
 
 GOOD — three free APIs working in tandem; browser geolocation; parallel fetches; design taste applied.
+
+---
+
+## Pass 26 — 2026-07-09 (Pexels images wired to all MDX + Arabic calligraphy in heroes)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-09                                                     |
+| Status   | COMPLETE — All page MDX images remapped to Pexels files; ArabicCalligraphy added to homepage, quran, prayers heroes; Base layout ornament |
+| Score    | +0 (content + visual polish; no new scoring gates)             |
+
+### What shipped
+
+- **All page MDX image.src fields remapped** to Pexels filenames (home-mosque.jpg, about-architecture.jpg, about-community.jpg, blog-quran.jpg, pattern-arch.jpg). Batch sed across 10 page files.
+- **ArabicCalligraphy.astro** (4 variants: bismillah, allah, muhammad, ornament) placed on homepage hero, /quran header, /prayers header, and as a footer ornament in Base.astro.
+- **global.css** enhanced with girih-rotate, arabesque-draw keyframes, .animate-girih, .arabesque-line classes with reduced-motion support.
+- **23 Pexels Muslim-themed images** downloaded via fetch-pexels.mjs.
+- **All 5 APIs verified** working (all 200).
+
+### Self-grade
+
+GOOD — Images are now all authentic Pexels photography; Arabic calligraphy adds cultural resonance to key pages; animations enhanced; reduced-motion respected.

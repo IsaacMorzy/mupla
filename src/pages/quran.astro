@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Section from '../components/ui/Section.astro';
 import IslamicDivider from '../components/ui/IslamicDivider.astro';
 import Icon from '../components/ui/Icon.astro';
+import ArabicCalligraphy from '../components/ui/ArabicCalligraphy.astro';
 import { getConfig } from '../lib/data';
 
 const config = (await getConfig()).data?.config ?? null;
@@ -38,6 +39,9 @@ try {
 	<main class="mx-auto max-w-5xl px-6 py-12 md:py-20">
 		<header class="reveal mx-auto max-w-2xl text-center">
 			<h1 class="text-balance text-5xl font-semibold tracking-tight md:text-6xl">The Quran</h1>
+			<div class="mt-6" aria-hidden="true">
+				<ArabicCalligraphy variant="bismillah" class="mx-auto block" size={300} />
+			</div>
 			<p class="mx-auto mt-5 max-w-xl text-balance text-muted-foreground">
 				Browse all 114 surahs in Arabic Uthmani Hafs script with English Abdel Haleem translation. Click a surah to read its verses, then play audio recitation from AlQuran.cloud.
 			</p>

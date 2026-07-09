@@ -1,0 +1,94 @@
+---
+/**
+ * QuranVerse - fetches a random Quran verse with Arabic and English
+ * translation from the fawazahmed0/quran-api at build time.
+ *
+ * Uses jsDelivr CDN (no auth, no rate limits). Picks a random surah
+ * and verse, fetches both the Arabic Uthmani script and the English
+ * Muntakhab translation, then renders them with an Islamic divider.
+ */
+import Section from './Section.astro';
+import IslamicDivider from './IslamicDivider.astro';
+
+interface SurahEntry {
+	number: number;
+	name: string;
+	englishName: string;
+	englishNameTranslation: string;
+	numberOfAyahs: number;
+	revelationType: string;
+}
+
+interface EditionVerse {
+	chapter: number;
+	verse: number;
+	text: string;
+}
+
+let arabicText = '';
+let englishText = '';
+let surahName = '';
+let verseNumber = 0;
+
+try {
+	// Fetch surah index to get a random surah
+	const surahsRes = await fetch(
+		'https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/surahs.json',
+	);
+	if (surahsRes.ok) {
+		const surahs: SurahEntry[] = await surahsRes.json();
+		const surah = surahs[Math.floor(Math.random() * surahs.length)];
+		if (surah) {
+			const ayahNum = Math.floor(Math.random() * surah.numberOfAyahs) + 1;
+			surahName = surah.englishName;
+			verseNumber = ayahNum;
+
+			// Fetch Arabic and English in parallel
+			const [arabicRes, englishRes] = await Promise.all([
+				fetch(
+					`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmani/${surah.number}/${ayahNum}.json`,
+				),
+				fetch(
+					`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-muntakhab/${surah.number}/${ayahNum}.json`,
+				),
+			]);
+
+			if (arabicRes.ok) {
+				const a: EditionVerse = await arabicRes.json();
+				arabicText = a.text;
+			}
+			if (englishRes.ok) {
+				const e: EditionVerse = await englishRes.json();
+				englishText = e.text;
+			}
+		}
+	}
+} catch {
+	// Silently fall back - the section renders nothing if fetch fails.
+}
+
+const hasVerse = Boolean(arabicText && englishText);
+---
+
+{hasVerse && (
+	<Section class="relative overflow-hidden">
+			<div class="reveal mx-auto max-w-3xl px-6 text-center">
+				<h2 class="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+					Qur'anic wisdom
+				</h2>
+				<blockquote cite={`https://quran.com/${surahName.toLowerCase().replace(/\s+/g, '-')}/${verseNumber}`} class="mt-6">
+					<p lang="ar" dir="rtl" class="font-serif text-3xl leading-[1.8] text-foreground md:text-4xl lg:text-5xl">
+						{arabicText}
+					</p>
+					<p class="mx-auto mt-6 max-w-2xl text-balance italic leading-relaxed text-muted-foreground">
+						{englishText}
+					</p>
+				</blockquote>
+				<footer class="mt-6">
+					<cite class="text-sm not-italic text-muted-foreground">
+						Surah {surahName}, verse {verseNumber}
+					</cite>
+				</footer>
+			</div>
+		</Section>
+)}

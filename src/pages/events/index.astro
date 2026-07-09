@@ -65,7 +65,6 @@ const restGrouped = groupedEntries
 >
 	<main class="mx-auto max-w-7xl px-6 py-12 md:py-20">
 		<header class="reveal mx-auto max-w-3xl text-center">
-			<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">What's coming up</p>
 			<h1 class="mt-3 text-balance text-5xl font-semibold tracking-tight md:text-6xl">Events</h1>
 			<p class="mx-auto mt-5 max-w-2xl text-balance text-muted-foreground">
 				From weekly iftars to workshops to our annual gala. Find what is on the calendar and how to join.
@@ -97,7 +96,6 @@ const restGrouped = groupedEntries
 							     (DESIGN.md §7 forbids gradients on backgrounds) - just solid token colors. -->
 							<div class="hidden flex-col items-start justify-end p-8 md:flex md:aspect-auto md:h-full md:bg-secondary">
 								<Icon name="calendar-event" class="size-12 text-primary" />
-								<p class="mt-3 text-sm font-medium uppercase tracking-wider text-muted-foreground">Upcoming event</p>
 							</div>
 						)}
 						<div class="flex flex-col justify-center gap-4 p-8 md:p-10">
@@ -212,8 +210,7 @@ const restGrouped = groupedEntries
 				<IslamicDivider variant="single" class="max-w-4xl mx-auto mb-8" />
 				<div class="mb-6 flex items-end justify-between gap-4">
 					<div>
-						<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Archive</p>
-						<h2 class="mt-1 text-2xl font-semibold md:text-3xl">Past events</h2>
+						<h2 class="text-2xl font-semibold md:text-3xl">Past events</h2>
 					</div>
 					<span class="text-sm text-muted-foreground">{past.length} on record</span>
 				</div>
@@ -224,11 +221,11 @@ const restGrouped = groupedEntries
 								<div class="min-w-0 flex-1">											<h3 class="font-medium transition-colors group-hover:text-primary">
 										{event.title}
 									</h3>
-									<p class="mt-1 text-sm text-muted-foreground">
-										<FormattedDate date={new Date(event.date)} />
-										<span class="ml-1 text-muted-foreground/80" title={new Date(event.date).toLocaleDateString()}>· {relativePast(event.date)}</span>
-										{event.location && ` · ${event.location}`}
-									</p>
+						<p class="mt-1 text-sm text-muted-foreground">
+							<FormattedDate date={new Date(event.date)} />
+							<span class="text-muted-foreground/80" title={new Date(event.date).toLocaleDateString()}>{' ' + relativePast(event.date)}</span>
+							{event.location && ` - ${event.location}`}
+						</p>
 								</div>
 								<Icon name="arrow-right" class="size-4 text-muted-foreground transition-transform group-hover:translate-x-1" />
 							</a>

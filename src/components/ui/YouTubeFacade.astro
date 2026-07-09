@@ -1,7 +1,7 @@
 ---
 /**
  * Click-to-load YouTube facade. Renders only a thumbnail + play button so the
- * page ships zero YouTube JS/cookies on load — the privacy-friendly
+ * page ships zero YouTube JS/cookies on load - the privacy-friendly
  * `youtube-nocookie.com` iframe is injected on first click.
  *
  * Expects a positioned (relative) parent that controls sizing/aspect ratio;
@@ -16,7 +16,7 @@ interface Props {
 const { id, params = '' } = Astro.props;
 
 // Resolve the sharpest available poster at build time so the crisp image is in
-// the HTML on first paint — no client-side swap, no blurry flash. maxresdefault
+// the HTML on first paint - no client-side swap, no blurry flash. maxresdefault
 // (1280×720) only exists if the uploader provided an HD thumbnail; it 404s
 // otherwise, so fall back to hqdefault (always present). The fetch is cached per
 // id to avoid re-probing the same video across multiple instances.

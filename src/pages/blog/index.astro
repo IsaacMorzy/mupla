@@ -14,7 +14,7 @@ const posts: CmsBlog[] = await listBlogs();
 const config = (await getConfig()).data?.config ?? null;
 
 // Fall back to "Community" when an older post has no category, and to a
-// shared "author" label when none is set — keeps the visual grid uniform
+// shared "author" label when none is set - keeps the visual grid uniform
 // without forcing editors to fill the new fields on every legacy post.
 const FALLBACK_CATEGORY = 'Community';
 const FALLBACK_AUTHOR = 'mupla community';
@@ -25,7 +25,7 @@ const enriched = posts.map((post) => ({
 	_displayAuthor: ((post as any).author as string | null | undefined) || FALLBACK_AUTHOR,
 }));
 
-// Derive the category list from the posts themselves — editors control
+// Derive the category list from the posts themselves - editors control
 // categories by setting the field in TinaCMS; this just reflects reality.
 const categoryCounts = enriched.reduce<Record<string, number>>((acc, p) => {
 	acc[p._displayCategory] = (acc[p._displayCategory] ?? 0) + 1;
@@ -172,7 +172,7 @@ const rest = enriched.slice(1);
 				))}
 			</ul>
 		) : (
-			<p class="mt-12 text-center text-muted-foreground">No more posts yet — check back soon.</p>
+			<p class="mt-12 text-center text-muted-foreground">No more posts yet - check back soon.</p>
 		)}
 
 		<section class="reveal mt-20 md:mt-24">

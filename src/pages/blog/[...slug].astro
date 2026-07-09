@@ -23,7 +23,7 @@ if (!data) return new Response('Not Found', { status: 404 });
 const allPosts: CmsBlog[] = await listBlogs();
 
 // Pull 3 related posts: same category when possible, otherwise most recent that
-// isn't the current post. Cap at 3 — keeps the footer compact and on-brand.
+// isn't the current post. Cap at 3 - keeps the footer compact and on-brand.
 // `category`/`author` are present on the generated Tina Blog type as `string | null`.
 const currentCategory = categoryOf(data as CmsBlog);
 const related: CmsBlog[] = allPosts
@@ -50,7 +50,7 @@ const layoutProps = {
 <BlogPost {...layoutProps}>
 	<article>
 		<IslamicDivider variant="single" class="max-w-4xl mx-auto mt-8 mb-4" />
-		<!-- Reading-progress bar — single-line accent that grows as the user
+		<!-- Reading-progress bar - single-line accent that grows as the user
 		     scrolls. No JS library, just one rAF loop reading scroll position. -->
 		<div
 			id="reading-progress"
@@ -62,7 +62,7 @@ const layoutProps = {
 			<BlogBody data={data} />
 		</TinaIsland>
 
-		<!-- Author + meta strip — keeps single-voice attribution visible without
+		<!-- Author + meta strip - keeps single-voice attribution visible without
 		     intruding on the prose. Pure-static; falls back gracefully if optional
 		     `author` field on the schema was never populated. -->
 		<aside class="mx-auto mt-12 max-w-3xl border-t border-border px-6 pt-8">

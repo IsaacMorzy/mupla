@@ -9,7 +9,7 @@ const { videoId } = Astro.props;
 
 /**
  * Accept a bare ID, an ID with a share suffix (`?si=...`), or a full
- * YouTube URL — and always emit a clean `<id>` so a pasted value never
+ * YouTube URL - and always emit a clean `<id>` so a pasted value never
  * produces a malformed embed URL.
  */
 function extractId(input: string): string {

@@ -36,7 +36,7 @@ const action = data.action?.trim() || '';
 const to = data.to ?? 'hello@mupla.org';
 const subject = data.subject ?? 'Message from the mupla website';
 const submitLabel = data.submitLabel ?? 'Send message';
-const successMessage = data.successMessage ?? "Thanks for reaching out! Your message has been sent — we'll be in touch within two business days.";
+const successMessage = data.successMessage ?? "Thanks for reaching out! Your message has been sent - we'll be in touch within two business days.";
 const errorMessage = data.errorMessage ?? "Something went wrong. Please email us directly at hello@mupla.org.";
 // Unique ID so multiple contact forms on a page don't collide.
 const formId = `contact-form-${Math.random().toString(36).slice(2, 9)}`;
@@ -69,7 +69,7 @@ const formId = `contact-form-${Math.random().toString(36).slice(2, 9)}`;
 			<Label for={`${formId}-message`}>Message</Label>
 			<Textarea id={`${formId}-message`} name="message" required rows={6} placeholder="How can we help?" />
 		</div>
-		{/* Honeypot — hidden from real users, blocks spam bots when filled. Formspree / Netlify Forms ignore submissions with this field set. */}
+		{/* Honeypot - hidden from real users, blocks spam bots when filled. Formspree / Netlify Forms ignore submissions with this field set. */}
 		<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="sr-only" />
 		<div class="flex items-center justify-between gap-4">
 			<p class="text-xs text-muted-foreground">We read every message and respond within two business days.</p>
@@ -77,8 +77,8 @@ const formId = `contact-form-${Math.random().toString(36).slice(2, 9)}`;
 		</div>
 		<div data-form-feedback hidden>
 			<Alert variant="default" data-form-alert>
-				<AlertTitle data-form-alert-title>—</AlertTitle>
-				<AlertDescription data-form-alert-body>—</AlertDescription>
+				<AlertTitle data-form-alert-title>-</AlertTitle>
+				<AlertDescription data-form-alert-body>-</AlertDescription>
 			</Alert>
 		</div>
 	</form>

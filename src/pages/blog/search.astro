@@ -10,7 +10,7 @@ const config = (await getConfig()).data?.config ?? null;
 ---
 
 <Base
-	title={`Search${config?.seo?.title ? ` — ${config.seo.title}` : ''}`}
+	title={`Search${config?.seo?.title ? ` - ${config.seo.title}` : ''}`}
 	description="Search blog posts and upcoming events on the mupla foundation site."
 >
 	<main class="mx-auto max-w-3xl px-6 py-16">
@@ -112,7 +112,7 @@ const config = (await getConfig()).data?.config ?? null;
 		};
 
 		// Pull a small context window around the first match in the body so result
-		// snippets show WHY the page ranked — not just the title.
+		// snippets show WHY the page ranked - not just the title.
 		const snippet = (text: string, trimmedQuery: string): string => {
 			const lower = text.toLowerCase();
 			const q = trimmedQuery.toLowerCase();
@@ -144,7 +144,7 @@ const config = (await getConfig()).data?.config ?? null;
 			}
 			const q = query.trim();
 			if (!q) {
-				status!.textContent = `${items.length} ${items.length === 1 ? 'entry' : 'entries'} indexed — type to search.`;
+				status!.textContent = `${items.length} ${items.length === 1 ? 'entry' : 'entries'} indexed - type to search.`;
 				return;
 			}
 			if (entries.length === 0) {
@@ -154,7 +154,7 @@ const config = (await getConfig()).data?.config ?? null;
 			const shown = entries.length;
 			status!.textContent =
 				total > shown
-					? `${total} matches — showing top ${shown} for "${q}".`
+					? `${total} matches - showing top ${shown} for "${q}".`
 					: `${shown} ${shown === 1 ? 'result' : 'results'} for "${q}".`;
 			const frag = document.createDocumentFragment();
 			for (const entry of entries) {
@@ -217,7 +217,7 @@ const config = (await getConfig()).data?.config ?? null;
 			.then((data: Entry[]) => {
 				items = Array.isArray(data) ? data : [];
 				status!.textContent = items.length
-					? `${items.length} ${items.length === 1 ? 'entry' : 'entries'} indexed — type to search.`
+					? `${items.length} ${items.length === 1 ? 'entry' : 'entries'} indexed - type to search.`
 					: 'Search index is empty.';
 				if (location.hash.startsWith('#q=')) {
 					const preset = decodeURIComponent(location.hash.slice(3));

@@ -33,7 +33,7 @@ const calDates = `${toCalDate(data.date)}/${toCalDate(data.endDate)}`;
 const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(data.title ?? 'Event')}&dates=${calDates}&location=${encodeURIComponent(data.location ?? '')}&details=${encodeURIComponent(descriptionText)}`;
 ---
 <Base
-	title={`${data.title ?? 'Event'}${config?.seo?.title ? ` — ${config.seo.title}` : ''}`}
+	title={`${data.title ?? 'Event'}${config?.seo?.title ? ` - ${config.seo.title}` : ''}`}
 	description={descriptionText}
 >
 	<main class="mx-auto max-w-3xl px-6 py-16">

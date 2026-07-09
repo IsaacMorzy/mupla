@@ -27,7 +27,7 @@ const groupKey = (iso: string) => {
 // archive list. `Intl.RelativeTimeFormat` with `numeric: 'auto'` uses locale
 // phrasing for the special buckets (yesterday / last week / last month / last
 // year) and falls back to numeric for everything else. Buckets are sized so
-// "today" never shows up in the past list (it can't — past is filtered by
+// "today" never shows up in the past list (it can't - past is filtered by
 // `date < now`) and so the smallest meaningful tag is "1 day ago" /
 // "yesterday".
 const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
@@ -94,7 +94,7 @@ const restGrouped = groupedEntries
 						) : (
 							<!-- No-image fallback: a quiet amber-accented surface using a single OKLCH-aware
 							     secondary tint so the featured card still feels distinct. No gradient
-							     (DESIGN.md §7 forbids gradients on backgrounds) — just solid token colors. -->
+							     (DESIGN.md §7 forbids gradients on backgrounds) - just solid token colors. -->
 							<div class="hidden flex-col items-start justify-end p-8 md:flex md:aspect-auto md:h-full md:bg-secondary">
 								<Icon name="calendar-event" class="size-12 text-primary" />
 								<p class="mt-3 text-sm font-medium uppercase tracking-wider text-muted-foreground">Upcoming event</p>
@@ -240,7 +240,7 @@ const restGrouped = groupedEntries
 
 		{upcoming.length === 0 && past.length === 0 && (
 			<p class="mt-12 text-center text-muted-foreground">
-				No events scheduled right now. Check back soon — or <a href="/get-involved" class="underline">get involved</a> to help us plan the next one.
+				No events scheduled right now. Check back soon - or <a href="/get-involved" class="underline">get involved</a> to help us plan the next one.
 			</p>
 		)}
 	</main>

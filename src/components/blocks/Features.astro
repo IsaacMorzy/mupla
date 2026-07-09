@@ -29,7 +29,7 @@ const items = (data.items ?? []).filter(it => it !== null);
 					style={`--reveal-i: ${i}`}
 				>
 					<CardHeader class="pb-3">
-						<div data-tina-field={tinaField(item, 'icon')} class="bg-muted text-foreground mx-auto flex size-14 items-center justify-center rounded-full border border-border/60">
+						<div data-tina-field={tinaField(item, 'icon')} class="bg-muted text-foreground mx-auto flex size-14 items-center justify-center rounded-2xl border border-border/60">
 							{item.icon && <Icon name={item.icon} class="size-6" />}
 						</div>
 						<h3 data-tina-field={tinaField(item, 'title')} class="mt-6 font-medium">{item.title}</h3>

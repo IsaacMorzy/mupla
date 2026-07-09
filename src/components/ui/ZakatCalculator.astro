@@ -1,6 +1,6 @@
 ---
 /**
- * ZakatCalculator — interactive 2.5% Zakat estimator.
+ * ZakatCalculator - interactive 2.5% Zakat estimator.
  *
  * Pure client-side; no build-time data needed. Currency input is parsed
  * as a plain number (no Symbol characters) so the math always works.
@@ -14,14 +14,12 @@
  * result reminds the user to confirm with their own scholar.
  */
 import Section from './Section.astro';
-import GeometricDivider from './GeometricDivider.astro';
 ---
 
 <Section class="bg-default">
 	<div class="mx-auto max-w-4xl px-6">
 		<div class="reveal text-center">
-			<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">A starting point</p>
-			<h2 class="mt-3 text-balance text-3xl font-semibold md:text-4xl">Calculate your Zakat</h2>
+			<h2 class="text-balance text-3xl font-semibold md:text-4xl">Calculate your Zakat</h2>
 			<p class="mx-auto mt-3 max-w-2xl text-muted-foreground">
 				Zakat is 2.5% of the wealth you have held for one lunar year. Add up what you own, subtract what you owe, and the form below shows a starting figure. Confirm the final amount with your own scholar before giving.
 			</p>
@@ -127,10 +125,9 @@ import GeometricDivider from './GeometricDivider.astro';
 			class="reveal mt-8 grid gap-6 rounded-2xl border border-primary/20 bg-primary/5 p-6 md:grid-cols-[1fr_auto] md:items-center md:gap-10 md:p-10"
 		>
 			<div>
-				<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Starting figure</p>
 				<p
 					data-zakat-amount
-					class="mt-2 font-serif text-5xl font-medium text-foreground lg:text-6xl"
+					class="font-serif text-5xl font-medium text-foreground lg:text-6xl"
 					aria-live="polite"
 				>$0.00</p>
 				<p data-zakat-breakdown class="mt-2 text-sm text-muted-foreground">
@@ -152,7 +149,6 @@ import GeometricDivider from './GeometricDivider.astro';
 	</div>
 </Section>
 
-<GeometricDivider class="max-w-7xl mx-auto opacity-70" />
 
 <script>
 	// Live Zakat computation. Currency inputs may include `0.00` empty

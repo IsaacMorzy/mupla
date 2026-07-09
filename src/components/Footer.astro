@@ -33,7 +33,7 @@ const newsletterAction = (import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '').toStri
 					<img src={seo.logo} alt={seo.title ?? ''} class="mb-4 size-10" />
 				)}
 				<h2 class="text-base font-semibold text-foreground">{seo?.title}</h2>
-				<p class="mt-2">Get monthly updates on our programs, events, and impact — straight to your inbox.</p>
+				<p class="mt-2">Get monthly updates on our programs, events, and impact - straight to your inbox.</p>
 				<form
 					id={newsletterId}
 					class="mt-5 flex flex-col gap-2 sm:flex-row sm:items-end"
@@ -53,7 +53,7 @@ const newsletterAction = (import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '').toStri
 							placeholder="you@example.com"
 							class="bg-background"
 						/>
-					{/* Honeypot — hidden from real users, blocks spam bots when filled. Formspree / Netlify Forms ignore submissions with this field set. */}
+					{/* Honeypot - hidden from real users, blocks spam bots when filled. Formspree / Netlify Forms ignore submissions with this field set. */}
 					<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] size-0 opacity-0" />
 					</div>
 					<Button type="submit" size="lg">

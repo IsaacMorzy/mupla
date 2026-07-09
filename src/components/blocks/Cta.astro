@@ -10,6 +10,7 @@ interface Props { data: CtaBlock }
 
 const { data } = Astro.props;
 const actions = (data.actions ?? []).filter(a => a !== null);
+const headingId = (data.title ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || undefined;
 ---
 
 <Section class="relative overflow-hidden">
@@ -33,7 +34,7 @@ const actions = (data.actions ?? []).filter(a => a !== null);
 		/>
 	</div>
 	<div class="reveal relative text-center">
-		<h2 class="text-balance text-4xl font-semibold lg:text-5xl" data-tina-field={tinaField(data, 'title')}>{data.title}</h2>
+		<h2 id={headingId} class="text-balance text-4xl font-semibold lg:text-5xl" data-tina-field={tinaField(data, 'title')}>{data.title}</h2>
 		<p class="mx-auto mt-4 max-w-2xl text-balance text-muted-foreground" data-tina-field={tinaField(data, 'description')}>{data.description}</p>
 		<div class="reveal-stagger mt-12 flex flex-wrap justify-center gap-4">
 			{actions.map((action, i) => (

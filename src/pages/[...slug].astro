@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import TinaIsland from '@tinacms/astro/TinaIsland.astro';
 import PageBody from '../components/islands/PageBody.astro';
+import ZakatCalculator from '../components/ui/ZakatCalculator.astro';
 import { getConfig, getPage, listPages } from '../lib/data';
 import { islands } from '../lib/islands';
 
@@ -27,4 +28,5 @@ const config = (await getConfig()).data?.config ?? null;
 	<TinaIsland name="page" wrapper={islands.page.wrapper} params={{ slug }} primary>
 		<PageBody data={data} />
 	</TinaIsland>
+	{slug === 'donate' && <ZakatCalculator />}
 </Base>

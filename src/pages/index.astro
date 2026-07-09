@@ -35,7 +35,7 @@ const upcomingEvents = allEvents
 	.filter((e) => Boolean(e.date) && new Date(e.date as string).valueOf() >= now)
 	.slice(0, 3);
 
-// Hard-coded impact stats — these are the canonical numbers from programs.mdx.
+// Hard-coded impact stats - these are the canonical numbers from programs.mdx.
 // They live here (not in TinaCMS) so the homepage always reflects the latest
 // verified count without requiring an editor to keep two places in sync.
 const impactStats = [
@@ -45,13 +45,13 @@ const impactStats = [
 	{ stat: '100%', type: 'Of Zakat funds distributed directly to recipients' },
 ];
 
-// Programs quick links — mirrors programs.mdx. Links go to /programs which
+// Programs quick links - mirrors programs.mdx. Links go to /programs which
 // has the full list; the homepage preview sells the idea.
 const programCards = [
 	{
 		icon: 'tabler:book',
 		title: `Qur'an & Arabic circles`,
-		desc: 'Weekly study circles for all levels — beginners to advanced. Childcare provided.',
+		desc: 'Weekly study circles for all levels - beginners to advanced. Childcare provided.',
 		link: '/programs',
 	},
 	{
@@ -93,7 +93,7 @@ const testimonials = [
 		role: 'Pantry neighbor',
 	},
 	{
-		quote: 'The most useful thing a volunteer can do is listen, and then do the small specific thing that was asked for. Our volunteers show up every Saturday for three months — that consistency is worth more than twenty people who show up once.',
+		quote: 'The most useful thing a volunteer can do is listen, and then do the small specific thing that was asked for. Our volunteers show up every Saturday for three months - that consistency is worth more than twenty people who show up once.',
 		author: 'Nadia Saleh',
 		role: 'Refugee support lead',
 	},
@@ -113,7 +113,7 @@ const testimonials = [
 		<PageBody data={data} />
 	</TinaIsland>
 
-	<!-- Impact stats — the numbers behind the work -->
+	<!-- Impact stats - the numbers behind the work -->
 	<Section class="relative overflow-hidden">
 		<div aria-hidden="true" class="pointer-events-none absolute -right-20 top-0 hidden md:block">
 			<GeometricMedallion
@@ -128,7 +128,7 @@ const testimonials = [
 			<div class="reveal mx-auto max-w-xl space-y-4 text-center">
 				<h2 class="text-4xl font-medium lg:text-5xl">Our year-round impact</h2>
 				<p class="text-muted-foreground">
-					The numbers behind the work — what your support and your service make possible.
+					The numbers behind the work - what your support and your service make possible.
 				</p>
 			</div>
 			<div class="reveal-stagger grid divide-y *:text-center md:grid-cols-4 md:divide-x md:divide-y-0">
@@ -151,13 +151,13 @@ const testimonials = [
 
 	<IslamicDivider variant="arch" class="max-w-4xl mx-auto" />
 
-	<!-- Programs quick preview — six cards linking to /programs + /events -->
+	<!-- Programs quick preview - six cards linking to /programs + /events -->
 	<Section background="bg-secondary">
 		<div class="mx-auto max-w-7xl px-6">
 			<div class="reveal mx-auto max-w-xl text-center">
 				<h2 class="text-4xl font-medium lg:text-5xl">What we run</h2>
 				<p class="mt-4 text-muted-foreground">
-					Six core programs, volunteer-led and community-funded. Free or sliding-scale — no one is turned away.
+					Six core programs, volunteer-led and community-funded. Free or sliding-scale - no one is turned away.
 				</p>
 			</div>
 			<div class="reveal-stagger mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -358,7 +358,7 @@ const testimonials = [
 		</div>
 	</Section>
 
-	<!-- Enhanced CTA — the closer -->
+	<!-- Enhanced CTA - the closer -->
 	<Section background="bg-secondary" class="relative overflow-hidden">
 		<div aria-hidden="true" class="pointer-events-none absolute -right-20 -top-20 hidden md:block">
 			<GeometricMedallion
@@ -385,7 +385,7 @@ const testimonials = [
 				Both are essential, and both are deeply needed. Whether you give an hour on Saturday or a recurring monthly gift, you make every number on this page possible.
 			</p>
 
-			<!-- Trust signals — based on competitive research of Islamic Relief, Penny Appeal,
+			<!-- Trust signals - based on competitive research of Islamic Relief, Penny Appeal,
 			     Muslim Hands, and Zakat Foundation. All use trust badges to build donor confidence. -->
 			<div class="reveal-stagger mt-10 flex flex-wrap justify-center gap-4 text-sm">
 				<div class="reveal flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2" style="--reveal-i: 0">

@@ -14,15 +14,20 @@ interface Props { data: FeaturesBlock }
 const { data } = Astro.props;
 const items = (data.items ?? []).filter(it => it !== null);
 ---
+
 <Section>
 	<div class="mx-auto max-w-5xl px-6">
-		<div class="text-center">
+		<div class="reveal text-center">
 			<h2 data-tina-field={tinaField(data, 'title')} class="text-balance text-4xl font-semibold lg:text-5xl">{data.title}</h2>
 			<p data-tina-field={tinaField(data, 'description')} class="mt-4 text-muted-foreground">{data.description}</p>
 		</div>
-		<Card class="mx-auto mt-8 grid max-w-sm divide-y overflow-hidden md:mt-16 md:max-w-full md:grid-cols-3 md:divide-x md:divide-y-0 *:text-center">
-			{items.map((item) => (
-				<div data-tina-field={tinaField(item)}>
+		<Card class="reveal-stagger mx-auto mt-8 grid max-w-sm divide-y overflow-hidden md:mt-16 md:max-w-full md:grid-cols-3 md:divide-x md:divide-y-0 *:text-center">
+			{items.map((item, i) => (
+				<div
+					data-tina-field={tinaField(item)}
+					class="reveal card-hover"
+					style={`--reveal-i: ${i}`}
+				>
 					<CardHeader class="pb-3">
 						<div data-tina-field={tinaField(item, 'icon')} class="bg-muted text-foreground mx-auto flex size-14 items-center justify-center rounded-full border border-border/60">
 							{item.icon && <Icon name={item.icon} class="size-6" />}

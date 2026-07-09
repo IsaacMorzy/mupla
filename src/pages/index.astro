@@ -2,7 +2,18 @@
 import Base from '../layouts/Base.astro';
 import TinaIsland from '@tinacms/astro/TinaIsland.astro';
 import PageBody from '../components/islands/PageBody.astro';
-import { getConfig, getPage } from '../lib/data';
+import Quote from '../components/ui/Quote.astro';
+import Section from '../components/ui/Section.astro';
+import IslamicDivider from '../components/ui/IslamicDivider.astro';
+import IslamicPattern from '../components/ui/IslamicPattern.astro';
+import GeometricMedallion from '../components/ui/GeometricMedallion.astro';
+import Badge from '../components/ui/Badge.astro';
+import Icon from '../components/ui/Icon.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+
+import CardContent from '../components/ui/CardContent.astro';
+import { descriptionPreview, getConfig, getPage, listBlogs, listEvents } from '../lib/data';
 import { islands } from '../lib/islands';
 
 const slug = 'home';
@@ -10,6 +21,88 @@ const page = await getPage(slug);
 const data = page.data?.page;
 if (!data) return new Response('Not Found', { status: 404 });
 const config = (await getConfig()).data?.config ?? null;
+
+// Pull lightweight previews for the dynamic preview sections below
+// `<PageBody>`. We only need a few fields per item; loading the full
+// TinaCMS result keeps the preview worry-free for editors who later
+// enrich these collections (hero images, descriptions, etc.).
+const allBlogs = await listBlogs();
+const recentBlogs = allBlogs.slice(0, 3);
+
+const allEvents = await listEvents();
+const now = Date.now();
+const upcomingEvents = allEvents
+	.filter((e) => Boolean(e.date) && new Date(e.date as string).valueOf() >= now)
+	.slice(0, 3);
+
+// Hard-coded impact stats — these are the canonical numbers from programs.mdx.
+// They live here (not in TinaCMS) so the homepage always reflects the latest
+// verified count without requiring an editor to keep two places in sync.
+const impactStats = [
+	{ stat: '1,200+', type: 'Neighbors served through programs and events' },
+	{ stat: '48', type: 'Active weekly volunteers' },
+	{ stat: '18', type: 'Community programs running year-round' },
+	{ stat: '100%', type: 'Of Zakat funds distributed directly to recipients' },
+];
+
+// Programs quick links — mirrors programs.mdx. Links go to /programs which
+// has the full list; the homepage preview sells the idea.
+const programCards = [
+	{
+		icon: 'tabler:book',
+		title: `Qur'an & Arabic circles`,
+		desc: 'Weekly study circles for all levels — beginners to advanced. Childcare provided.',
+		link: '/programs',
+	},
+	{
+		icon: 'tabler:heart-handshake',
+		title: 'Zakat & Sadaqah',
+		desc: 'Confidential, dignified assistance. 100% of Zakat reaches eligible recipients.',
+		link: '/programs',
+	},
+	{
+		icon: 'tabler:users',
+		title: 'Youth mentorship',
+		desc: 'One-on-one mentoring for youth ages 11–18. One hour a week for a year.',
+		link: '/programs',
+	},
+	{
+		icon: 'tabler:home',
+		title: 'Food pantry & fridge',
+		desc: 'Weekly pantry + 24/7 community fridge. No paperwork, no questions.',
+		link: '/programs',
+	},
+	{
+		icon: 'tabler:calendar-event',
+		title: 'Community events',
+		desc: 'Iftars, lectures, family potlucks, seasonal celebrations. Open to all.',
+		link: '/events',
+	},
+	{
+		icon: 'tabler:building-community',
+		title: 'Refugee support',
+		desc: 'Airport pickups to housing to ESL classes. Walking alongside new families.',
+		link: '/programs',
+	},
+];
+
+const testimonials = [
+	{
+		quote: "I was out of work for two months and the food pantry kept my family fed. They didn't ask for paperwork, didn't ask for an ID, they just gave us a box of halal groceries and asked how we were doing.",
+		author: 'Tariq M.',
+		role: 'Pantry neighbor',
+	},
+	{
+		quote: 'The most useful thing a volunteer can do is listen, and then do the small specific thing that was asked for. Our volunteers show up every Saturday for three months — that consistency is worth more than twenty people who show up once.',
+		author: 'Nadia Saleh',
+		role: 'Refugee support lead',
+	},
+	{
+		quote: 'My mentor has been a steady presence for three years. We talk about school, about my goals, about everything. I don\'t know where I\'d be without her.',
+		author: 'Yasmin R.',
+		role: 'Youth mentee',
+	},
+];
 ---
 
 <Base
@@ -19,4 +112,313 @@ const config = (await getConfig()).data?.config ?? null;
 	<TinaIsland name="page" wrapper={islands.page.wrapper} params={{ slug }} primary>
 		<PageBody data={data} />
 	</TinaIsland>
+
+	<!-- Impact stats — the numbers behind the work -->
+	<Section class="relative overflow-hidden">
+		<div aria-hidden="true" class="pointer-events-none absolute -right-20 top-0 hidden md:block">
+			<GeometricMedallion
+				size={200}
+				weight="thin"
+				variant="twin"
+				class="opacity-[0.12] animate-spin-slower"
+			/>
+		</div>
+
+		<div class="reveal relative z-10 mx-auto max-w-5xl space-y-8 px-6 md:space-y-16">
+			<div class="reveal mx-auto max-w-xl space-y-4 text-center">
+				<h2 class="text-4xl font-medium lg:text-5xl">Our year-round impact</h2>
+				<p class="text-muted-foreground">
+					The numbers behind the work — what your support and your service make possible.
+				</p>
+			</div>
+			<div class="reveal-stagger grid divide-y *:text-center md:grid-cols-4 md:divide-x md:divide-y-0">
+				{impactStats.map((stat, i) => (
+					<div class="reveal space-y-3 py-4" style={`--reveal-i: ${i}`}>
+						<div class="font-serif text-5xl font-medium text-foreground lg:text-6xl">{stat.stat}</div>
+						<p class="text-sm text-muted-foreground">{stat.type}</p>
+					</div>
+				))}
+			</div>
+		</div>
+	</Section>
+
+	<IslamicDivider variant="single" class="max-w-4xl mx-auto" />
+
+	<Quote
+		quote="The believer's shade on the Day of Judgment is their charity."
+		source="A saying of the Prophet, peace be upon him"
+	/>
+
+	<IslamicDivider variant="arch" class="max-w-4xl mx-auto" />
+
+	<!-- Programs quick preview — six cards linking to /programs + /events -->
+	<Section background="bg-secondary">
+		<div class="mx-auto max-w-7xl px-6">
+			<div class="reveal mx-auto max-w-xl text-center">
+				<h2 class="text-4xl font-medium lg:text-5xl">What we run</h2>
+				<p class="mt-4 text-muted-foreground">
+					Six core programs, volunteer-led and community-funded. Free or sliding-scale — no one is turned away.
+				</p>
+			</div>
+			<div class="reveal-stagger mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+				{programCards.map((program, i) => (
+					<a
+						href={program.link}
+						class="reveal card-hover group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-6"
+						style={`--reveal-i: ${i}`}
+					>
+						<div class="flex size-12 items-center justify-center rounded-xl bg-muted text-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+							<Icon name={program.icon} class="size-6" />
+						</div>
+						<div class="flex-1 space-y-2">
+							<h3 class="font-medium leading-snug transition-colors group-hover:text-primary">
+								{program.title}
+							</h3>
+							<p class="text-sm text-muted-foreground">{program.desc}</p>
+						</div>
+						<span class="cta-cta-link inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground group-hover:text-primary">
+							Learn more
+							<Icon name="tabler:arrow-right" class="size-3.5" />
+						</span>
+					</a>
+				))}
+			</div>
+		</div>
+	</Section>
+
+	<IslamicDivider variant="double" class="max-w-4xl mx-auto" />
+
+	<!-- Recent blog posts -->
+	{recentBlogs.length > 0 && (
+		<Section>
+			<div class="mx-auto max-w-7xl px-6">
+				<div class="reveal flex flex-col items-end gap-2 md:flex-row md:items-end md:justify-between">
+					<div>
+						<h2 class="text-3xl font-semibold md:text-4xl">Latest from the blog</h2>
+						<p class="mt-2 max-w-xl text-muted-foreground">
+							Reflections, program updates, and notes from the community. Written by the people who show up every day.
+						</p>
+					</div>
+					<a
+						href="/blog"
+						class="cta-cta-link inline-flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-md px-2 py-1"
+					>
+						Browse all stories
+						<Icon name="tabler:arrow-right" class="size-4" />
+					</a>
+				</div>
+				<ul class="reveal-stagger mt-10 grid list-none gap-6 p-0 md:grid-cols-3 md:gap-8">
+					{recentBlogs.map((post, i) => (
+						<li class="reveal" style={`--reveal-i: ${i}`}>
+							<a
+								href={`/blog/${post._sys.filename}/`}
+								class="card-hover group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card"
+							>
+								{post.heroImage && (
+									<div class="aspect-[16/10] overflow-hidden">
+										<img
+											src={post.heroImage}
+											alt={post.title ?? ''}
+											width="720"
+											height="450"
+											loading="lazy"
+											class="size-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+										/>
+									</div>
+								)}
+								<div class="flex flex-1 flex-col gap-3 p-6">
+									<div class="flex flex-wrap items-center gap-2">
+										<Badge variant="outline">Community</Badge>
+										{post.pubDate && (
+											<time datetime={post.pubDate} class="text-xs text-muted-foreground">
+												{new Date(post.pubDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+											</time>
+										)}
+									</div>
+									<h3 class="text-balance text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+										{post.title}
+									</h3>
+									{post.description && (
+										<p class="line-clamp-3 text-sm text-muted-foreground">{descriptionPreview(post.description, 180)}</p>
+									)}
+								</div>
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		</Section>
+	)}
+
+	<!-- Upcoming events -->
+	{upcomingEvents.length > 0 && (
+		<Section background="bg-secondary">
+			<div class="mx-auto max-w-7xl px-6">
+				<div class="reveal flex flex-col items-end gap-2 md:flex-row md:items-end md:justify-between">
+					<div>
+						<h2 class="text-3xl font-semibold md:text-4xl">What's coming up</h2>
+						<p class="mt-2 max-w-xl text-muted-foreground">
+							From weekly iftars to workshops to our annual gala. Pull up a chair, all are welcome.
+						</p>
+					</div>
+					<a
+						href="/events"
+						class="cta-cta-link inline-flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-md px-2 py-1"
+					>
+						See all events
+						<Icon name="tabler:arrow-right" class="size-4" />
+					</a>
+				</div>
+				<ul class="reveal-stagger mt-10 grid list-none gap-6 p-0 md:grid-cols-3 md:gap-8">
+					{upcomingEvents.map((event, i) => (
+						<li class="reveal" style={`--reveal-i: ${i}`}>
+							<a
+								href={`/events/${event._sys.filename}/`}
+								class="card-hover group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card"
+							>
+								{event.image && (
+									<div class="aspect-[16/10] overflow-hidden">
+										<img
+											src={event.image}
+											alt={event.title ?? ''}
+											width="720"
+											height="450"
+											loading="lazy"
+											class="size-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+										/>
+									</div>
+								)}
+								<div class="flex flex-1 flex-col gap-3 p-6">
+									<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+										<time datetime={event.date} class="font-medium text-foreground">
+											{new Date(event.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
+										</time>
+										{event.location && (
+											<span class="flex items-center gap-1">
+												<Icon name="tabler:map-pin" class="size-3.5" />
+												{event.location}
+											</span>
+										)}
+									</div>
+									<h3 class="text-balance text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+										{event.title}
+									</h3>
+									{event.description && (
+										<p class="line-clamp-2 text-sm text-muted-foreground">{descriptionPreview(event.description, 180)}</p>
+									)}
+								</div>
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		</Section>
+	)}
+
+	<!-- Community testimonials -->
+	<Section class="relative overflow-hidden">
+		<IslamicPattern variant="star-grid" opacity={5} size={120} class="inset-0" />
+		<div aria-hidden="true" class="pointer-events-none absolute -left-16 top-1/2 hidden -translate-y-1/2 md:block">
+			<GeometricMedallion
+				size={240}
+				weight="thin"
+				variant="solo"
+				class="opacity-[0.10] animate-spin-slow"
+			/>
+		</div>
+
+		<div class="relative z-10 mx-auto max-w-7xl px-6">
+			<div class="reveal mx-auto max-w-xl text-center">
+				<h2 class="text-3xl font-semibold md:text-4xl">Voices from our community</h2>
+				<p class="mt-4 text-muted-foreground">
+					What our neighbors say about the programs they lean on.
+				</p>
+			</div>
+			<div class="reveal-stagger mt-12 grid gap-6 md:grid-cols-3">
+				{testimonials.map((t, i) => (
+					<Card class="reveal card-hover h-full" style={`--reveal-i: ${i}`}>
+						<CardContent class="flex flex-col gap-4">
+							<div aria-hidden="true" class="font-serif text-5xl leading-none text-primary/30">&ldquo;</div>
+							<blockquote class="flex-1">
+								<p class="text-balance text-muted-foreground leading-relaxed">{t.quote}</p>
+							</blockquote>
+							<div class="flex items-center gap-3 pt-2 border-t border-border/40">
+								<div class="flex size-9 items-center justify-center rounded-full bg-muted text-xs font-medium text-foreground">
+									{t.author.split(' ').map(w => w[0]).join('')}
+								</div>
+								<div>
+									<p class="text-sm font-medium text-foreground">{t.author}</p>
+									<p class="text-xs text-muted-foreground">{t.role}</p>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				))}
+			</div>
+		</div>
+	</Section>
+
+	<!-- Enhanced CTA — the closer -->
+	<Section background="bg-secondary" class="relative overflow-hidden">
+		<div aria-hidden="true" class="pointer-events-none absolute -right-20 -top-20 hidden md:block">
+			<GeometricMedallion
+				size={300}
+				weight="thin"
+				variant="twin"
+				class="opacity-[0.14] animate-spin-slower"
+			/>
+		</div>
+		<div aria-hidden="true" class="pointer-events-none absolute -bottom-16 -left-16 hidden md:block">
+			<GeometricMedallion
+				size={220}
+				weight="thin"
+				variant="solo"
+				class="opacity-[0.12] animate-spin-slow"
+			/>
+		</div>
+
+		<div class="reveal relative z-10 mx-auto max-w-3xl text-center px-6">
+			<h2 class="text-balance text-4xl font-semibold lg:text-5xl">
+				Every program is run by volunteers and funded by your donations
+			</h2>
+			<p class="mx-auto mt-4 max-w-2xl text-balance text-muted-foreground">
+				Both are essential, and both are deeply needed. Whether you give an hour on Saturday or a recurring monthly gift, you make every number on this page possible.
+			</p>
+
+			<!-- Trust signals — based on competitive research of Islamic Relief, Penny Appeal,
+			     Muslim Hands, and Zakat Foundation. All use trust badges to build donor confidence. -->
+			<div class="reveal-stagger mt-10 flex flex-wrap justify-center gap-4 text-sm">
+				<div class="reveal flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2" style="--reveal-i: 0">
+					<Icon name="tabler:shield-check" class="size-4 text-primary" />
+					<span class="text-muted-foreground">100% Zakat distributed</span>
+				</div>
+				<div class="reveal flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2" style="--reveal-i: 1">
+					<Icon name="tabler:file-text" class="size-4 text-primary" />
+					<span class="text-muted-foreground">Annual reports public</span>
+				</div>
+				<div class="reveal flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2" style="--reveal-i: 2">
+					<Icon name="tabler:users" class="size-4 text-primary" />
+					<span class="text-muted-foreground">Volunteer-led</span>
+				</div>
+				<div class="reveal flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2" style="--reveal-i: 3">
+					<Icon name="tabler:repeat" class="size-4 text-primary" />
+					<span class="text-muted-foreground">Recurring gifts sustain us</span>
+				</div>
+			</div>
+			<div class="reveal-stagger mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+				<div class="reveal" style="--reveal-i: 0">
+					<Button href="/get-involved" size="lg" class="rounded-xl px-6 text-base">
+						<Icon name="tabler:heart-handshake" class="size-4" />
+						<span>Volunteer</span>
+					</Button>
+				</div>
+				<div class="reveal" style="--reveal-i: 1">
+					<Button href="/donate" variant="outline" size="lg" class="rounded-xl px-6 text-base">
+						<Icon name="tabler:heart" class="size-4" />
+						<span>Donate</span>
+					</Button>
+				</div>
+			</div>
+		</div>
+	</Section>
 </Base>

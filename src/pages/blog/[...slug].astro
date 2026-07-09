@@ -5,6 +5,7 @@ import BlogBody from '../../components/islands/BlogBody.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Badge from '../../components/ui/Badge.astro';
 import Icon from '../../components/ui/Icon.astro';
+import IslamicDivider from '../../components/ui/IslamicDivider.astro';
 import { getBlog, listBlogs, categoryOf } from '../../lib/data';
 import { islands } from '../../lib/islands';
 import type { CmsBlog } from '../../lib/data';
@@ -48,6 +49,7 @@ const layoutProps = {
 
 <BlogPost {...layoutProps}>
 	<article>
+		<IslamicDivider variant="single" class="max-w-4xl mx-auto mt-8 mb-4" />
 		<!-- Reading-progress bar — single-line accent that grows as the user
 		     scrolls. No JS library, just one rAF loop reading scroll position. -->
 		<div
@@ -77,8 +79,10 @@ const layoutProps = {
 			</div>
 		</aside>
 
+		<IslamicDivider variant="single" class="max-w-4xl mx-auto mt-16" />
+
 		{related.length > 0 && (
-			<section class="mx-auto mt-16 max-w-6xl px-6 md:mt-20">
+			<section class="mx-auto mt-8 max-w-6xl px-6 md:mt-12">
 				<div class="mb-8 flex items-end justify-between gap-4">
 					<div>
 						<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Keep reading</p>

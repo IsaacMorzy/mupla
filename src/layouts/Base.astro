@@ -29,5 +29,48 @@ const config = (await getConfig()).data?.config ?? null;
 		<TinaIsland name="global-footer" wrapper={islands['global-footer'].wrapper}>
 			<Footer config={config} />
 		</TinaIsland>
+
+		<!--
+		  Scroll-reveal observer. Lightweight, idempotent, gated by
+		  prefers-reduced-motion (CSS side: any .reveal element is rendered
+		  fully opaque when reduced-motion is requested, see global.css).
+		  We pick elements up after idle timers because Block island
+		  replacements can inject new nodes after the initial observer
+		  boot, so a single mount-time sweep would miss late additions.
+		-->
+		<script>
+			const w = window as Window & { __muplaRevealBound?: boolean };
+			if (!w.__muplaRevealBound) {
+				w.__muplaRevealBound = true;
+				const init = () => {
+					const els = document.querySelectorAll<HTMLElement>('.reveal:not([data-revealed="true"])');
+					if (els.length === 0) return;
+					const observer = new IntersectionObserver(
+						(entries) => {
+							for (const entry of entries) {
+								if (entry.isIntersecting) {
+									entry.target.setAttribute('data-revealed', 'true');
+									observer.unobserve(entry.target);
+								}
+							}
+						},
+						{ threshold: 0.05, rootMargin: '0px 0px -40px 0px' },
+					);
+					els.forEach((el) => observer.observe(el));
+				};
+				// Boot after layout settles. The Tina island reconciler can
+				// mount blocks lazily on slow connections; we re-run the
+				// observer on a short debounced timer so late-mounted .reveal
+				// nodes are still picked up.
+				if (document.readyState === 'complete') init();
+				else window.addEventListener('load', init, { once: true });
+				let debounce: ReturnType<typeof setTimeout> | null = null;
+				const reobserve = () => {
+					if (debounce) clearTimeout(debounce);
+					debounce = setTimeout(init, 250);
+				};
+				document.addEventListener('astro:page-load', reobserve);
+			}
+		</script>
 	</body>
 </html>

@@ -1,0 +1,68 @@
+---
+/**
+ * GeometricMedallion — historical manuscript-inspired ornament, not a star
+ * clip-art. Renders the eight-pointed octagram (rub el hizb / Khatim Suhayl
+ * shape) by superimposing two squares rotated 45 deg to each other. The
+ * pattern matches traditional Ottoman Qur'anic illumination, where the
+ * same shape anchors chapter headings without ever reading as a "Muslim
+ * clipart sticker" — the difference is the stroke weight (1px, not bold),
+ * the warm token color (not green), and the slow rotation (60s, not a
+ * spinning-star animation). Strokes invert cleanly between light and dark
+ * through the `.ornament-stroke` class in `global.css`.
+ *
+ * Default is `aria-hidden` because this ornament carries no semantic
+ * meaning. If a caller ever sets `decorative="false"` we expose the SVG
+ * content with `role="img"` and a label.
+ */
+interface Props {
+	class?: string;
+	size?: number;
+	weight?: 'thin' | 'regular';
+	variant?: 'solo' | 'twin'; // 'twin' = two rotated frames for stronger ornament
+	label?: string;
+	decorative?: boolean;
+}
+
+const {
+	class: className,
+	size = 240,
+	weight = 'thin',
+	variant = 'solo',
+	label = 'Geometric ornament',
+	decorative = true,
+} = Astro.props;
+
+const stroke = weight === 'thin' ? 1 : 1.5;
+const rootProps: Record<string, unknown> = decorative
+	? { 'aria-hidden': true, focusable: false }
+	: { role: 'img', 'aria-label': label, focusable: false };
+---
+
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="-50 -50 100 100"
+	width={size}
+	height={size}
+	class:list={['ornament-stroke', className]}
+	stroke-width={stroke}
+	stroke-linecap='round'
+	stroke-linejoin='round'
+	{...rootProps}
+>
+	<!-- Outer octagram: two overlapping squares -->
+	{variant === 'twin' && (
+		<g class='animate-spin-counter'>
+			<rect x='-38' y='-38' width='76' height='76' rx='6' />
+			<rect x='-38' y='-38' width='76' height='76' rx='6' transform='rotate(45)' />
+		</g>
+	)}
+	<g class='animate-spin-slow'>
+		<rect x='-30' y='-30' width='60' height='60' rx='4' />
+		<rect x='-30' y='-30' width='60' height='60' rx='4' transform='rotate(45)' />
+	</g>
+	<!-- Inner concentric frame at smaller scale (12-fold classic manuscript feel) -->
+	<g>
+		<circle cx='0' cy='0' r='14' />
+		<circle cx='0' cy='0' r='6' />
+	</g>
+</svg>

@@ -12,7 +12,7 @@ import Video from './Video.astro';
 import Faq from './Faq.astro';
 import Team from './Team.astro';
 import ContactForm from './ContactForm.astro';
-import ConstellationDivider from '../space/ConstellationDivider.astro';
+import IslamicDivider from '../ui/IslamicDivider.astro';
 import type { CmsPage } from '../../lib/data';
 
 interface Props {
@@ -42,7 +42,7 @@ const blocks = (data?.blocks ?? []).filter(b => b !== null);
 	return (
 		<>
 			<div data-tina-field={tinaField(block)}>{rendered}</div>
-			{i < blocks.length - 1 && <ConstellationDivider class="my-2 opacity-70" />}
+			{i < blocks.length - 1 && <IslamicDivider variant="single" class="max-w-4xl mx-auto" />}
 		</>
 	);
 })}

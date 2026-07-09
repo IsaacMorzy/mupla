@@ -1,0 +1,53 @@
+---
+/**
+ * Quote — block-level quotation for editorial moments on a page.
+ *
+ * Use between page sections, never inside Testimonial cards (those use the
+ * Card component for proper attribution). Default style is serif, large,
+ * centered, with a slow-rotating geometric medallion above and below to
+ * anchor the rhythm — invoking the manuscript divider tradition without
+ * depending on crescent / clip-art iconography (per DESIGN.md §10).
+ *
+ * Per the brand's typography rules (DESIGN.md §3), this block sets a
+ * tight balance limit of 65ch so a long quoted verse still wraps
+ * cleanly; line-height is `leading-snug` (1.4) for editorial cadence.
+ */
+import GeometricMedallion from './GeometricMedallion.astro';
+import Section from './Section.astro';
+
+interface Props {
+	quote: string;
+	source?: string;
+}
+
+const { quote, source } = Astro.props;
+---
+
+<Section background='bg-default' class='py-16 md:py-20'>
+	<div class='mx-auto flex max-w-3xl flex-col items-center gap-6 px-6'>
+		<GeometricMedallion
+			size={56}
+			weight='thin'
+			variant='solo'
+			class='opacity-60'
+		/>
+		<blockquote
+			class='reveal text-balance text-center font-serif text-2xl leading-snug text-foreground italic md:text-3xl lg:text-[2.5rem]'
+		>
+			<span aria-hidden='true' class='font-serif text-primary'>&ldquo;</span>
+			{quote}
+			<span aria-hidden='true' class='font-serif text-primary'>&rdquo;</span>
+		</blockquote>
+		{source && (
+			<p class='text-balance text-center text-sm font-medium uppercase tracking-wider text-muted-foreground'>
+				From {source}
+			</p>
+		)}
+		<GeometricMedallion
+			size={56}
+			weight='thin'
+			variant='solo'
+			class='opacity-60'
+		/>
+	</div>
+</Section>

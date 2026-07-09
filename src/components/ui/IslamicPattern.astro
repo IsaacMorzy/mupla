@@ -1,0 +1,112 @@
+---
+/**
+ * IslamicPattern — subtle geometric pattern background.
+ *
+ * Renders an SVG <pattern> with 8-pointed star and interlocking
+ * octagonal motifs drawn from Islamic manuscript illumination. Uses
+ * the warm amber/gold palette (primary token) at very low opacity so
+ * the pattern reads as texture, not as a foreground element.
+ *
+ * Variants:
+ *   - 'star-grid' — repeating 8-point star lattice (default)
+ *   - 'girih' — interlocking geometric strapwork
+ *   - 'arabesque' — flowing vine-and-flower motif (simplified SVG)
+ *
+ * Layering: nest inside a container with `position: relative` and
+ * place `<IslamicPattern>` as an absolutely-positioned overlay
+ * (`aria-hidden`, pointer-events-none).
+ *
+ * Honors prefers-reduced-motion: pattern is static by default; the
+ * 'girih' variant adds a slow rotation when motion is allowed.
+ */
+interface Props {
+	variant?: 'star-grid' | 'girih' | 'arabesque';
+	opacity?: number; // 0-100, default 8
+	size?: number; // pattern tile size in px, default 80
+	class?: string;
+}
+
+const {
+	variant = 'star-grid',
+	opacity = 8,
+	size = 80,
+	class: className,
+} = Astro.props;
+
+const patternId = `islamic-pattern-${variant}`;
+const scale = size / 80; // base design at 80×80 viewBox
+---
+
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	class:list={['pointer-events-none absolute inset-0 size-full', className]}
+	style={`opacity: ${opacity / 100};`}
+	aria-hidden="true"
+>
+	<defs>
+		<pattern id={patternId} width={size} height={size} patternUnits="userSpaceOnUse">
+			{variant === 'star-grid' && (
+				<g transform={`scale(${scale})`} stroke="currentColor" stroke-width="0.6" fill="none" class="text-primary">
+					{/* 8-pointed star center */}
+					<rect x="36" y="36" width="8" height="8" />
+					<rect x="36" y="36" width="8" height="8" transform="rotate(45 40 40)" />
+					{/* Connecting lines */}
+					<line x1="40" y1="0" x2="40" y2="36" />
+					<line x1="40" y1="44" x2="40" y2="80" />
+					<line x1="0" y1="40" x2="36" y2="40" />
+					<line x1="44" y1="40" x2="80" y2="40" />
+					{/* Diagonal connections */}
+					<line x1="0" y1="0" x2="36" y2="36" />
+					<line x1="44" y1="44" x2="80" y2="80" />
+					<line x1="80" y1="0" x2="44" y2="36" />
+					<line x1="0" y1="80" x2="36" y2="44" />
+					{/* Small corner stars */}
+					<circle cx="20" cy="20" r="1.5" />
+					<circle cx="60" cy="20" r="1.5" />
+					<circle cx="20" cy="60" r="1.5" />
+					<circle cx="60" cy="60" r="1.5" />
+				</g>
+			)}
+			{variant === 'girih' && (
+				<g transform={`scale(${scale})`} stroke="currentColor" stroke-width="0.5" fill="none" class="text-primary">
+					{/* Interlocking hexagonal/octagonal strapwork */}
+					<polygon points="40,4 68,20 68,52 40,76 12,52 12,20" />
+					<polygon points="40,12 60,24 60,48 40,68 20,48 20,24" />
+					{/* Corner pattern elements */}
+					<polygon points="0,0 20,0 20,20 0,20" transform="rotate(0 40 40)" opacity="0.6" />
+					<polygon points="0,0 20,0 20,20 0,20" transform="rotate(90 40 40)" opacity="0.6" />
+					<polygon points="0,0 20,0 20,20 0,20" transform="rotate(180 40 40)" opacity="0.6" />
+					<polygon points="0,0 20,0 20,20 0,20" transform="rotate(270 40 40)" opacity="0.6" />
+				</g>
+			)}
+			{variant === 'arabesque' && (
+				<g transform={`scale(${scale})`} stroke="currentColor" stroke-width="0.5" fill="none" class="text-primary">
+					{/* Simplified arabesque vine pattern */}
+					<path d="M20,40 Q30,20 40,40 T60,40" />
+					<path d="M20,60 Q30,40 40,60 T60,60" />
+					<path d="M40,20 Q60,30 40,40 T40,60" />
+					<path d="M40,20 Q20,30 40,40 T40,60" opacity="0.6" />
+					{/* Leaf/flower accents */}
+					<circle cx="30" cy="30" r="2" />
+					<circle cx="50" cy="30" r="2" />
+					<circle cx="30" cy="50" r="2" />
+					<circle cx="50" cy="50" r="2" />
+					<circle cx="10" cy="40" r="1.5" opacity="0.7" />
+					<circle cx="70" cy="40" r="1.5" opacity="0.7" />
+				</g>
+			)}
+		</pattern>
+	</defs>
+	<rect width="100%" height="100%" fill={`url(#${patternId})`} />
+
+	{variant === 'girih' && (
+		<style>
+			{`@media (prefers-reduced-motion: no-preference) {
+				rect[fill="url(#${patternId})"] {
+					animation: islamic-girih-spin 180s linear infinite;
+					transform-origin: center;
+				}
+			}`}
+		</style>
+	)}
+</svg>

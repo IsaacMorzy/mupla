@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-06T12:25:16.280Z",
+  "generated_at": "2026-07-08T11:11:07.065Z",
   "license": "Pexels License (https://www.pexels.com/license/) — attribution not required, stored here for provenance.",
   "images": [
     {
@@ -11,7 +11,7 @@
       "photographer_url": "https://www.pexels.com/@apyfz",
       "photo_url": "https://www.pexels.com/photo/modern-indonesian-mosque-interior-corridor-29832017/",
       "source": "https://images.pexels.com/photos/29832017/pexels-photo-29832017.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "fetched_at": "2026-07-06T12:25:12.304Z"
+      "fetched_at": "2026-07-08T11:10:53.065Z"
     },
     {
       "file": "about-community.jpg",
@@ -22,18 +22,29 @@
       "photographer_url": "https://www.pexels.com/@cottonbro",
       "photo_url": "https://www.pexels.com/photo/friends-having-a-good-conversation-over-dinner-6955635/",
       "source": "https://images.pexels.com/photos/6955635/pexels-photo-6955635.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "fetched_at": "2026-07-06T12:25:12.855Z"
+      "fetched_at": "2026-07-08T11:10:53.484Z"
     },
     {
       "file": "donate-giving.jpg",
       "query": "hands together giving",
-      "alt": "Hands joined in giving — community members passing support forward.",
+      "alt": "Hands joined in giving, with community members passing support forward.",
       "pexels_id": 10725414,
       "photographer": "Karma Samten",
       "photographer_url": "https://www.pexels.com/@argam",
       "photo_url": "https://www.pexels.com/photo/giving-from-hands-to-hands-10725414/",
       "source": "https://images.pexels.com/photos/10725414/pexels-photo-10725414.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "fetched_at": "2026-07-06T12:25:13.382Z"
+      "fetched_at": "2026-07-08T11:10:53.845Z"
+    },
+    {
+      "file": "about-architecture.jpg",
+      "query": "mosque exterior architecture",
+      "alt": "A modern mosque exterior at golden hour.",
+      "pexels_id": 8332107,
+      "photographer": "From Salih",
+      "photographer_url": "https://www.pexels.com/@fromsalih",
+      "photo_url": "https://www.pexels.com/photo/low-angle-shot-of-kocatepe-mosque-8332107/",
+      "source": "https://images.pexels.com/photos/8332107/pexels-photo-8332107.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:10:54.905Z"
     },
     {
       "file": "blog-ramadan.jpg",
@@ -44,7 +55,7 @@
       "photographer_url": "https://www.pexels.com/@noursakina",
       "photo_url": "https://www.pexels.com/photo/family-praying-before-meal-during-ramadan-in-indonesia-36363421/",
       "source": "https://images.pexels.com/photos/36363421/pexels-photo-36363421.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "fetched_at": "2026-07-06T12:25:14.074Z"
+      "fetched_at": "2026-07-08T11:10:55.297Z"
     },
     {
       "file": "blog-quran.jpg",
@@ -55,7 +66,18 @@
       "photographer_url": "https://www.pexels.com/@michael-burrows",
       "photo_url": "https://www.pexels.com/photo/person-holding-a-quran-7129612/",
       "source": "https://images.pexels.com/photos/7129612/pexels-photo-7129612.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "fetched_at": "2026-07-06T12:25:14.699Z"
+      "fetched_at": "2026-07-08T11:10:55.634Z"
+    },
+    {
+      "file": "event-iftar.jpg",
+      "query": "ramadan iftar table",
+      "alt": "A long table set for a community iftar, lit by lantern light.",
+      "pexels_id": 36325929,
+      "photographer": "ubed",
+      "photographer_url": "https://www.pexels.com/@ubed-2156282786",
+      "photo_url": "https://www.pexels.com/photo/assorted-traditional-middle-eastern-iftar-meal-36325929/",
+      "source": "https://images.pexels.com/photos/36325929/pexels-photo-36325929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:10:56.522Z"
     },
     {
       "file": "blog-pantry.jpg",
@@ -66,7 +88,18 @@
       "photographer_url": "https://www.pexels.com/@cottonbro",
       "photo_url": "https://www.pexels.com/photo/volunteers-boxing-foods-to-be-distributed-6591165/",
       "source": "https://images.pexels.com/photos/6591165/pexels-photo-6591165.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "fetched_at": "2026-07-06T12:25:15.143Z"
+      "fetched_at": "2026-07-08T11:10:56.755Z"
+    },
+    {
+      "file": "event-pantry.jpg",
+      "query": "halal food kitchen community",
+      "alt": "Volunteers preparing halal meals in a community kitchen.",
+      "pexels_id": 36824882,
+      "photographer": "Dwi Setyo",
+      "photographer_url": "https://www.pexels.com/@dwi2793",
+      "photo_url": "https://www.pexels.com/photo/indonesian-family-celebrating-eid-al-fitr-together-36824882/",
+      "source": "https://images.pexels.com/photos/36824882/pexels-photo-36824882.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:10:57.439Z"
     },
     {
       "file": "blog-parenting.jpg",
@@ -77,7 +110,18 @@
       "photographer_url": "https://www.pexels.com/@silverkblack",
       "photo_url": "https://www.pexels.com/photo/mother-and-son-lying-down-on-carpet-with-book-23224850/",
       "source": "https://images.pexels.com/photos/23224850/pexels-photo-23224850.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "fetched_at": "2026-07-06T12:25:15.808Z"
+      "fetched_at": "2026-07-08T11:10:57.736Z"
+    },
+    {
+      "file": "event-refugee.jpg",
+      "query": "welcome family home",
+      "alt": "A new family welcomed into a community home, surrounded by volunteers.",
+      "pexels_id": 7579130,
+      "photographer": "Kindel Media",
+      "photographer_url": "https://www.pexels.com/@kindelmedia",
+      "photo_url": "https://www.pexels.com/photo/people-holding-a-wooden-home-decoration-7579130/",
+      "source": "https://images.pexels.com/photos/7579130/pexels-photo-7579130.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:10:58.179Z"
     },
     {
       "file": "blog-gala.jpg",
@@ -88,7 +132,128 @@
       "photographer_url": "https://www.pexels.com/@bertellifotografia",
       "photo_url": "https://www.pexels.com/photo/table-in-restaurant-17057034/",
       "source": "https://images.pexels.com/photos/17057034/pexels-photo-17057034.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "fetched_at": "2026-07-06T12:25:16.280Z"
+      "fetched_at": "2026-07-08T11:10:59.124Z"
+    },
+    {
+      "file": "event-class.jpg",
+      "query": "teacher adult student",
+      "alt": "A community teacher working one-on-one with a learner.",
+      "pexels_id": 37795357,
+      "photographer": "Eduard Perez",
+      "photographer_url": "https://www.pexels.com/@eduard-perez-2158828645",
+      "photo_url": "https://www.pexels.com/photo/university-classroom-discussion-with-teacher-37795357/",
+      "source": "https://images.pexels.com/photos/37795357/pexels-photo-37795357.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:10:59.508Z"
+    },
+    {
+      "file": "event-youth.jpg",
+      "query": "mentor youth conversation",
+      "alt": "A community mentor in conversation with a young person.",
+      "pexels_id": 8457442,
+      "photographer": "Norma Mortenson",
+      "photographer_url": "https://www.pexels.com/@norma-mortenson",
+      "photo_url": "https://www.pexels.com/photo/girl-talking-to-a-classmate-while-holding-a-notebook-and-a-pen-8457442/",
+      "source": "https://images.pexels.com/photos/8457442/pexels-photo-8457442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:10:59.966Z"
+    },
+    {
+      "file": "avatar-leader.jpg",
+      "query": "professional portrait man warm light",
+      "alt": "Portrait of mupla leadership.",
+      "pexels_id": 27990719,
+      "photographer": "Maximiliano Andrés Naselli Roldán",
+      "photographer_url": "https://www.pexels.com/@maximiliano-andres-naselli-roldan-1697417615",
+      "photo_url": "https://www.pexels.com/photo/a-man-in-a-suit-sitting-in-a-hotel-lobby-27990719/",
+      "source": "https://images.pexels.com/photos/27990719/pexels-photo-27990719.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:11:01.507Z"
+    },
+    {
+      "file": "avatar-programs.jpg",
+      "query": "professional portrait woman warm light",
+      "alt": "Portrait of mupla programs director.",
+      "pexels_id": 15227148,
+      "photographer": "shahin khalaji",
+      "photographer_url": "https://www.pexels.com/@shahinkhalaji",
+      "photo_url": "https://www.pexels.com/photo/young-woman-posing-on-black-background-15227148/",
+      "source": "https://images.pexels.com/photos/15227148/pexels-photo-15227148.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:11:02.079Z"
+    },
+    {
+      "file": "avatar-zakat.jpg",
+      "query": "professional portrait man smile",
+      "alt": "Portrait of mupla Zakat committee chair.",
+      "pexels_id": 13801445,
+      "photographer": "Mizuno K",
+      "photographer_url": "https://www.pexels.com/@mizunokozuki",
+      "photo_url": "https://www.pexels.com/photo/smiling-man-in-suit-posing-on-street-13801445/",
+      "source": "https://images.pexels.com/photos/13801445/pexels-photo-13801445.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:11:02.918Z"
+    },
+    {
+      "file": "avatar-youth.jpg",
+      "query": "professional portrait woman smile",
+      "alt": "Portrait of mupla youth programs lead.",
+      "pexels_id": 8171192,
+      "photographer": "Kampus Production",
+      "photographer_url": "https://www.pexels.com/@kampus",
+      "photo_url": "https://www.pexels.com/photo/a-woman-smiling-8171192/",
+      "source": "https://images.pexels.com/photos/8171192/pexels-photo-8171192.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:11:03.580Z"
+    },
+    {
+      "file": "avatar-events.jpg",
+      "query": "professional portrait woman hospitality",
+      "alt": "Portrait of mupla community events lead.",
+      "pexels_id": 3765049,
+      "photographer": "Andrea Piacquadio",
+      "photographer_url": "https://www.pexels.com/@olly",
+      "photo_url": "https://www.pexels.com/photo/selective-focus-portrait-photo-of-smiling-woman-in-black-vest-and-white-t-shirt-3765049/",
+      "source": "https://images.pexels.com/photos/3765049/pexels-photo-3765049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:11:04.097Z"
+    },
+    {
+      "file": "avatar-refugee.jpg",
+      "query": "professional portrait man kind",
+      "alt": "Portrait of mupla refugee support lead.",
+      "pexels_id": 33605541,
+      "photographer": "Tochukwu  Ekeh",
+      "photographer_url": "https://www.pexels.com/@tochukwu-ekeh-2149052634",
+      "photo_url": "https://www.pexels.com/photo/professional-portrait-of-smiling-young-adult-man-33605541/",
+      "source": "https://images.pexels.com/photos/33605541/pexels-photo-33605541.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:11:04.509Z"
+    },
+    {
+      "file": "avatar-operations.jpg",
+      "query": "professional portrait woman organizer",
+      "alt": "Portrait of mupla operations lead.",
+      "pexels_id": 8871923,
+      "photographer": "Mikhail Nilov",
+      "photographer_url": "https://www.pexels.com/@mikhail-nilov",
+      "photo_url": "https://www.pexels.com/photo/woman-in-black-long-sleeve-shirt-writing-on-white-paper-8871923/",
+      "source": "https://images.pexels.com/photos/8871923/pexels-photo-8871923.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:11:05.133Z"
+    },
+    {
+      "file": "avatar-comms.jpg",
+      "query": "professional portrait man creative",
+      "alt": "Portrait of mupla communications lead.",
+      "pexels_id": 12957043,
+      "photographer": "Malene Madsen",
+      "photographer_url": "https://www.pexels.com/@malene-madsen-277777917",
+      "photo_url": "https://www.pexels.com/photo/man-in-black-long-sleeve-shirt-near-a-gray-wall-12957043/",
+      "source": "https://images.pexels.com/photos/12957043/pexels-photo-12957043.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:11:05.962Z"
+    },
+    {
+      "file": "pattern-arch.jpg",
+      "query": "islamic geometric arch",
+      "alt": "A close-up of a geometric arch pattern, soft warm light.",
+      "pexels_id": 691552,
+      "photographer": "Emily Sherwood",
+      "photographer_url": "https://www.pexels.com/@theoriginalpem",
+      "photo_url": "https://www.pexels.com/photo/photo-of-concrete-wall-691552/",
+      "source": "https://images.pexels.com/photos/691552/pexels-photo-691552.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "fetched_at": "2026-07-08T11:11:07.065Z"
     }
   ],
   "errors": []

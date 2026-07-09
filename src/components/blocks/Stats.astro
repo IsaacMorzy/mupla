@@ -1,7 +1,7 @@
 ---
 import { tinaField } from '@tinacms/astro/tina-field';
 import Section from '../ui/Section.astro';
-import Planet from '../space/Planet.astro';
+import GeometricMedallion from '../ui/GeometricMedallion.astro';
 import type { StatsBlock } from '../../lib/data';
 
 interface Props { data: StatsBlock }
@@ -9,17 +9,41 @@ interface Props { data: StatsBlock }
 const { data } = Astro.props;
 const stats = (data.stats ?? []).filter(s => s !== null);
 ---
+
 <Section class="relative overflow-hidden">
-	<Planet class="absolute -right-10 -top-10 h-48 w-48 opacity-60" />
+	<!-- Twin geometric medallions: one rotating slowly clockwise, one
+	     counter. Sized small and dropped to low opacity so they read as a
+	     manuscript border instead of decorative noise. -->
+	<div aria-hidden="true" class="pointer-events-none absolute -right-16 top-1/2 hidden -translate-y-1/2 md:block">
+		<GeometricMedallion
+			size={220}
+			weight="thin"
+			variant="twin"
+			class="opacity-25 animate-spin-slower"
+		/>
+	</div>
+	<div aria-hidden="true" class="pointer-events-none absolute -left-16 top-1/2 hidden -translate-y-1/2 md:block">
+		<GeometricMedallion
+			size={220}
+			weight="thin"
+			variant="solo"
+			class="opacity-25 animate-spin-slow"
+		/>
+	</div>
+
 	<div class="relative mx-auto max-w-5xl space-y-8 px-6 md:space-y-16">
-		<div class="relative z-10 mx-auto max-w-xl space-y-6 text-center">
+		<div class="reveal relative z-10 mx-auto max-w-xl space-y-6 text-center">
 			<h2 data-tina-field={tinaField(data, 'title')} class="text-4xl font-medium lg:text-5xl">{data.title}</h2>
 			<p data-tina-field={tinaField(data, 'description')} class="text-muted-foreground">{data.description}</p>
 		</div>
-		<div class="grid divide-y *:text-center md:grid-cols-3 md:divide-x md:divide-y-0">
-			{stats.map((stat) => (
-				<div data-tina-field={tinaField(stat)} class="space-y-4 py-4">
-					<div data-tina-field={tinaField(stat, 'stat')} class="text-5xl font-bold">{stat.stat}</div>
+		<div class="reveal-stagger grid divide-y *:text-center md:grid-cols-3 md:divide-x md:divide-y-0">
+			{stats.map((stat, i) => (
+				<div
+					data-tina-field={tinaField(stat)}
+					class="reveal space-y-4 py-4"
+					style={`--reveal-i: ${i}`}
+				>
+					<div data-tina-field={tinaField(stat, 'stat')} class="font-serif text-5xl font-medium text-foreground lg:text-6xl">{stat.stat}</div>
 					<p data-tina-field={tinaField(stat, 'type')} class="text-muted-foreground">{stat.type}</p>
 				</div>
 			))}

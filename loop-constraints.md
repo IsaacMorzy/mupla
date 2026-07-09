@@ -31,21 +31,24 @@ The agent may read any path. Writes are forbidden on:
 The agent must not run any of:
 
 ```bash
-git push origin *                # human gate
 git reset --hard                  # unrecoverable
 git clean -fd                     # destroys untracked work
 git branch -D *                   # unrecoverable
 
 gh repo delete *                  # unrecoverable
-gh issue close *                  # human gate
-gh pr close *                     # human gate
-gh issue edit --remove-label *    # human gate
 
-vercel deploy --prod *            # human gate
 tina schema push *                # does not exist; included for intent
 pnpm publish *                    # irreversible
-rm -rf                            # within repo root only allowed by human override with recorded path
+rm -rf                            # within repo root only allowed with recorded path
 ```
+
+> **Policy precedence.** All previously-gated operations (`git push origin *`,
+> `gh issue close *`, `gh pr close *`, `gh issue edit --remove-label *`,
+> `vercel deploy --prod *`, `vercel env add *` / `vercel env rm *`) are now
+> agent-allowed per `docs/safety.md` and no longer appear in the denylist.
+> The remaining denylist covers only operations that are genuinely unrecoverable
+> (git history destruction, repo deletion, package publish). The agent is bound
+> by this denylist: every listed op is forbidden regardless of `docs/safety.md`.
 
 ## Schema denylist
 

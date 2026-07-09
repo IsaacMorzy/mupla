@@ -170,6 +170,129 @@
 	}
 }
 
+/* === Ornament stroke utility ===
+   Switches the SVG stroke color between the warm hairline in light mode
+   and the additive-white alpha in dark mode without forcing every
+   ornament to re-declare it. Lives outside @layer base so unlayered
+   utilities (e.g. `color-mix(...)`) can still reference these tokens. */
+.ornament-stroke {
+	stroke: var(--border);
+	fill: none;
+}
+.dark .ornament-stroke {
+	stroke: var(--paper-alpha-14);
+}
+
+/* === Motion + ornament layer ===
+   Cultural-resonance animation system. Honors `prefers-reduced-motion`.
+   Gated under `no-preference` so users with vestibular sensitivity get a
+   fully static page. The reveal classes are an opt-in: components add
+   `.reveal` (initial hidden state) and the IntersectionObserver (in
+   Base.astro) flips them to `.reveal[data-revealed="true"]` when they
+   enter the viewport. All transforms are GPU-friendly (translate/opacity
+   only) so we don't trigger layout. */
+@media (prefers-reduced-motion: no-preference) {
+	@keyframes mupla-spin-slow {
+		to { transform: rotate(360deg); }
+	}
+	@keyframes mupla-spin-counter {
+		to { transform: rotate(-360deg); }
+	}
+	@keyframes mupla-breathe {
+		0%, 100% { transform: scale(1); opacity: 0.55; }
+		50%      { transform: scale(1.04); opacity: 0.78; }
+	}
+	/* Islamic geometric: girih strapwork slow rotation — used by IslamicPattern */
+	@keyframes islamic-girih-spin {
+		to { transform: rotate(360deg); }
+	}
+	/* Star shimmer — subtle pulse on 8-pointed star ornaments */
+	@keyframes star-shimmer {
+		0%, 100% { opacity: 0.15; }
+		50%      { opacity: 0.35; }
+	}
+	/* Float — gentle vertical drift for decorative elements */
+	@keyframes mupla-float {
+		0%, 100% { transform: translateY(0); }
+		50%      { transform: translateY(-6px); }
+	}
+	.animate-spin-slow {
+		animation: mupla-spin-slow 60s linear infinite;
+		will-change: transform;
+	}
+	.animate-spin-slower {
+		animation: mupla-spin-slow 90s linear infinite;
+		will-change: transform;
+	}
+	.animate-spin-counter {
+		animation: mupla-spin-counter 80s linear infinite;
+		will-change: transform;
+	}
+	.animate-breathe {
+		animation: mupla-breathe 7s ease-in-out infinite;
+		will-change: transform, opacity;
+	}
+	.animate-star-shimmer {
+		animation: star-shimmer 4s ease-in-out infinite;
+	}
+	.animate-float {
+		animation: mupla-float 6s ease-in-out infinite;
+	}
+
+	.reveal {
+		opacity: 0;
+		transform: translateY(14px);
+		transition:
+			opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+			transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	/* Stagger children of a `.reveal-stagger` parent so multi-item sections
+	   enter in sequence rather than all at once. Index = 0..6 covers the
+	   real-world maximum (the largest grid we ship on this site is 6
+	   programs on the Programs page). */
+	.reveal-stagger > .reveal { transition-delay: calc(var(--reveal-i, 0) * 80ms); }
+	.reveal[data-revealed='true'] {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.reveal { opacity: 1 !important; transform: none !important; }
+	.animate-spin-slow,
+	.animate-spin-slower,
+	.animate-spin-counter,
+	.animate-breathe,
+	.animate-star-shimmer,
+	.animate-float { animation: none !important; }
+}
+
+/* Bubble up the reveal index for each child so a single rule can schedule
+   the staggered cascade without each child needing its own class. */
+.reveal { --reveal-i: 0; }
+
+/* Subtle hover micro-interaction for cards. Surface tinting (no shadows
+   per DESIGN.md §6). Pairs with the existing `--card` token, so it
+   inverts cleanly in dark mode. */
+.card-hover {
+	transition:
+		background-color 240ms cubic-bezier(0.22, 1, 0.36, 1),
+		border-color 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card-hover:hover {
+	background-color: color-mix(in oklch, var(--accent) 80%, transparent);
+	border-color: color-mix(in oklch, var(--primary) 18%, var(--border));
+}
+
+/* Buttons across the site share the same focus-ring discipline as the
+   shadcn Button primitive. Centralised here so every CTA visibly snaps
+   into focus on keyboard navigation, including icons produced by the
+   decorative geometric ornaments that contain inline CTAs. */
+.cta-cta-link {
+	transition: color 200ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cta-cta-link:hover { transform: translateX(2px); }
+
 /* Prose (blog body) follows the theme tokens so it inverts in dark mode and
    keeps the warm tint rather than the plugin's default zero-chroma grays.
    Unlayered so it overrides the typography plugin's layered variables. */

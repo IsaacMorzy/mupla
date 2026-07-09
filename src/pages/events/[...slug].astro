@@ -6,6 +6,7 @@ import Button from '../../components/ui/Button.astro';
 import Badge from '../../components/ui/Badge.astro';
 import Countdown from '../../components/ui/Countdown.astro';
 import Icon from '../../components/ui/Icon.astro';
+import IslamicDivider from '../../components/ui/IslamicDivider.astro';
 import { descriptionParagraphs, descriptionPreview, getConfig, getEvent, listEvents } from '../../lib/data';
 
 export async function getStaticPaths() {
@@ -57,7 +58,7 @@ const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${en
 				{eventDate && <Countdown target={data.date} />}
 				{data.location && (
 					<span class="flex items-center gap-1">
-						<Icon name="map-pin" class="size-3.5" />
+						<Icon name="tabler:map-pin" class="size-3.5" />
 						{data.location}
 					</span>
 				)}
@@ -85,6 +86,7 @@ const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${en
 		)}
 
 		<div class="prose prose-lg max-w-none">
+			<IslamicDivider variant="single" class="max-w-xl mx-auto my-8" />
 			{descriptionParagraphs(data.description).map((paragraph) => (
 				<p>{paragraph}</p>
 			))}
@@ -92,6 +94,7 @@ const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${en
 
 		{eventDate && (
 			<aside class="mt-16 rounded-xl border bg-card p-6 text-sm">
+				<IslamicDivider variant="single" class="max-w-xs mx-auto mb-6" />
 				<h2 class="text-base font-medium">Add to your calendar</h2>
 				<p class="mt-1 text-muted-foreground">Set a reminder so you don't miss it.</p>
 				<a

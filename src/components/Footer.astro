@@ -5,6 +5,7 @@ import IconLink from './IconLink.astro';
 import Input from './ui/Input.astro';
 import Label from './ui/Label.astro';
 import Button from './ui/Button.astro';
+import IslamicDivider from './ui/IslamicDivider.astro';
 
 interface Props {
 	config?: CmsConfig | null;
@@ -25,6 +26,7 @@ const newsletterAction = (import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '').toStri
 ---
 <footer class="border-t bg-background pt-16 pb-8 text-sm text-muted-foreground relative overflow-hidden">
 	<div class="relative mx-auto flex max-w-6xl flex-col gap-12 px-6">
+		<IslamicDivider variant="single" class="max-w-4xl mx-auto -mt-10 mb-2" />
 		<div class="grid gap-10 md:grid-cols-2 md:gap-16">
 			<div class="max-w-md">
 				{seo?.logo && (

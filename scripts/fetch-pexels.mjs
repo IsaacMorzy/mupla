@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Downloads 8 curated, culturally-authentic Pexels images for the mupla
+// Downloads curated, culturally-authentic Pexels images for the mupla
 // Foundation site, saves them to public/images/, and emits a manifest with
 // attribution metadata for traceability.
 //
@@ -42,7 +42,14 @@ if (!apiKey) {
 
 await mkdir(IMG_DIR, { recursive: true });
 
+// Curated Pexels queries. Ordered to keep a steady photographic narrative
+// (mosque + community hero, Ramadan iftar, Qur'an study, halal kitchen,
+// refugee support, mentorship, plus portrait avatars for the team page
+// and event detail cards). Each query includes a destination alt string
+// that we can mirror verbatim in the MDX image fields. Re-run to refresh
+// the file inventory without bumping filenames.
 const MANIFEST = [
+	// Site-wide hero / split images
 	{
 		file: 'home-mosque.jpg',
 		query: 'modern mosque interior community',
@@ -56,8 +63,15 @@ const MANIFEST = [
 	{
 		file: 'donate-giving.jpg',
 		query: 'hands together giving',
-		alt: 'Hands joined in giving — community members passing support forward.',
+		alt: 'Hands joined in giving, with community members passing support forward.',
 	},
+	{
+		file: 'about-architecture.jpg',
+		query: 'mosque exterior architecture',
+		alt: 'A modern mosque exterior at golden hour.',
+	},
+
+	// Ramadan / Qur'an / spiritual
 	{
 		file: 'blog-ramadan.jpg',
 		query: 'family breaking fast together',
@@ -69,9 +83,21 @@ const MANIFEST = [
 		alt: 'A community member reading Qur\u2019an with focused attention.',
 	},
 	{
+		file: 'event-iftar.jpg',
+		query: 'ramadan iftar table',
+		alt: 'A long table set for a community iftar, lit by lantern light.',
+	},
+
+	// Service / pantry / refugee
+	{
 		file: 'blog-pantry.jpg',
 		query: 'volunteers food boxes',
 		alt: 'Volunteers packing grocery boxes at a community food pantry.',
+	},
+	{
+		file: 'event-pantry.jpg',
+		query: 'halal food kitchen community',
+		alt: 'Volunteers preparing halal meals in a community kitchen.',
 	},
 	{
 		file: 'blog-parenting.jpg',
@@ -79,9 +105,75 @@ const MANIFEST = [
 		alt: 'A parent reading alongside their child at home.',
 	},
 	{
+		file: 'event-refugee.jpg',
+		query: 'welcome family home',
+		alt: 'A new family welcomed into a community home, surrounded by volunteers.',
+	},
+	{
 		file: 'blog-gala.jpg',
 		query: 'elegant dinner event',
 		alt: 'Annual gala dinner gathering of mupla Foundation supporters.',
+	},
+
+	// Education / youth / mentorship
+	{
+		file: 'event-class.jpg',
+		query: 'teacher adult student',
+		alt: 'A community teacher working one-on-one with a learner.',
+	},
+	{
+		file: 'event-youth.jpg',
+		query: 'mentor youth conversation',
+		alt: 'A community mentor in conversation with a young person.',
+	},
+
+	// Team avatar portraits (used on /team page)
+	{
+		file: 'avatar-leader.jpg',
+		query: 'professional portrait man warm light',
+		alt: 'Portrait of mupla leadership.',
+	},
+	{
+		file: 'avatar-programs.jpg',
+		query: 'professional portrait woman warm light',
+		alt: 'Portrait of mupla programs director.',
+	},
+	{
+		file: 'avatar-zakat.jpg',
+		query: 'professional portrait man smile',
+		alt: 'Portrait of mupla Zakat committee chair.',
+	},
+	{
+		file: 'avatar-youth.jpg',
+		query: 'professional portrait woman smile',
+		alt: 'Portrait of mupla youth programs lead.',
+	},
+	{
+		file: 'avatar-events.jpg',
+		query: 'professional portrait woman hospitality',
+		alt: 'Portrait of mupla community events lead.',
+	},
+	{
+		file: 'avatar-refugee.jpg',
+		query: 'professional portrait man kind',
+		alt: 'Portrait of mupla refugee support lead.',
+	},
+	{
+		file: 'avatar-operations.jpg',
+		query: 'professional portrait woman organizer',
+		alt: 'Portrait of mupla operations lead.',
+	},
+	{
+		file: 'avatar-comms.jpg',
+		query: 'professional portrait man creative',
+		alt: 'Portrait of mupla communications lead.',
+	},
+
+	// Ornamental / no-people background (for ornamented section breaks)
+	{
+		file: 'pattern-arch.jpg',
+		query: 'islamic geometric arch',
+		alt: 'A close-up of a geometric arch pattern, soft warm light.',
 	},
 ];
 
@@ -123,8 +215,9 @@ async function fetchOne(entry, attempt = 1) {
 const results = [];
 const errors = [];
 
-// Sequence (not parallel) — Pexels free-tier rate limit is 200 req/hr + 20K
-// req/mo; safer to serialize 8 small calls than burst and trip the limiter.
+// Sequence (not parallel). Pexels free-tier rate limit is 200 req/hr +
+// 20K req/mo; safer to serialize small calls than burst and trip the
+// limiter, even on a small manifest like this.
 for (const entry of MANIFEST) {
 	try {
 		const result = await fetchOne(entry);

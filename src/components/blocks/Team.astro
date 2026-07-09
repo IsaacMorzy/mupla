@@ -22,14 +22,15 @@ const initials = (name?: string | null) =>
 		.slice(0, 2)
 		.toUpperCase();
 ---
+
 <Section>
-	<div class="mx-auto max-w-2xl text-center">
+	<div class="reveal mx-auto max-w-2xl text-center">
 		{data.title && <h2 data-tina-field={tinaField(data, 'title')} class="text-balance text-3xl font-semibold md:text-4xl">{data.title}</h2>}
 		{data.description && <p data-tina-field={tinaField(data, 'description')} class="mt-4 text-muted-foreground">{data.description}</p>}
 	</div>
-	<div class="mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
-		{members.map((m) => (
-			<Card class="h-full" data-tina-field={tinaField(m)}>
+	<div class="reveal-stagger mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+		{members.map((m, i) => (
+			<Card class="reveal card-hover h-full" data-tina-field={tinaField(m)} style={`--reveal-i: ${i}`}>
 				<CardContent class="flex flex-col items-center text-center">
 					<Avatar src={m.avatar} alt={m.name} fallback={initials(m.name)} class="size-20 text-base" />
 					<h3 data-tina-field={tinaField(m, 'name')} class="mt-4 font-medium">{m.name}</h3>

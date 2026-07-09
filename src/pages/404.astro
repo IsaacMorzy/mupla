@@ -1,20 +1,45 @@
 ---
 import Base from '../layouts/Base.astro';
 import Button from '../components/ui/Button.astro';
-import OrbitRings from '../components/space/OrbitRings.astro';
+import GeometricMedallion from '../components/ui/GeometricMedallion.astro';
+import IslamicPattern from '../components/ui/IslamicPattern.astro';
 ---
-<Base title="Page not found (404)" description="The page you're looking for doesn't exist or has moved.">
-	<section class="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-6 text-center">
-		<OrbitRings class="opacity-60" />
-		<div class="relative flex flex-col items-center">
-			<p class="text-sm font-medium tracking-widest text-primary uppercase">Error 404</p>
-			<h1 class="mt-2 text-4xl font-semibold tracking-tight lg:text-5xl">This page drifted away</h1>
-			<p class="mx-auto mt-4 max-w-md text-muted-foreground">
+
+<Base title="Page not found (404)" description="The page you are looking for doesn't exist or has moved.">
+	<section class="relative flex min-h-[78vh] items-center justify-center overflow-hidden px-6 text-center">
+		<IslamicPattern variant="star-grid" opacity={4} size={100} class="inset-0" />
+		<!-- Slow-rotating cultural ornament anchors the 404 visual. Pairs
+		     with the manuscript divider tradition without re-introducing
+		     the retired cosmic-chrome OrbitRings component. -->
+		<div aria-hidden="true" class="pointer-events-none absolute inset-0 flex items-center justify-center">
+			<GeometricMedallion
+				size={520}
+				weight="thin"
+				variant="twin"
+				class="opacity-15 animate-spin-slower"
+			/>
+		</div>
+
+		<div class="reveal relative flex max-w-2xl flex-col items-center">
+			<p class="text-xs font-medium uppercase tracking-widest text-primary">Error 404</p>
+			<h1 class="mt-3 text-balance text-5xl font-semibold leading-tight tracking-tight md:text-6xl">This page drifted away</h1>
+			<p class="mx-auto mt-5 max-w-lg text-balance text-muted-foreground">
 				We couldn't find what you were looking for. The page may have moved, or the link might be a little worn. Let's get you back to familiar ground.
 			</p>
 			<div class="mt-8 flex flex-wrap justify-center gap-3">
 				<Button href="/">Back to home</Button>
 				<Button href="/get-involved" variant="outline">Get involved</Button>
+				<Button href="/contact" variant="ghost">Contact us</Button>
+			</div>
+			<div class="mt-12 text-sm text-muted-foreground">
+				<p>Looking for something specific?</p>
+				<nav class="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-1" aria-label="Popular pages">
+					<a href="/programs" class="cta-cta-link underline-offset-4 hover:text-foreground hover:underline">Programs</a>
+					<a href="/donate" class="cta-cta-link underline-offset-4 hover:text-foreground hover:underline">Donate</a>
+					<a href="/events" class="cta-cta-link underline-offset-4 hover:text-foreground hover:underline">Events</a>
+					<a href="/blog" class="cta-cta-link underline-offset-4 hover:text-foreground hover:underline">Blog</a>
+					<a href="/team" class="cta-cta-link underline-offset-4 hover:text-foreground hover:underline">Team</a>
+				</nav>
 			</div>
 		</div>
 	</section>

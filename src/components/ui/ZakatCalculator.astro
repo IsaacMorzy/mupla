@@ -1,0 +1,205 @@
+---
+/**
+ * ZakatCalculator — interactive 2.5% Zakat estimator.
+ *
+ * Pure client-side; no build-time data needed. Currency input is parsed
+ * as a plain number (no Symbol characters) so the math always works.
+ * Result panel uses a soft reveal on update via the `data-result` attr
+ * and an inline aria-live="polite" region for screen readers.
+ *
+ * Nisab threshold reminder: the official gold/silver nisab is set by
+ * scholars and updated periodically. The calculator above does not
+ * enforce a nisab; it computes 2.5% of net Zakatable wealth so the
+ * visitor can use the number as a starting point. A note below the
+ * result reminds the user to confirm with their own scholar.
+ */
+import Section from './Section.astro';
+import GeometricDivider from './GeometricDivider.astro';
+---
+
+<Section class="bg-default">
+	<div class="mx-auto max-w-4xl px-6">
+		<div class="reveal text-center">
+			<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">A starting point</p>
+			<h2 class="mt-3 text-balance text-3xl font-semibold md:text-4xl">Calculate your Zakat</h2>
+			<p class="mx-auto mt-3 max-w-2xl text-muted-foreground">
+				Zakat is 2.5% of the wealth you have held for one lunar year. Add up what you own, subtract what you owe, and the form below shows a starting figure. Confirm the final amount with your own scholar before giving.
+			</p>
+		</div>
+
+		<form
+			id="zakat-calculator"
+			class="reveal mt-10 grid gap-4 rounded-2xl border border-border/60 bg-card p-6 md:grid-cols-2 md:gap-6 md:p-10"
+			aria-describedby="zakat-help"
+		>
+			<label class="grid gap-2">
+				<span class="text-sm font-medium text-foreground">Cash on hand and in checking</span>
+				<span class="relative">
+					<span aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">$</span>
+					<input
+						type="number"
+						inputmode="decimal"
+						min="0"
+						step="0.01"
+						name="cash"
+						data-zakat-field="cash"
+						placeholder="0.00"
+						class="w-full rounded-lg border border-input bg-background py-2 pl-7 pr-3 text-base focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					/>
+				</span>
+			</label>
+
+			<label class="grid gap-2">
+				<span class="text-sm font-medium text-foreground">Savings and investments</span>
+				<span class="relative">
+					<span aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">$</span>
+					<input
+						type="number"
+						inputmode="decimal"
+						min="0"
+						step="0.01"
+						name="savings"
+						data-zakat-field="savings"
+						placeholder="0.00"
+						class="w-full rounded-lg border border-input bg-background py-2 pl-7 pr-3 text-base focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					/>
+				</span>
+			</label>
+
+			<label class="grid gap-2">
+				<span class="text-sm font-medium text-foreground">Gold and silver (current market value)</span>
+				<span class="relative">
+					<span aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">$</span>
+					<input
+						type="number"
+						inputmode="decimal"
+						min="0"
+						step="0.01"
+						name="gold"
+						data-zakat-field="gold"
+						placeholder="0.00"
+						class="w-full rounded-lg border border-input bg-background py-2 pl-7 pr-3 text-base focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					/>
+				</span>
+			</label>
+
+			<label class="grid gap-2">
+				<span class="text-sm font-medium text-foreground">Business inventory and receivables</span>
+				<span class="relative">
+					<span aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">$</span>
+					<input
+						type="number"
+						inputmode="decimal"
+						min="0"
+						step="0.01"
+						name="business"
+						data-zakat-field="business"
+						placeholder="0.00"
+						class="w-full rounded-lg border border-input bg-background py-2 pl-7 pr-3 text-base focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					/>
+				</span>
+			</label>
+
+			<label class="grid gap-2 md:col-span-2">
+				<span class="text-sm font-medium text-foreground">Debts and short-term liabilities (subtract)</span>
+				<span class="relative">
+					<span aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">$</span>
+					<input
+						type="number"
+						inputmode="decimal"
+						min="0"
+						step="0.01"
+						name="debts"
+						data-zakat-field="debts"
+						placeholder="0.00"
+						class="w-full rounded-lg border border-input bg-background py-2 pl-7 pr-3 text-base focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					/>
+				</span>
+			</label>
+
+			<p id="zakat-help" class="md:col-span-2 text-sm text-muted-foreground">
+				Use the current market value of anything you own that has been in your possession for a full lunar year. Personal items you live in (your home, your car, the furniture you use every day) are not included. For Zakat on retirement accounts, stock holdings, and cryptocurrency, please consult a qualified scholar, the rules vary by madhab.
+			</p>
+		</form>
+
+		<div
+			data-zakat-result
+			class="reveal mt-8 grid gap-6 rounded-2xl border border-primary/20 bg-primary/5 p-6 md:grid-cols-[1fr_auto] md:items-center md:gap-10 md:p-10"
+		>
+			<div>
+				<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Starting figure</p>
+				<p
+					data-zakat-amount
+					class="mt-2 font-serif text-5xl font-medium text-foreground lg:text-6xl"
+					aria-live="polite"
+				>$0.00</p>
+				<p data-zakat-breakdown class="mt-2 text-sm text-muted-foreground">
+					Based on 2.5% of your net Zakatable wealth. Confirm the final amount with your own scholar.
+				</p>
+			</div>
+			<a
+				data-zakat-cta
+				href="mailto:zakat@mupla.org?subject=Zakat%20payment%20link"
+				class="inline-flex items-center justify-center gap-2 self-stretch rounded-xl bg-primary px-6 py-3 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 md:self-auto"
+			>
+				Give this Zakat to mupla
+			</a>
+		</div>
+
+		<p class="mt-6 text-center text-sm text-muted-foreground">
+			100% of Zakat funds are distributed to eligible recipients by our Zakat committee within 30 days, no administrative deduction, no overhead. Read more on our <a href="/faq" class="underline-offset-4 hover:underline">FAQ</a>.
+		</p>
+	</div>
+</Section>
+
+<GeometricDivider class="max-w-7xl mx-auto opacity-70" />
+
+<script>
+	// Live Zakat computation. Currency inputs may include `0.00` empty
+	// defaults; we coerce everything to a finite number and floor at 0
+	// (no negative Zakatable wealth even if the user overstates debts).
+	const form = document.getElementById('zakat-calculator') as HTMLFormElement | null;
+	const resultEl = document.querySelector<HTMLElement>('[data-zakat-result]');
+	const amountEl = document.querySelector<HTMLElement>('[data-zakat-amount]');
+	const breakdownEl = document.querySelector<HTMLElement>('[data-zakat-breakdown]');
+	const ctaEl = document.querySelector<HTMLAnchorElement>('[data-zakat-cta]');
+	if (form && resultEl && amountEl && breakdownEl && ctaEl) {
+		const fields = form.querySelectorAll<HTMLInputElement>('[data-zakat-field]');
+		const fmt = (n: number) =>
+			n.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
+		const num = (input: HTMLInputElement): number => {
+			const v = parseFloat(input.value);
+			return Number.isFinite(v) && v > 0 ? v : 0;
+		};
+		// Pre-fill the mailto subject with the live calculated amount so
+		// the user does not have to retype the number when they email.
+		// Falls back to a default subject when the calculation is zero
+		// (no fields filled) so the link still works as a plain contact.
+		const updateCta = (amount: number) => {
+			if (amount > 0) {
+				ctaEl.href = `mailto:zakat@mupla.org?subject=${encodeURIComponent(
+					`Zakat payment link. ${fmt(amount)} (calculated via mupla.org)`,
+				)}`;
+			} else {
+				ctaEl.href = 'mailto:zakat@mupla.org?subject=Zakat%20payment%20link';
+			}
+		};
+		const recompute = () => {
+			const cash = num(form.querySelector<HTMLInputElement>('[data-zakat-field="cash"]')!);
+			const savings = num(form.querySelector<HTMLInputElement>('[data-zakat-field="savings"]')!);
+			const gold = num(form.querySelector<HTMLInputElement>('[data-zakat-field="gold"]')!);
+			const business = num(form.querySelector<HTMLInputElement>('[data-zakat-field="business"]')!);
+			const debts = num(form.querySelector<HTMLInputElement>('[data-zakat-field="debts"]')!);
+			const net = Math.max(0, cash + savings + gold + business - debts);
+			const zakat = net * 0.025;
+			amountEl.textContent = fmt(zakat);
+			breakdownEl.textContent = `Based on 2.5% of ${fmt(net)} net Zakatable wealth. Confirm the final amount with your own scholar.`;
+			resultEl.setAttribute('data-zakat-value', zakat.toFixed(2));
+			updateCta(zakat);
+		};
+		fields.forEach((f) => f.addEventListener('input', recompute));
+		// First render: most visitors land with empty fields, but prefill
+		// values are possible (e.g. when a deep link lands here later).
+		recompute();
+	}
+</script>

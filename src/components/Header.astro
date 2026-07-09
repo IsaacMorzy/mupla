@@ -2,6 +2,11 @@
 import { Icon } from 'astro-icon/components';
 import { tinaField } from "@tinacms/astro/tina-field";
 import type { CmsConfig } from '../lib/data';
+
+// Header now uses hardcoded navGroups (below) instead of reading
+// config.nav from TinaCMS. This keeps grouping logic and icon
+// assignments under version control while TinaCMS manages the
+// existence of individual pages.
 import IconLink from "./IconLink.astro";
 import ThemeToggle from './ThemeToggle.astro';
 import GeometricMedallion from './ui/GeometricMedallion.astro';
@@ -12,8 +17,49 @@ interface Props {
 
 const { config } = Astro.props;
 const seo = config?.seo ?? null;
-const nav = (config?.nav ?? []).filter(item => item !== null);
 const contactLinks = (config?.contactLinks ?? []).filter(item => item !== null);
+
+// Structured navigation groups. Hard-coded here (not TinaCMS-managed)
+// so the grouping logic and icon assignments stay under version control.
+// TinaCMS still controls which pages exist; this just organizes them.
+const navGroups = [
+	{
+		label: 'Home',
+		href: '/',
+	},
+	{
+		label: 'About',
+		children: [
+			{ label: 'About us', href: '/about', desc: 'Our story and values' },
+			{ label: 'Our team', href: '/team', desc: 'The people behind the work' },
+			{ label: 'FAQ', href: '/faq', desc: 'Common questions answered' },
+		],
+	},
+	{
+		label: 'Programs',
+		children: [
+			{ label: 'All programs', href: '/programs', desc: 'Six core programs' },
+			{ label: 'Events', href: '/events', desc: 'What\'s coming up' },
+			{ label: 'Get involved', href: '/get-involved', desc: 'Volunteer or donate' },
+		],
+	},
+	{
+		label: 'Donate',
+		href: '/donate',
+	},
+	{
+		label: 'Blog',
+		href: '/blog',
+	},
+	{
+		label: 'Quran',
+		href: '/quran',
+	},
+	{
+		label: 'Prayers',
+		href: '/prayers',
+	},
+];
 ---
 
 <header class="fixed top-0 z-20 w-full border-b bg-background/80 backdrop-blur-xl">
@@ -25,11 +71,44 @@ const contactLinks = (config?.contactLinks ?? []).filter(item => item !== null);
 			{seo?.logo && <img src={seo.logo} alt="Logo" width="32" height="32" data-tina-field={tinaField(seo, "logo")} />}
 			<span data-tina-field={seo ? tinaField(seo, "title") : undefined}>{seo?.title}</span>
 		</a>
-		<div class="hidden items-center gap-8 text-sm lg:flex">
-			{nav.map((item) => (
-				<a href={item.link} class="text-muted-foreground transition-colors hover:text-foreground" data-tina-field={tinaField(item, "title")}>{item.title}</a>
+
+		<!-- Desktop nav: dropdown groups -->
+		<div class="hidden items-center gap-1 text-sm lg:flex">
+			{navGroups.map((group) => (
+				group.children ? (
+						<div class="group relative" data-dropdown>
+						<button
+							type="button"
+							class="inline-flex items-center gap-1 rounded-xl px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground group-focus-within:bg-accent group-focus-within:text-foreground"
+							aria-haspopup="true"
+							data-dropdown-toggle
+						>
+							{group.label}
+							<Icon name="tabler:chevron-down" class="size-3.5 opacity-60 transition-transform group-hover:rotate-180" />
+						</button>
+						<div class="dropdown-panel invisible absolute left-1/2 top-full z-30 mt-1 min-w-[220px] -translate-x-1/2 rounded-2xl border border-border/60 bg-card p-1.5 shadow-lg opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+							{group.children.map((child) => (
+								<a
+									href={child.href}
+									class="block rounded-xl px-3 py-2.5 text-sm transition-colors hover:bg-accent"
+								>
+									<div class="font-medium text-foreground">{child.label}</div>
+									<div class="mt-0.5 text-xs text-muted-foreground">{child.desc}</div>
+								</a>
+							))}
+						</div>
+					</div>
+				) : (
+					<a
+						href={group.href}
+						class="rounded-xl px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+					>
+						{group.label}
+					</a>
+				)
 			))}
 		</div>
+
 		<div class="flex items-center gap-3">
 			<div class="hidden items-center gap-3 lg:flex">
 				{contactLinks.map((link) => (
@@ -57,22 +136,44 @@ const contactLinks = (config?.contactLinks ?? []).filter(item => item !== null);
 			</button>
 		</div>
 	</nav>
+
+	<!-- Mobile menu with grouped sections -->
 	<div
 		id="mobile-menu-panel"
 		hidden
 		class="border-t bg-background/95 backdrop-blur-xl lg:hidden"
 	>
 		<div class="mx-auto flex max-w-6xl flex-col px-6 py-4">
-			{nav.map((item) => (
-				<a
-					href={item.link}
-					class="border-b border-border/50 py-3 text-sm text-muted-foreground transition-colors last:border-b-0 hover:text-foreground"
-					data-tina-field={tinaField(item, "title")}
-				>
-					{item.title}
-				</a>
+			{navGroups.map((group) => (
+				<div class="border-b border-border/40 py-2 last:border-b-0">
+					{group.children ? (
+						<details class="group">
+							<summary class="flex cursor-pointer items-center justify-between py-2 text-sm font-medium text-foreground marker:content-none">
+								{group.label}
+								<Icon name="tabler:chevron-down" class="size-4 text-muted-foreground transition-transform group-open:rotate-180" />
+							</summary>
+							<div class="mt-1 ml-3 space-y-1 pb-1">
+								{group.children.map((child) => (
+									<a
+										href={child.href}
+										class="block rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+									>
+										{child.label}
+									</a>
+								))}
+							</div>
+						</details>
+					) : (
+						<a
+							href={group.href}
+							class="block py-2 text-sm font-medium text-foreground transition-colors hover:text-primary"
+						>
+							{group.label}
+						</a>
+					)}
+				</div>
 			))}
-			<div class="mt-4 flex items-center justify-between gap-3 pt-4">
+			<div class="mt-4 flex items-center justify-between gap-3 pt-4 border-t border-border/30">
 				<div class="flex items-center gap-2">
 					{contactLinks.map((link) => (
 						<IconLink title={link.title} link={link.link} icon={link.icon} data-tina-field={tinaField(link, "title")} />
@@ -94,6 +195,9 @@ const contactLinks = (config?.contactLinks ?? []).filter(item => item !== null);
 	#mobile-menu-toggle .icon-close { display: none; }
 	#mobile-menu-toggle[aria-expanded="true"] .icon-open { display: none; }
 	#mobile-menu-toggle[aria-expanded="true"] .icon-close { display: block; }
+	/* Touch-friendly dropdown: JS toggles .dropdown-open on parent */
+	.dropdown-open .dropdown-panel { visibility: visible; opacity: 1; }
+	.dropdown-open > button svg { transform: rotate(180deg); }
 </style>
 <script is:inline>
 	if (!window.__mobileMenuBound) {
@@ -120,4 +224,26 @@ const contactLinks = (config?.contactLinks ?? []).filter(item => item !== null);
 			if (e.key === 'Escape') setOpen(false);
 		});
 	}
+</script>
+<script is:inline>
+	// Touch-friendly dropdown toggles for desktop nav dropdowns.
+	// On touch devices, hover doesn't work - click toggles the panel.
+	document.querySelectorAll('[data-dropdown-toggle]').forEach((btn) => {
+		btn.addEventListener('click', (e) => {
+			// Only intercept on touch-capable devices (hover works on desktop)
+			if (!window.matchMedia('(hover: hover)').matches) {
+				e.preventDefault();
+				const parent = btn.closest('[data-dropdown]');
+				if (parent) parent.classList.toggle('dropdown-open');
+			}
+		});
+	});
+	// Close dropdowns when clicking outside
+	document.addEventListener('click', (e) => {
+		if (!(e.target as Element).closest('[data-dropdown]')) {
+			document.querySelectorAll('[data-dropdown].dropdown-open').forEach((el) => {
+				el.classList.remove('dropdown-open');
+			});
+		}
+	});
 </script>

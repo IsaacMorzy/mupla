@@ -1,0 +1,267 @@
+---
+import Base from '../layouts/Base.astro';
+import Section from '../components/ui/Section.astro';
+import IslamicDivider from '../components/ui/IslamicDivider.astro';
+import Icon from '../components/ui/Icon.astro';
+import GeometricMedallion from '../components/ui/GeometricMedallion.astro';
+import { getConfig } from '../lib/data';
+
+const config = (await getConfig()).data?.config ?? null;
+
+// Fetch Quranic supplications from fawazahmed0/quran-api at build time.
+// Each verse is a well-known dua: Al-Baqarah 201, Aal-e-Imran 8, Al-Hashr 10.
+// Per-item fallback: if one API call fails, only that verse uses hardcoded text.
+const supplicationDefs = [
+	{ surah: 2, ayah: 201, ref: 'Surah Al-Baqarah, verse 201', arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ', english: 'Our Lord, grant us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.' },
+	{ surah: 3, ayah: 8,   ref: 'Surah Aal-e-Imran, verse 8', arabic: 'رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً إِنَّكَ أَنتَ الْوَهَّابُ', english: 'Our Lord, let not our hearts deviate after You have guided us, and grant us from Yourself mercy. Indeed, You are the Bestower.' },
+	{ surah: 59, ayah: 10, ref: 'Surah Al-Hashr, verse 10', arabic: 'رَبَّنَا اغْفِرْ لَنَا وَلِإِخْوَانِنَا الَّذِينَ سَبَقُونَا بِالْإِيمَانِ', english: 'Our Lord, forgive us and our brothers who preceded us in faith.' },
+];
+
+// Fetch all in parallel, with per-item fallback
+const displaySupplications = await Promise.all(supplicationDefs.map(async (def) => {
+	try {
+		const [arabicRes, englishRes] = await Promise.all([
+			fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmani/${def.surah}/${def.ayah}.json`),
+			fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-muntakhab/${def.surah}/${def.ayah}.json`),
+		]);
+		if (arabicRes.ok && englishRes.ok) {
+			const [arabicData, englishData] = await Promise.all([arabicRes.json(), englishRes.json()]);
+			return {
+				arabic: (arabicData as any).text || def.arabic,
+				english: (englishData as any).text || def.english,
+				ref: def.ref,
+			};
+		}
+	} catch { /* fall through to hardcoded */ }
+	return { arabic: def.arabic, english: def.english, ref: def.ref };
+}));
+---
+
+<Base
+	title={`Prayer times${config?.seo?.title ? ` · ${config.seo.title}` : ''}`}
+	description="Daily prayer times and a collection of morning and evening duas for the Muslim community."
+>
+	<main class="mx-auto max-w-5xl px-6 py-12 md:py-20">
+		<header class="reveal mx-auto max-w-2xl text-center">
+			<h1 class="text-balance text-5xl font-semibold tracking-tight md:text-6xl">Prayer times</h1>
+			<p class="mx-auto mt-5 max-w-xl text-balance text-muted-foreground">
+				Daily prayer times and selected duas from the Quran and Sunnah to carry through your day.
+			</p>
+		</header>
+
+		<IslamicDivider variant="single" class="max-w-4xl mx-auto mt-12 mb-8" />
+
+		<!-- Prayer times: loaded client-side from AlAdhan API -->
+		<Section class="relative overflow-hidden" background="bg-secondary">
+			<div aria-hidden="true" class="pointer-events-none absolute -right-16 top-0 hidden md:block">
+				<GeometricMedallion size={180} weight="thin" variant="twin" class="opacity-[0.10] animate-spin-slower" />
+			</div>
+			<div class="reveal relative z-10 mx-auto max-w-3xl">
+				<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Today's prayer times</h2>
+				<p id="prayer-date" class="mt-3 text-center text-muted-foreground">Loading...</p>
+				<div id="prayer-times" class="mt-8 grid gap-3 sm:grid-cols-3 md:grid-cols-6">
+					<!-- Populated by client JS -->
+				</div>
+				<p class="mt-6 text-center text-xs text-muted-foreground">
+					Times based on your IP location. For accurate local times, use a mosque timetable or a dedicated prayer app.
+				</p>
+			</div>
+		</Section>
+
+		<IslamicDivider variant="arch" class="max-w-4xl mx-auto" />
+
+		<!-- Morning duas -->
+		<Section>
+			<div class="reveal mx-auto max-w-3xl">
+				<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Morning remembrances</h2>
+				<p class="mt-4 text-center text-muted-foreground">
+					Duas the Prophet Muhammad, peace be upon him, recited each morning.
+				</p>
+
+				<div class="mt-10 space-y-8">
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+						<blockquote class="space-y-4">
+							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
+								أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ
+							</p>
+							<p class="italic leading-relaxed text-muted-foreground">
+								We have entered the morning, and the entire kingdom belongs to Allah. All praise is due to Allah. There is no deity worthy of worship except Allah, alone, without any partner.
+							</p>
+						</blockquote>
+						<footer class="mt-4 text-xs text-muted-foreground">
+							Recommended to recite morning and evening
+						</footer>
+					</div>
+
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+						<blockquote class="space-y-4">
+							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
+								بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ
+							</p>
+							<p class="italic leading-relaxed text-muted-foreground">
+								In the Name of Allah, with whose Name nothing can cause harm on earth or in the heavens, and He is the All-Hearing, the All-Knowing.
+							</p>
+						</blockquote>
+						<footer class="mt-4 text-xs text-muted-foreground">
+							Recite three times each morning and evening for protection
+						</footer>
+					</div>
+
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+						<blockquote class="space-y-4">
+							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
+								اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا
+							</p>
+							<p class="italic leading-relaxed text-muted-foreground">
+								O Allah, I ask You for beneficial knowledge, good provision, and accepted deeds.
+							</p>
+						</blockquote>
+						<footer class="mt-4 text-xs text-muted-foreground">
+							Recommended to recite after Fajr prayer
+						</footer>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<IslamicDivider variant="single" class="max-w-4xl mx-auto" />
+
+		<!-- Evening duas -->
+		<Section background="bg-secondary">
+			<div class="reveal mx-auto max-w-3xl">
+				<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Evening remembrances</h2>
+				<p class="mt-4 text-center text-muted-foreground">
+					Duas to recite as the day closes and night approaches.
+				</p>
+
+				<div class="mt-10 space-y-8">
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+						<blockquote class="space-y-4">
+							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
+								أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ
+							</p>
+							<p class="italic leading-relaxed text-muted-foreground">
+								We have entered the evening, and the entire kingdom belongs to Allah. All praise is due to Allah. There is no deity worthy of worship except Allah, alone, without any partner.
+							</p>
+						</blockquote>
+						<footer class="mt-4 text-xs text-muted-foreground">
+							Recite once each evening
+						</footer>
+					</div>
+
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+						<blockquote class="space-y-4">
+							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
+								اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ
+							</p>
+							<p class="italic leading-relaxed text-muted-foreground">
+								O Allah, by You we enter the evening and by You we enter the morning. By You we live and by You we die, and to You is the final return.
+							</p>
+						</blockquote>
+						<footer class="mt-4 text-xs text-muted-foreground">
+							Recite once each evening
+						</footer>
+					</div>
+
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+						<blockquote class="space-y-4">
+							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
+								اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ
+							</p>
+							<p class="italic leading-relaxed text-muted-foreground">
+								O Allah, I ask You for well-being in this world and the Hereafter.
+							</p>
+						</blockquote>
+						<footer class="mt-4 text-xs text-muted-foreground">
+							Recommended to recite morning and evening
+						</footer>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- Quranic prayers -->
+		<Section>
+			<div class="reveal mx-auto max-w-3xl">
+				<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Quranic supplications</h2>
+				<p class="mt-4 text-center text-muted-foreground">
+					Prayers and supplications from the Quran that the prophets and the righteous made.
+				</p>
+
+				<div class="mt-10 space-y-8">
+					{displaySupplications.map((s) => (
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+						<blockquote class="space-y-4">
+							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">{s.arabic}</p>
+							<p class="italic leading-relaxed text-muted-foreground">{s.english}</p>
+						</blockquote>
+						<footer class="mt-4 text-xs text-muted-foreground">{s.ref}</footer>
+					</div>
+					))}
+				</div>
+			</div>
+		</Section>
+	</main>
+</Base>
+
+<script>
+	// Fetch prayer times from AlAdhan API based on IP geolocation.
+	// Falls back to London coordinates if geolocation fails.
+	async function loadPrayerTimes() {
+		const container = document.getElementById('prayer-times');
+		const dateEl = document.getElementById('prayer-date');
+		if (!container || !dateEl) return;
+
+		try {
+			// Get coordinates from IP-based geolocation with fallback to London
+			let city = 'London';
+			let country = 'UK';
+			let lat = 51.5074;
+			let lng = -0.1278;
+
+			try {
+				const geoRes = await fetch('https://api.ipify.org?format=json');
+				const { ip } = await geoRes.json();
+				const locRes = await fetch(`https://ipapi.co/${ip}/json/`);
+				if (locRes.ok) {
+					const loc = await locRes.json();
+					city = loc.city || city;
+					country = loc.country_name || country;
+					lat = loc.latitude || lat;
+					lng = loc.longitude || lng;
+				}
+			} catch {
+				// Geolocation failed - use London defaults
+			}
+
+			dateEl.textContent = `${city}, ${country} · ${new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}`;
+
+			const res = await fetch(
+				`https://api.aladhan.com/v1/timings/${Math.floor(Date.now() / 1000)}?latitude=${lat}&longitude=${lng}&method=2`
+			);
+			const data = await res.json();
+			const timings = data.data.timings;
+
+			const prayers = [
+				{ name: 'Fajr', time: timings.Fajr, icon: 'tabler:sunrise' },
+				{ name: 'Sunrise', time: timings.Sunrise, icon: 'tabler:sun' },
+				{ name: 'Dhuhr', time: timings.Dhuhr, icon: 'tabler:sun-high' },
+				{ name: 'Asr', time: timings.Asr, icon: 'tabler:sunset' },
+				{ name: 'Maghrib', time: timings.Maghrib, icon: 'tabler:sunset-2' },
+				{ name: 'Isha', time: timings.Isha, icon: 'tabler:moon' },
+			];
+
+			container.innerHTML = prayers.map(p => `
+				<div class="reveal flex flex-col items-center gap-2 rounded-2xl border border-border/60 bg-card p-4 text-center">
+					<span class="text-xs font-medium text-muted-foreground">${p.name}</span>
+					<span class="font-mono text-lg font-semibold text-foreground">${p.time}</span>
+				</div>
+			`).join('');
+		} catch {
+			dateEl.textContent = 'Unable to load prayer times.';
+			container.innerHTML = `<p class="col-span-full text-center text-muted-foreground">Unable to load prayer times. Please check your connection and try again.</p>`;
+		}
+	}
+
+	loadPrayerTimes();
+</script>

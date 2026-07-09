@@ -16,18 +16,17 @@ const seo = config?.seo ?? null;
 const contactLinks = (config?.contactLinks ?? []).filter(
 	(item): item is CmsConfigContactLink => item !== null,
 );
-const nav = (config?.nav ?? []).filter((item) => item !== null);
 const today = new Date();
 const newsletterId = `newsletter-${Math.random().toString(36).slice(2, 9)}`;
-// If a newsletter service endpoint is configured (Formspree, Buttondown, etc.),
-// the form POSTs there. Otherwise it falls back to opening a mailto: link.
-// Set PUBLIC_NEWSLETTER_ACTION in your .env to wire it up.
 const newsletterAction = (import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '').toString().trim();
 ---
+
 <footer class="border-t bg-background pt-16 pb-8 text-sm text-muted-foreground relative overflow-hidden">
 	<div class="relative mx-auto flex max-w-6xl flex-col gap-12 px-6">
 		<IslamicDivider variant="single" class="max-w-4xl mx-auto -mt-10 mb-2" />
-		<div class="grid gap-10 md:grid-cols-2 md:gap-16">
+
+		<!-- Top row: brand + newsletter -->
+		<div class="grid gap-10 md:grid-cols-[1fr_1.2fr] md:gap-16">
 			<div class="max-w-md">
 				{seo?.logo && (
 					<img src={seo.logo} alt={seo.title ?? ''} class="mb-4 size-10" />
@@ -53,7 +52,6 @@ const newsletterAction = (import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '').toStri
 							placeholder="you@example.com"
 							class="bg-background"
 						/>
-					{/* Honeypot - hidden from real users, blocks spam bots when filled. Formspree / Netlify Forms ignore submissions with this field set. */}
 					<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] size-0 opacity-0" />
 					</div>
 					<Button type="submit" size="lg">
@@ -63,29 +61,39 @@ const newsletterAction = (import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '').toStri
 				<div data-newsletter-feedback hidden class="mt-3"></div>
 			</div>
 
-			<div class="grid grid-cols-2 gap-8">
-				<nav aria-label="Footer">
+			<!-- Link columns: Explore, Get Involved, Learn -->
+			<div class="grid grid-cols-3 gap-6">
+				<div>
 					<h3 class="text-sm font-semibold text-foreground">Explore</h3>
 					<ul class="mt-3 space-y-2">
-						{nav.map((item) => (
-							<li>
-								<a href={item.link} class="transition-colors hover:text-foreground">
-									{item.title}
-								</a>
-							</li>
-						))}
-						<li>
-							<a href="/privacy" class="transition-colors hover:text-foreground">Privacy</a>
-						</li>
-						<li>
-							<a href="/terms" class="transition-colors hover:text-foreground">Terms</a>
-						</li>
+						<li><a href="/" class="transition-colors hover:text-foreground">Home</a></li>
+						<li><a href="/about" class="transition-colors hover:text-foreground">About</a></li>
+						<li><a href="/programs" class="transition-colors hover:text-foreground">Programs</a></li>
+						<li><a href="/events" class="transition-colors hover:text-foreground">Events</a></li>
+						<li><a href="/blog" class="transition-colors hover:text-foreground">Blog</a></li>
+						<li><a href="/quran" class="transition-colors hover:text-foreground">Quran</a></li>
 					</ul>
-				</nav>
+				</div>
 				<div>
-					<h3 class="text-sm font-semibold text-foreground">Connect</h3>
+					<h3 class="text-sm font-semibold text-foreground">Get involved</h3>
+					<ul class="mt-3 space-y-2">
+						<li><a href="/donate" class="transition-colors hover:text-foreground">Donate</a></li>
+						<li><a href="/get-involved" class="transition-colors hover:text-foreground">Volunteer</a></li>
+						<li><a href="/contact" class="transition-colors hover:text-foreground">Contact</a></li>
+						<li><a href="/team" class="transition-colors hover:text-foreground">Our team</a></li>
+						<li><a href="/prayers" class="transition-colors hover:text-foreground">Prayer times</a></li>
+					</ul>
+				</div>
+				<div>
+					<h3 class="text-sm font-semibold text-foreground">Learn</h3>
+					<ul class="mt-3 space-y-2">
+						<li><a href="/faq" class="transition-colors hover:text-foreground">FAQ</a></li>
+						<li><a href="/privacy" class="transition-colors hover:text-foreground">Privacy</a></li>
+						<li><a href="/terms" class="transition-colors hover:text-foreground">Terms</a></li>
+					</ul>
+					<h3 class="mt-6 text-sm font-semibold text-foreground">Connect</h3>
 					{contactLinks.length > 0 && (
-						<div class="mt-3 flex flex-wrap gap-3">
+						<div class="mt-3 flex flex-wrap gap-2">
 							{contactLinks.map((link) => (
 								<IconLink
 									title={link.title}
@@ -96,31 +104,19 @@ const newsletterAction = (import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '').toStri
 							))}
 						</div>
 					)}
-					<p class="mt-4">
-						<a href="/contact" class="transition-colors hover:text-foreground underline-offset-4 hover:underline">
-							Send us a message →
-						</a>
-					</p>
 				</div>
 			</div>
 		</div>
 
+		<!-- Bottom bar: copyright + credit -->
 		<div class="flex flex-col items-center gap-4 border-t pt-8 text-center sm:flex-row sm:justify-between sm:text-left">
 			<p>
 				&copy; {today.getFullYear()}
 				<span data-tina-field={seo ? tinaField(seo, 'siteOwner') : undefined}>{seo?.siteOwner}</span>. All rights reserved.
 			</p>
-			<a
-				href="https://tina.io"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="group inline-flex items-center gap-2.5 rounded-2xl border bg-card/60 py-1.5 pl-1.5 pr-4 text-xs font-medium shadow-xs transition-colors duration-200 hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-			>
-				<span class="flex size-6 items-center justify-center rounded-xl bg-primary transition-transform duration-300 group-hover:scale-105">
-					<img src="/llama.svg" alt="" aria-hidden="true" class="size-3.5" />
-				</span>
-				<span>Powered by <span class="font-semibold text-foreground">TinaCMS</span></span>
-			</a>
+			<p class="text-xs text-muted-foreground/60">
+				Built with care by the mupla community.
+			</p>
 		</div>
 	</div>
 </footer>
@@ -143,7 +139,7 @@ const newsletterAction = (import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '').toStri
 					</div>
 				`;
 			};
-			if ((form.querySelector('[name="_gotcha"]')?.value || '').trim()) return; // honeypot filled → bot, drop silently
+			if ((form.querySelector('[name="_gotcha"]')?.value || '').trim()) return;
 			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
 				showFeedback('error', 'Please enter a valid email address.');
 				return;

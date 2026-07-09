@@ -5,7 +5,7 @@
 - **Project**: mupla-front (Astro + TinaCMS + Tailwind; Vercel deploy; Matt Pocock skills)
 - **Pattern**: matt-pocock-skill + loop-engineering (Passes 1-12 closed)
 - **Loop readiness score**: 95 / 100 (L3 - unattended loop safe). Held flat from Pass 11 since Pass 12 ops don't add new scoring gates.
-- **Last updated**: pass 20 - 2026-07-09 (QuranVerse component added to homepage; Footer shape consistency; blog/events eyebrow removal + middle-dot sweep; GitHub issue #53 created)
+- **Last updated**: pass 21 - 2026-07-09 (Quran explorer page at /quran; Testimonial block redesigned; GitHub issue #54 created)
 - **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 30 issues attached in Backlog).
 - **Active GH issues snapshot**: docs/agents/gh-triage-2026-07-06-pass-12.md (re-runnable).
 - **Promoted T1 ticket**: #10 (bin/gh-create-issues.sh ran idempotently; T1 promote via gh issue edit --add-label ready-for-agent, allowed per docs/safety.md).
@@ -39,7 +39,7 @@ In-band drift events the agent caught and recovered (preserved verbatim from Pas
 
 ## Predecessor chain
 
-1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2 / 13.4 / 13.5 / 13.6 / 13.7 / 13.8 / 13.9 / 13.8 / 13.9 / 14 / 14.1 / 14.2 / 15 / 16 / 16.1 / 16.2 / 17 / 18 / 19 / 20
+1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2 / 13.4 / 13.5 / 13.6 / 13.7 / 13.8 / 13.9 / 13.8 / 13.9 / 14 / 14.1 / 14.2 / 15 / 16 / 16.1 / 16.2 / 17 / 18 / 19 / 20 / 21
 
 ( suffix = corrective amendment inside the same integer pass.)
 
@@ -47,7 +47,7 @@ In-band drift events the agent caught and recovered (preserved verbatim from Pas
 
 Live snapshot at  regenerated each pass close via [{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":17,"title":"**Vercel production build debugging (TinaCloud rebuild hook + `astro build` OOM @ 3072 MiB)**"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":16,"title":"Add `loop-engineering` MCP server status to readiness audit brief"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":15,"title":"Document override flow for human-only denylist ops"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":14,"title":"Add `docs/agents/kill-switch-test-2026-XX.md` drill report"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":13,"title":"Register `goal-engineering` pattern in `patterns/registry.yaml` (`status: not-active`)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":12,"title":"Document per-pass worktree policy in `loop-constraints.md`"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":11,"title":"Add `sub-agent` section to `loop-constraints.md` (maker/checker split)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"},{"id":"LA_kwDOTOfmAM8AAAACqR5LQg","name":"ready-for-agent","description":"Fully specified; AFK-ready","color":"0e8a16"}],"number":10,"title":"Scaffold `scripts/loop-context.sh` (rehydrate `run.json` → STATE.md)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":9,"title":"Wire `.github/workflows/daily-triage.yml` (night cron, 1 pass/day)"}]. Currently **30 open needs-triage issues** (Pass 12.2 landed 31; #18 promoted to ready-for-agent in Pass 12.2; Pass 13 close did NOT promote any new issues. Parser-vs-GH comm diff confirms zero missing titles + zero duplicates.) attached to GH Project  (#5) under IsaacMorzy. Top unaddressed T1 (#10) promoted to .
 
-## Next pass (Pass 21)
+## Next pass (Pass 22)
 
 3-bullet agenda lifted from Pass 15 deferred items + the running carry-over from Pass 11-14:
 

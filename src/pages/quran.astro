@@ -1,0 +1,258 @@
+---
+import Base from '../layouts/Base.astro';
+import Section from '../components/ui/Section.astro';
+import IslamicDivider from '../components/ui/IslamicDivider.astro';
+import Icon from '../components/ui/Icon.astro';
+import { getConfig } from '../lib/data';
+
+const config = (await getConfig()).data?.config ?? null;
+
+interface SurahEntry {
+	number: number;
+	name: string;
+	englishName: string;
+	englishNameTranslation: string;
+	numberOfAyahs: number;
+	revelationType: string;
+}
+
+const surahs: SurahEntry[] = [];
+
+try {
+	const res = await fetch(
+		'https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/surahs.json',
+	);
+	if (res.ok) {
+		const data: SurahEntry[] = await res.json();
+		surahs.push(...data);
+	}
+} catch {
+	// Silently fall back - page shows empty state
+}
+---
+
+<Base
+	title={`Quran${config?.seo?.title ? ` · ${config.seo.title}` : ''}`}
+	description="Browse surahs and verses of the Quran in Arabic with English translation."
+>
+	<main class="mx-auto max-w-5xl px-6 py-12 md:py-20">
+		<header class="reveal mx-auto max-w-2xl text-center">
+			<h1 class="text-balance text-5xl font-semibold tracking-tight md:text-6xl">The Quran</h1>
+			<p class="mx-auto mt-5 max-w-xl text-balance text-muted-foreground">
+				Browse all 114 surahs in Arabic Uthmani script with English Muntakhab translation. Click a surah to read its verses.
+			</p>
+		</header>
+
+		<IslamicDivider variant="single" class="max-w-4xl mx-auto mt-12 mb-8" />
+
+		{surahs.length > 0 ? (
+			<>
+				<div class="reveal-stagger grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+					{surahs.map((s, i) => (
+						<button
+							type="button"
+							data-surah={s.number}
+							data-ayahs={s.numberOfAyahs}
+							data-name={s.name}
+							data-english-name={s.englishName}
+							class="reveal group flex items-center gap-4 rounded-2xl border border-border/60 bg-card px-5 py-4 text-left transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+							style={`--reveal-i: ${Math.floor(i / 3)}`}
+						>
+							<div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted font-mono text-xs text-foreground">
+								{s.number}
+							</div>
+							<div class="min-w-0">
+								<p lang="ar" dir="rtl" class="truncate font-serif text-lg leading-tight text-foreground">
+									{s.name}
+								</p>
+								<p class="truncate text-sm text-muted-foreground">
+									{s.englishName}{s.englishNameTranslation ? ` - ${s.englishNameTranslation}` : ''}
+								</p>
+								<p class="mt-0.5 text-xs text-muted-foreground/70">
+									{s.numberOfAyahs} ayahs · {s.revelationType}
+								</p>
+							</div>
+						</button>
+					))}
+				</div>
+
+				<!-- Verse reader panel: hidden until a surah is clicked -->
+				<Section id="verse-reader" class="hidden mt-10" background="bg-secondary">
+					<div class="reveal mx-auto max-w-3xl">
+						<div class="mb-8 flex items-center justify-between">
+							<button
+								type="button"
+								id="verse-back"
+								class="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
+							>
+								<Icon name="arrow-left" class="size-4" />
+								Back to surahs
+							</button>
+							<h2 id="verse-surah-name" class="text-lg font-semibold text-foreground" lang="ar" dir="rtl"></h2>
+							<div id="verse-nav" class="flex items-center gap-3">
+								<button
+									type="button"
+									id="verse-prev"
+									class="inline-flex items-center gap-1 rounded-xl border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-accent disabled:opacity-30"
+									disabled
+								>										<Icon name="arrow-left" class="size-4" />
+										Prev
+									</button>
+									<span id="verse-counter" class="text-sm font-medium text-foreground">1 / 1</span>
+									<button
+										type="button"
+										id="verse-next"
+										class="inline-flex items-center gap-1 rounded-xl border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-accent disabled:opacity-30"
+									>
+										Next
+										<Icon name="arrow-right" class="size-4" />
+								</button>
+							</div>
+						</div>
+						<div id="verse-content" class="space-y-10">
+							<!-- Populated by client JS -->
+						</div>
+					</div>
+				</Section>
+
+				<!-- Empty state when CDN is unreachable -->
+				<IslamicDivider variant="single" class="max-w-4xl mx-auto my-12" />
+			</>
+		) : (
+			<p class="mt-12 text-center text-muted-foreground">
+				Unable to load surahs right now. Please try again later or visit{' '}
+				<a href="https://quran.com" class="underline">quran.com</a>.
+			</p>
+		)}
+	</main>
+</Base>
+
+<script>
+	// Client-side verse reader. Fetches verses from the fawazahmed0/quran-api
+	// CDN when a surah card is clicked. Navigates between verses with prev/next.
+	interface Verse {
+		chapter: number;
+		verse: number;
+		text: string;
+	}
+
+	let currentVerse = 1;
+	let totalAyahs = 0;
+	let arabicVerses: Verse[] = [];
+	let englishVerses: Verse[] = [];
+
+	const reader = document.getElementById('verse-reader')!;
+	const content = document.getElementById('verse-content')!;
+	const counter = document.getElementById('verse-counter')!;
+	const prevBtn = document.getElementById('verse-prev') as HTMLButtonElement;
+	const nextBtn = document.getElementById('verse-next') as HTMLButtonElement;
+
+	function showReader() {
+		reader.classList.remove('hidden');
+		reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}
+
+	function hideReader() {
+		reader.classList.add('hidden');
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+
+	function renderVerse(index: number) {
+		const a = arabicVerses[index];
+		const e = englishVerses[index];
+		if (!a || !e) return;
+
+		currentVerse = a.verse;
+		counter.textContent = `${currentVerse} / ${totalAyahs}`;
+		prevBtn.disabled = currentVerse <= 1;
+		nextBtn.disabled = currentVerse >= totalAyahs;
+
+		content.innerHTML = `
+			<div class="text-center">
+				<p class="text-xs font-medium text-muted-foreground">Verse ${a.verse}</p>
+				<p lang="ar" dir="rtl" class="mt-4 font-serif text-3xl leading-[2] text-foreground md:text-4xl lg:text-5xl">${a.text}</p>
+				<p class="mx-auto mt-6 max-w-2xl text-balance italic leading-relaxed text-muted-foreground">${e.text}</p>
+			</div>
+		`;
+	}
+
+	async function loadSurah(surah: number, startVerse = 1) {
+		content.innerHTML = `<p class="text-center text-muted-foreground">Loading verses...</p>`;
+		showReader();
+
+		// Reset before fetch to avoid stale data from a previous surah
+		arabicVerses = [];
+		englishVerses = [];
+
+		try {
+			const [arabicRes, englishRes] = await Promise.all([
+				fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmani/surah/${surah}.json`),
+				fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-muntakhab/surah/${surah}.json`),
+			]);
+
+			if (!arabicRes.ok || !englishRes.ok) throw new Error('Fetch failed');
+
+			// Parse each response exactly once. The API returns different shapes
+			// depending on the endpoint: sometimes {ayahs: [...]}, sometimes an
+			// array directly, sometimes nested under {surahs: [{ayahs: [...]}]}.
+			const arabicData = await arabicRes.json();
+			const englishData = await englishRes.json();
+
+			const extractAyahs = (data: any): any[] => {
+				if (Array.isArray(data)) return data;
+				if (data.ayahs) return data.ayahs;
+				if (data.surahs?.[0]?.ayahs) return data.surahs[0].ayahs;
+				if (data.surah?.ayahs) return data.surah.ayahs;
+				return [];
+			};
+
+			const arabicAyahs = extractAyahs(arabicData);
+			const englishAyahs = extractAyahs(englishData);
+
+			if (arabicAyahs.length === 0) throw new Error('No verses found');
+
+			// Map to uniform shape. Field names vary: numberInSurah,
+			// number, verse, or index in the array.
+			arabicVerses = arabicAyahs.map((a: any, i: number) => ({
+				chapter: surah,
+				verse: a.numberInSurah ?? a.number ?? a.verse ?? i + 1,
+				text: a.text ?? '',
+			}));
+			englishVerses = englishAyahs.map((a: any, i: number) => ({
+				chapter: surah,
+				verse: a.numberInSurah ?? a.number ?? a.verse ?? i + 1,
+				text: a.text ?? '',
+			}));
+
+			totalAyahs = arabicVerses.length;
+			renderVerse(startVerse - 1);
+		} catch {
+			content.innerHTML = `<p class="text-center text-muted-foreground">Unable to load verses. Please try again.</p>`;
+		}
+	}
+
+	// Surah card clicks
+	document.querySelectorAll<HTMLButtonElement>('[data-surah]').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			const surah = parseInt(btn.dataset.surah!, 10);
+			const ayahs = parseInt(btn.dataset.ayahs!, 10);
+				currentVerse = 1;
+			totalAyahs = ayahs;
+			const name = btn.dataset.name || '';
+			const nameHeading = document.getElementById('verse-surah-name');
+			if (nameHeading) nameHeading.textContent = name;
+			loadSurah(surah);
+		});
+	});
+
+	// Back button
+	document.getElementById('verse-back')!.addEventListener('click', hideReader);
+
+	// Navigation
+	prevBtn.addEventListener('click', () => {
+		if (currentVerse > 1) renderVerse(currentVerse - 2);
+	});
+	nextBtn.addEventListener('click', () => {
+		if (currentVerse < totalAyahs) renderVerse(currentVerse);
+	});
+</script>

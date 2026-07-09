@@ -216,6 +216,14 @@
 		0%, 100% { transform: translateY(0); }
 		50%      { transform: translateY(-6px); }
 	}
+	/* Girih pattern spin — slow rotation for geometric backgrounds */
+	@keyframes girih-rotate {
+		to { transform: rotate(360deg); }
+	}
+	/* Arabesque draw — SVG stroke animation simulating calligraphy */
+	@keyframes arabesque-draw {
+		to { stroke-dashoffset: 0; }
+	}
 	.animate-spin-slow {
 		animation: mupla-spin-slow 60s linear infinite;
 		will-change: transform;
@@ -237,6 +245,15 @@
 	}
 	.animate-float {
 		animation: mupla-float 6s ease-in-out infinite;
+	}
+	.animate-girih {
+		animation: girih-rotate 40s linear infinite;
+		will-change: transform;
+	}
+	.arabesque-line {
+		stroke-dasharray: 400;
+		stroke-dashoffset: 400;
+		animation: arabesque-draw 3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 	}
 
 	.reveal {
@@ -264,7 +281,9 @@
 	.animate-spin-counter,
 	.animate-breathe,
 	.animate-star-shimmer,
-	.animate-float { animation: none !important; }
+	.animate-float,
+	.animate-girih,
+	.arabesque-line { animation: none !important; stroke-dashoffset: 0 !important; }
 }
 
 /* Bubble up the reveal index for each child so a single rule can schedule

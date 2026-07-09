@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ArabicCalligraphy from '../components/ui/ArabicCalligraphy.astro';
 import TinaIsland from '@tinacms/astro/TinaIsland.astro';
 import { getConfig } from '../lib/data';
 import { islands } from '../lib/islands';
@@ -26,6 +27,10 @@ const config = (await getConfig()).data?.config ?? null;
 			<Header config={config} />
 		</TinaIsland>
 		<slot />
+		<!-- Decorative Arabic calligraphy ornament between main content and footer -->
+		<div class="mx-auto max-w-5xl px-6 overflow-hidden" aria-hidden="true">
+			<ArabicCalligraphy variant="ornament" class="mx-auto block opacity-60" size={300} />
+		</div>
 		<TinaIsland name="global-footer" wrapper={islands['global-footer'].wrapper}>
 			<Footer config={config} />
 		</TinaIsland>

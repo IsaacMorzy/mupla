@@ -1,25 +1,68 @@
 {
-	"seo": {
-		"title": "mupla Foundation",
-		"description": "A Muslim community foundation dedicated to education, service, and community building.",
-		"siteOwner": "mupla Foundation",
-		"logo": "/orange-llama.svg"
-	},
-	"nav": [
-		{ "title": "Home", "link": "/" },
-		{ "title": "Programs", "link": "/programs" },
-		{ "title": "Events", "link": "/events" },
-		{ "title": "Team", "link": "/team" },
-		{ "title": "Get Involved", "link": "/get-involved" },
-		{ "title": "Donate", "link": "/donate" },
-		{ "title": "Blog", "link": "/blog" },
-		{ "title": "About", "link": "/about" },
-		{ "title": "FAQ", "link": "/faq" }
-	],
-	"contactLinks": [
-		{ "title": "Email", "link": "mailto:hello@mupla.org", "icon": "tabler:mail" },
-		{ "title": "Instagram", "link": "https://instagram.com/muplafoundation", "icon": "tabler:brand-instagram" },
-		{ "title": "Facebook", "link": "https://facebook.com/muplafoundation", "icon": "tabler:brand-facebook" },
-		{ "title": "YouTube", "link": "https://youtube.com/@muplafoundation", "icon": "tabler:brand-youtube" }
-	]
+  "seo": {
+    "title": "Mupla Foundation",
+    "description": "A Muslim community foundation dedicated to education, service, and community building.",
+    "siteOwner": "mupla Foundation",
+    "logo": "/orange-llama.svg"
+  },
+  "nav": [
+    {
+      "title": "Home",
+      "link": "/"
+    },
+    {
+      "title": "Programs",
+      "link": "/programs"
+    },
+    {
+      "title": "Events",
+      "link": "/events"
+    },
+    {
+      "title": "Team",
+      "link": "/team"
+    },
+    {
+      "title": "Get Involved",
+      "link": "/get-involved"
+    },
+    {
+      "title": "Donate",
+      "link": "/donate"
+    },
+    {
+      "title": "Blog",
+      "link": "/blog"
+    },
+    {
+      "title": "About",
+      "link": "/about"
+    },
+    {
+      "title": "FAQ",
+      "link": "/faq"
+    }
+  ],
+  "contactLinks": [
+    {
+      "title": "Email",
+      "link": "mailto:hello@mupla.org",
+      "icon": "tabler:mail"
+    },
+    {
+      "title": "Instagram",
+      "link": "https://instagram.com/muplafoundation",
+      "icon": "tabler:brand-instagram"
+    },
+    {
+      "title": "Facebook",
+      "link": "https://facebook.com/muplafoundation",
+      "icon": "tabler:brand-facebook"
+    },
+    {
+      "title": "YouTube",
+      "link": "https://youtube.com/@muplafoundation",
+      "icon": "tabler:brand-youtube"
+    }
+  ]
 }

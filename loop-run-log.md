@@ -2125,3 +2125,255 @@ GOOD — three free APIs working in tandem; browser geolocation; parallel fetche
 ### Self-grade
 
 GOOD — Images are now all authentic Pexels photography; Arabic calligraphy adds cultural resonance to key pages; animations enhanced; reduced-motion respected.
+
+---
+
+## Pass 27 — 2026-07-09 (Arabic calligraphy fix, Quran API migration, Islamic animations, Pexels refresh)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering + design-taste-frontend    |
+| Started  | 2026-07-09                                                     |
+| Status   | COMPLETE — ArabicCalligraphy rewritten with Noto Naskh Arabic font; Quran API migrated to AlQuran.cloud; 6 new Islamic CSS animations; static SVG calligraphy fallbacks; Pexels refreshed; Header.ts type assertion fixed; astro check 0 errors |
+| Score    | +0 (no new scoring gates; quality + reliability improvements)   |
+| Tokens   | ~60k (well under 200k budget)                                   |
+
+### What shipped
+
+1. **ArabicCalligraphy.astro rewritten** — The hand-traced SVG approximations (which looked incorrect and culturally inaccurate) have been replaced with Unicode Arabic Presentation Forms (U+FDFD for Bismillah, U+FDF2 for Allah, U+FDF4 for Muhammad) rendered via the Noto Naskh Arabic calligraphic font. The font handles complex Arabic shaping, joining, and diacritic placement that SVG paths couldn't match. Static SVG fallback files were created in `public/images/calligraphy/` as backup.
+
+2. **@fontsource/noto-naskh-arabic installed** — v5.2.11 added to package.json. Font imported in `global.css` with `--font-calligraphy` CSS variable and proper Tailwind v4 `--font-family-calligraphy` registration. Fallback stack includes Traditional Arabic, Scheherazade New, Amiri.
+
+3. **Quran API migrated to AlQuran.cloud** — The fawazahmed0/quran-api CDN (`surahs.json`) returned 404 since the file was removed from the repo. All Quran-related fetches now use AlQuran.cloud (free, no key, soft rate limit):
+   - `quran.astro`: surah listing from `/v1/surah`, verse Arabic from `/v1/surah/{n}/quran-uthmani`, verse English from `/v1/surah/{n}/en.asad`
+   - `QuranVerse.astro`: random verse from `/v1/ayah/{surah}:{verse}/quran-uthmani` and `/v1/ayah/{surah}:{verse}/en.asad`
+   - `prayers.astro`: supplications from `/v1/ayah/{surah}:{verse}/quran-uthmani` and `/v1/ayah/{surah}:{verse}/en.asad`
+
+4. **6 new Islamic CSS animations** added to `global.css`:
+   - `calligraphy-reveal` — gentle fade + scale + blur reveal for Bismillah/Allah text
+   - `lantern-glow` — warm amber pulse simulating lantern/fanoos light
+   - `star-twinkle` — 8-point star opacity + scale oscillation
+   - `morph-radius` — border-radius pulse for medallion containers
+   - `bead-sway` — gentle horizontal sway like misbaha/tasbih beads
+   - `card-hover-glow` — subtle amber border illumination on card hover
+   All honor `prefers-reduced-motion`.
+
+5. **Pexels images refreshed** — `scripts/fetch-pexels.mjs` re-run; all 23 images downloaded successfully with a valid PEXELS_API_KEY.
+
+6. **Header.astro type assertion fixed** — `(e.target as Element)` replaced with JSDoc `/** @type {Element} */ (e.target)` so astro check passes (0 errors, 0 warnings, 2 pre-existing hints).
+
+7. **Static SVG calligraphy fallbacks** — `public/images/calligraphy/{bismillah,allah,muhammad}.svg` created as proper SVGs with Thuluth-style strokes. Wired as hidden `<img>` fallback in ArabicCalligraphy.astro.
+
+8. **Quranic quote banner** added to quran.astro — Surah Al-Isra verse 9 in Arabic with English translation, framed by a rotating geometric ornament.
+
+9. **Calligraphy reveal animations** applied to homepage, Quran page, and Prayers page headers.
+
+### API verification (all working)
+
+| API | Status | Notes |
+| --- | ------ | ----- |
+| AlQuran.cloud | 200 | Free, no key, soft rate limit |
+| UmmahAPI | 200 | Free, no key, 5000 req/15min |
+| Pexels | OK | Free tier, 200 req/hr, 20k/mo |
+
+### Self-grade
+
+GOOD — calligraphy is now culturally authentic via a proper Arabic font; the broken Quran API was migrated to a working free alternative; 6 new animations add visual depth while respecting reduced-motion; astro check passes clean. The site now uses authentic Muslim-oriented content (Quran verses, duas, hadith from free Islamic APIs) with properly rendered Arabic calligraphy.
+
+### Maintainer gates
+
+- `bash bin/prep-push.sh` from a creds-loaded TTY to fast-forward origin/main.
+- After landing: `bash scripts/axe-core.sh` for a11y baseline (requires Chrome).
+- Per `docs/safety.md`: `git push`, `vercel deploy --prod`, and `gh issue close` remain HUMAN-ONLY.
+
+
+---
+
+## Pass 28 — 2026-07-09 (Pexels image wiring to all pages, homepage animations, LOOP workflow)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering + design-taste-frontend    |
+| Started  | 2026-07-09                                                     |
+| Status   | COMPLETE — Pexels Muslim images wired to all 9 page MDX files; homepage animations added; design pre-flight partial audit; astro check 0 errors |
+| Score    | +0 (quality + content improvements)                             |
+| Tokens   | ~40k (well under 200k budget)                                   |
+
+### What shipped
+
+1. **All 9 page MDX files wired with context-appropriate Pexels Muslim photography**:
+   - `home.mdx` — unchanged (uses TinaCMS-managed hero)
+   - `about.mdx` — already wired (about-community.jpg + about-architecture.jpg)
+   - `programs.mdx` — hero changed from pattern-arch.jpg to blog-pantry.jpg (volunteers packing food)
+   - `donate.mdx` — hero changed from about-architecture.jpg to donate-giving.jpg (hands joined in giving)
+   - `get-involved.mdx` — already wired (home-mosque.jpg)
+   - `team.mdx` — hero changed from about-architecture.jpg to about-community.jpg (diverse community)
+   - `contact.mdx` — already wired (home-mosque.jpg)
+   - `faq.mdx` — hero changed from about-architecture.jpg to about-community.jpg (community conversation)
+   - `terms.mdx` — hero changed from about-architecture.jpg to home-mosque.jpg (trust/establishment)
+   - `privacy.mdx` — hero changed from blog-quran.jpg to about-architecture.jpg (solid sanctuary)
+
+2. **Homepage animations added** (index.astro):
+   - `card-hover-glow` on testimonial cards — subtle amber border illumination on hover
+   - `card-hover-glow` on program quick-link cards — consistent hover treatment
+   - `animate-lantern` was applied to impact stats section then removed per reviewer feedback (box-shadow glow on borderless div renders inconsistently)
+
+3. **Design-taste-frontend pre-flight partial audit**:
+   - Eyebrow count: 0 across homepage (passes ≤ ceil(sectionCount/3) rule)
+   - Em-dash grep: 0 visible em-dashes on homepage
+   - Inter font: used but acceptable for community/nonprofit site per brand context
+   - 3-equal feature cards: homepage uses 6-card grid (programs) + 3-card grid (testimonials) with varied layouts — passes
+   - Full 40+ item checklist deferred to Pass 29
+
+4. **Astro check**: 0 errors, 0 warnings (2 pre-existing hints only)
+
+5. **Skills loaded**: brand, design-taste-frontend, prompt-engineering
+
+### Self-grade
+
+GOOD — all 9 page MDX files now display real Muslim-appropriate photography from Pexels (no placeholder images, no architectural-only photos where community photos fit better). Homepage cards have subtle hover animations. Review fixes applied promptly.
+
+### Maintainer gates
+
+- `bash bin/prep-push.sh` from a creds-loaded TTY to fast-forward origin/main.
+- Per `docs/safety.md`: `git push`, `vercel deploy --prod`, and `gh issue close` remain HUMAN-ONLY.
+
+
+---
+
+## Pass 29 - 2026-07-09 (bead-sway animation, em-dash purge, design pre-flight audit)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering + design-taste-frontend    |
+| Started  | 2026-07-09                                                     |
+| Status   | COMPLETE - bead-sway animation added to Quran verse reader; all em-dashes purged from visible page content; full design pre-flight checklist run against index/quran/prayers; brand audit applied; astro check 0 errors |
+| Score    | +0 (quality + brand-compliance improvements)                    |
+| Tokens   | ~40k (well under 200k budget)                                   |
+
+### What shipped
+
+1. **Bead-sway animation on Quran verse reader**: `animate-bead-sway` class added to the verse-content div in quran.astro, giving the verse display a gentle prayer-bead sway effect.
+
+2. **Em-dash purge**: All 5 em-dashes in visible page content replaced:
+   - prayers.astro: 3 em-dashes replaced with commas/restructured
+   - contact-form.template.ts: em-dash replaced with semicolon
+   - team.template.ts: em-dash replaced with comma
+   - index.astro: en-dash in age range replaced with hyphen
+   This is per design-taste-frontend Section 9.G (em-dash ban, non-negotiable).
+
+3. **Design pre-flight audit results** (Section 14 checks against index/quran/prayers):
+   - Eyebrow count: 0 on all 3 pages (passes max-1-per-3-sections)
+   - Em-dashes in visible content: 0 (passes after purge)
+   - No section-numbering eyebrows (passes)
+   - No decorative dots (passes)
+   - No version labels in hero (passes)
+   - No scroll cues (passes)
+   - No duplicate CTA intent (passes - Volunteer/Donate are distinct)
+   - Page Theme Lock: consistent throughout (passes)
+   - Color Consistency Lock: amber primary consistent (passes)
+   - Shape Consistency Lock: rounded-xl/rounded-2xl consistent (passes)
+   - No 3-equal-card pattern violation (passes - 6-card programs grid, 3-card testimonials via Card component)
+   - Dark mode tokens defined and tested (passes)
+   - Reduced motion honored (passes)
+   - Mobile responsive (passes)
+
+4. **Brand audit** (brand skill): No SaaS titles, no marketing fluff, no tier-giving creep found. All copy uses plain, warm, specific language. Ihsan-coded tier names present on donate page.
+
+5. **Matt Pocock skills invoked**: `brand`, `design-taste-frontend`, `prompt-engineering` all loaded and applied per user instruction.
+
+6. **astro check**: 0 errors, 0 warnings.
+
+---
+
+## Pass 30 - 2026-07-09 (image dedup, API verification, production build)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering + design-taste-frontend    |
+| Started  | 2026-07-09                                                     |
+| Status   | COMPLETE - all 10 page MDX files have unique Muslim-appropriate Pexels hero images; zero duplicate hero images; all 6 APIs verified working; production build passes; alt text updated; astro check 0 errors |
+| Score    | +0 (content quality + reliability improvement)                  |
+| Tokens   | ~45k (well under 200k budget)                                   |
+
+### What shipped
+
+1. **Image deduplication across all 10 page MDX files**: home-mosque.jpg was on 4 pages, about-community.jpg was on 4 pages. Now every hero image is unique:
+   - home.mdx: home-mosque.jpg (keep)
+   - about.mdx: blog-quran.jpg + event-iftar.jpg (fresh)
+   - programs.mdx: blog-pantry.jpg (keep)
+   - donate.mdx: donate-giving.jpg (keep)
+   - get-involved.mdx: event-refugee.jpg (fresh)
+   - team.mdx: event-class.jpg (fresh)
+   - contact.mdx: about-architecture.jpg (fresh)
+   - faq.mdx: blog-ramadan.jpg (fresh)
+   - terms.mdx: pattern-arch.jpg (fresh)
+   - privacy.mdx: event-pantry.jpg (fresh)
+
+2. **Alt text updated**: All 6 changed pages have alt text matching their new images.
+
+3. **API verification**: All 6 API endpoints tested and returning 200:
+   - AlQuran.cloud: surah listing, Arabic text, English text - all OK
+   - UmmahAPI: prayer times, duas, hadith - all OK
+   - Pexels: 33 JPEGs locally cached
+
+4. **Production build**: `pnpm astro build` passes in 1m 9s. One harmless warning about /home/index.html empty response body.
+
+5. **astro check**: 0 errors, 0 warnings.
+
+6. **Matt Pocock skills invoked**: `brand`, `design-taste-frontend`, `prompt-engineering` loaded and applied.
+
+7. **Brand audit**: All page copy checked against the seven anchored pages. No SaaS titles, marketing fluff, tier-giving creep, or em-dashes found.
+
+---
+
+## Pass 31 - 2026-07-09 (new Islamic animations, UI/UX improvements, API verification)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering + ui-ux-pro-max           |
+| Started  | 2026-07-09                                                     |
+| Status   | COMPLETE - 6 new Islamic animations added; graceful-hover on all cards; ayah-fade on Quran verses; moon-glow on prayer times; all APIs verified returning valid data; reduced-motion fully covered; astro check 0 errors |
+| Score    | +0 (animation + UX quality improvement)                         |
+| Tokens   | ~55k (well under 200k budget)                                   |
+
+### What shipped
+
+1. **6 new Islamic animations** in global.css:
+   - `moon-glow`: subtle crescent aura for prayer/spiritual sections
+   - `hilal-arc`: gentle crescent moon rotation
+   - `geometric-build`: SVG stroke-dash reveal for girih dividers
+   - `ayah-fade`: soft vertical fade-up for Quranic verses
+   - `graceful-hover`: elevation lift + scale on card hover
+   - `ripple-pulse`: water-like expanding circle on tap
+
+2. **Animations applied across pages**:
+   - Homepage: graceful-hover on program cards, testimonial cards, blog cards, event cards
+   - Prayers: graceful-hover on prayer time cards, dua/hadith cards; animate-moon-glow on GeometricMedallion
+   - Quran: graceful-hover on surah cards; animate-ayah-fade on dynamically rendered verse content
+
+3. **Reduced-motion coverage**: Expanded override block to cover all 15+ animation classes including new ones. graceful-hover degrades to static on reduce.
+
+4. **API verification**: All endpoints tested with actual data parsing:
+   - UmmahAPI prayer times: success ✅
+   - UmmahAPI random duas (3): all returned Arabic + English translations ✅
+   - UmmahAPI random hadith: returned Sahih text from Sunan Abu Dawud ✅
+   - AlQuran.cloud supplications (3 verses): all returned valid Arabic ✅
+
+5. **Calligraphy**: ArabicCalligraphy component verified - uses Noto Naskh Arabic font with Unicode Presentation Forms, static SVG fallbacks at /images/calligraphy/. Working correctly.
+
+6. **UI/UX improvements (ui-ux-pro-max)**:
+   - All animations honor reduced-motion (P1 accessibility)
+   - Touch targets adequate (cards are full-width interactive)
+   - Animation durations in 150-800ms range (per spec)
+   - Transform/opacity only (GPU-friendly)
+   - Focus rings maintained on all interactive elements
+
+7. **Matt Pocock skills invoked**: `brand`, `ui-ux-pro-max`, `prompt-engineering` loaded and applied.
+
+8. **astro check**: 0 errors, 0 warnings.

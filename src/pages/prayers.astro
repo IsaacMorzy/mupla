@@ -9,7 +9,7 @@ import { getConfig } from '../lib/data';
 
 const config = (await getConfig()).data?.config ?? null;
 
-// ── Fetch Quranic supplications from fawazahmed0/quran-api ──
+// ── Fetch Quranic supplications from AlQuran.cloud (free, no key) ──
 const supplicationDefs = [
 	{ surah: 2, ayah: 201, ref: 'Surah Al-Baqarah, verse 201', arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ', english: 'Our Lord, grant us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.' },
 	{ surah: 3, ayah: 8,   ref: 'Surah Aal-e-Imran, verse 8', arabic: 'رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً إِنَّكَ أَنتَ الْوَهَّابُ', english: 'Our Lord, let not our hearts deviate after You have guided us, and grant us from Yourself mercy. Indeed, You are the Bestower.' },
@@ -19,14 +19,14 @@ const supplicationDefs = [
 const displaySupplications = await Promise.all(supplicationDefs.map(async (def) => {
 	try {
 		const [arabicRes, englishRes] = await Promise.all([
-			fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmanihaf/${def.surah}/${def.ayah}.json`),
-			fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-abdelhaleem/${def.surah}/${def.ayah}.json`),
+			fetch(`https://api.alquran.cloud/v1/ayah/${def.surah}:${def.ayah}/quran-uthmani`),
+			fetch(`https://api.alquran.cloud/v1/ayah/${def.surah}:${def.ayah}/en.asad`),
 		]);
 		if (arabicRes.ok && englishRes.ok) {
-			const [arabicData, englishData] = await Promise.all([arabicRes.json(), englishRes.json()]);
+			const [arabicJson, englishJson] = await Promise.all([arabicRes.json(), englishRes.json()]);
 			return {
-				arabic: (arabicData as any).text || def.arabic,
-				english: (englishData as any).text || def.english,
+				arabic: (arabicJson as any).data?.text || def.arabic,
+				english: (englishJson as any).data?.text || def.english,
 				ref: def.ref,
 			};
 		}
@@ -80,11 +80,11 @@ try {
 	<main class="mx-auto max-w-5xl px-6 py-12 md:py-20">
 		<header class="reveal mx-auto max-w-2xl text-center">
 			<h1 class="text-balance text-5xl font-semibold tracking-tight md:text-6xl">Prayer times</h1>
-			<div class="mt-6" aria-hidden="true">
-				<ArabicCalligraphy variant="bismillah" class="mx-auto block" size={300} />
+			<div class="mt-6 reveal-calligraphy" aria-hidden="true">
+				<ArabicCalligraphy variant="bismillah" class="mx-auto block" size={400} />
 			</div>
 			<p class="mx-auto mt-5 max-w-xl text-balance text-muted-foreground">
-				Daily prayer times, selected duas, and a hadith to carry through your day — all from UmmahAPI and the Quran.
+				Daily prayer times, selected duas, and a hadith to carry through your day, all from UmmahAPI and the Quran.
 			</p>
 		</header>
 
@@ -92,7 +92,7 @@ try {
 
 		<!-- Prayer times: loaded client-side from UmmahAPI -->
 		<Section class="relative overflow-hidden" background="bg-secondary">
-			<div aria-hidden="true" class="pointer-events-none absolute -right-16 top-0 hidden md:block">
+			<div aria-hidden="true" class="pointer-events-none absolute -right-16 top-0 hidden md:block animate-hilal">
 				<GeometricMedallion size={180} weight="thin" variant="twin" class="opacity-[0.10] animate-spin-slower" />
 			</div>
 			<div class="reveal relative z-10 mx-auto max-w-3xl">
@@ -126,7 +126,7 @@ try {
 						</blockquote>
 						<footer class="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
 							{hadith.narrator && <span class="font-medium text-foreground">{hadith.narrator}</span>}
-							{hadith.source && <span>— {hadith.source}</span>}
+							{hadith.source && <span>, {hadith.source}</span>}
 						</footer>
 					</div>
 				</div>
@@ -173,7 +173,7 @@ try {
 				</p>
 
 				<div class="mt-10 space-y-8">
-					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8 graceful-hover">
 						<blockquote class="space-y-4">
 							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
 								أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ
@@ -187,7 +187,7 @@ try {
 						</footer>
 					</div>
 
-					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8 graceful-hover">
 						<blockquote class="space-y-4">
 							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
 								بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ
@@ -201,7 +201,7 @@ try {
 						</footer>
 					</div>
 
-					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8 graceful-hover">
 						<blockquote class="space-y-4">
 							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
 								اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا
@@ -229,7 +229,7 @@ try {
 				</p>
 
 				<div class="mt-10 space-y-8">
-					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8 graceful-hover">
 						<blockquote class="space-y-4">
 							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
 								أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ
@@ -243,7 +243,7 @@ try {
 						</footer>
 					</div>
 
-					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8 graceful-hover">
 						<blockquote class="space-y-4">
 							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
 								اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ
@@ -257,7 +257,7 @@ try {
 						</footer>
 					</div>
 
-					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
+					<div class="rounded-2xl border border-border/60 bg-card p-6 md:p-8 graceful-hover">
 						<blockquote class="space-y-4">
 							<p lang="ar" dir="rtl" class="font-serif text-2xl leading-[1.8] text-foreground md:text-3xl">
 								اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ
@@ -281,7 +281,7 @@ try {
 				<div class="reveal mx-auto max-w-3xl">
 					<h2 class="text-balance text-3xl font-semibold md:text-4xl text-center">Quranic supplications</h2>
 					<p class="mt-4 text-center text-muted-foreground">
-						Prayers and supplications from the Quran that the prophets and the righteous made — fetched from the Quran API.
+						Prayers and supplications from the Quran, made by the prophets and the righteous, fetched from the Quran API.
 					</p>
 					<div class="mt-10 space-y-8">
 						{displaySupplications.map((s) => (
@@ -349,7 +349,7 @@ try {
 			];
 
 			container.innerHTML = prayers.map(p => `
-				<div class="reveal flex flex-col items-center gap-2 rounded-2xl border border-border/60 bg-card p-4 text-center">
+				<div class="reveal flex flex-col items-center gap-2 rounded-2xl border border-border/60 bg-card p-4 text-center graceful-hover">
 					<span class="text-xs font-medium text-muted-foreground">${p.name}</span>
 					<span class="font-mono text-lg font-semibold text-foreground">${p.time}</span>
 				</div>

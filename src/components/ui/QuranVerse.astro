@@ -1,16 +1,15 @@
 ---
 /**
  * QuranVerse - fetches a random Quran verse with Arabic and English
- * translation from the fawazahmed0/quran-api at build time.
+ * translation from AlQuran.cloud at build time (free, no key).
  *
- * Uses jsDelivr CDN (no auth, no rate limits). Picks a random surah
- * and verse, fetches both the Arabic Uthmani script and the English
- * Muntakhab translation, then renders them with an Islamic divider.
+ * Picks a random surah (1-114) and verse, fetches both the Arabic
+ * Uthmani script and Muhammad Asad's English translation, then renders
+ * them as a centred blockquote with citation.
  */
 import Section from './Section.astro';
-import IslamicDivider from './IslamicDivider.astro';
 
-interface SurahEntry {
+interface AlQuranSurah {
 	number: number;
 	name: string;
 	englishName: string;
@@ -19,52 +18,41 @@ interface SurahEntry {
 	revelationType: string;
 }
 
-interface EditionVerse {
-	chapter: number;
-	verse: number;
-	text: string;
-}
-
 let arabicText = '';
 let englishText = '';
 let surahName = '';
 let verseNumber = 0;
 
 try {
-	// Fetch surah index to get a random surah
-	const surahsRes = await fetch(
-		'https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/surahs.json',
-	);
+	// Fetch surah list, pick one randomly, then pick a random verse
+	const surahsRes = await fetch('https://api.alquran.cloud/v1/surah');
 	if (surahsRes.ok) {
-		const surahs: SurahEntry[] = await surahsRes.json();
+		const json = await surahsRes.json();
+		const surahs: AlQuranSurah[] = json.data ?? [];
 		const surah = surahs[Math.floor(Math.random() * surahs.length)];
 		if (surah) {
 			const ayahNum = Math.floor(Math.random() * surah.numberOfAyahs) + 1;
 			surahName = surah.englishName;
 			verseNumber = ayahNum;
 
-			// Fetch Arabic and English in parallel
+			// Fetch Arabic Uthmani + English Asad in parallel
 			const [arabicRes, englishRes] = await Promise.all([
-				fetch(
-					`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmanihaf/${surah.number}/${ayahNum}.json`,
-				),
-				fetch(
-					`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-abdelhaleem/${surah.number}/${ayahNum}.json`,
-				),
+				fetch(`https://api.alquran.cloud/v1/ayah/${surah.number}:${ayahNum}/quran-uthmani`),
+				fetch(`https://api.alquran.cloud/v1/ayah/${surah.number}:${ayahNum}/en.asad`),
 			]);
 
 			if (arabicRes.ok) {
-				const a: EditionVerse = await arabicRes.json();
-				arabicText = a.text;
+				const a = await arabicRes.json();
+				arabicText = a.data?.text ?? '';
 			}
 			if (englishRes.ok) {
-				const e: EditionVerse = await englishRes.json();
-				englishText = e.text;
+				const e = await englishRes.json();
+				englishText = e.data?.text ?? '';
 			}
 		}
 	}
 } catch {
-	// Silently fall back - the section renders nothing if fetch fails.
+	// Silently fall back — section renders nothing if fetch fails.
 }
 
 const hasVerse = Boolean(arabicText && englishText);
@@ -72,20 +60,20 @@ const hasVerse = Boolean(arabicText && englishText);
 
 {hasVerse && (
 	<Section class="relative overflow-hidden">
-			<div class="reveal mx-auto max-w-3xl px-6 text-center">
-				<blockquote cite={`https://quran.com/${surahName.toLowerCase().replace(/\s+/g, '-')}/${verseNumber}`} class="mt-6">
-					<p lang="ar" dir="rtl" class="font-serif text-3xl leading-[1.8] text-foreground md:text-4xl lg:text-5xl">
-						{arabicText}
-					</p>
-					<p class="mx-auto mt-6 max-w-2xl text-balance italic leading-relaxed text-muted-foreground">
-						{englishText}
-					</p>
-				</blockquote>
-				<footer class="mt-6">
-					<cite class="text-sm not-italic text-muted-foreground">
-						Surah {surahName}, verse {verseNumber}
-					</cite>
-				</footer>
-			</div>
-		</Section>
+		<div class="reveal mx-auto max-w-3xl px-6 text-center">
+			<blockquote cite={`https://quran.com/${surahName.toLowerCase().replace(/\s+/g, '-')}/${verseNumber}`} class="mt-6">
+				<p lang="ar" dir="rtl" class="font-calligraphy text-3xl leading-[1.8] text-foreground md:text-4xl lg:text-5xl">
+					{arabicText}
+				</p>
+				<p class="mx-auto mt-6 max-w-2xl text-balance italic leading-relaxed text-muted-foreground">
+					{englishText}
+				</p>
+			</blockquote>
+			<footer class="mt-6">
+				<cite class="text-sm not-italic text-muted-foreground">
+					Surah {surahName}, verse {verseNumber}
+				</cite>
+			</footer>
+		</div>
+	</Section>
 )}

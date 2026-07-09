@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" fill="none">
+  <!-- Allah (الله) in Thuluth-style calligraphy -->
+  <g stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+    <!-- ا (alif) — tall vertical stroke with serif head -->
+    <path d="M 42,175 C 40,140 42,100 43,60 C 44,40 45,30 46,25 C 47,22 48,25 47,30 C 45,50 44,80 44,130"/>
+
+    <!-- ل (lam) — first lam, tall ascending -->
+    <path d="M 62,178 C 60,140 62,100 64,60 C 66,38 68,25 71,18 C 72,15 71,18 69,26 C 66,45 64,75 63,120"/>
+    <path d="M 71,18 C 78,10 84,12 86,18 C 87,22 83,26 79,22 C 76,20 73,18 71,18"/>
+
+    <!-- ل (lam) — second lam, identical to first -->
+    <path d="M 90,178 C 88,140 90,100 92,60 C 94,38 96,25 99,18 C 100,15 99,18 97,26 C 94,45 92,75 91,120"/>
+    <path d="M 99,18 C 106,10 112,12 114,18 C 115,22 111,26 107,22 C 104,20 101,18 99,18"/>
+
+    <!-- ه (ha) — final ha, rounded lower loop -->
+    <path d="M 120,170 C 118,140 120,110 122,85 C 124,65 130,52 136,46 C 142,42 146,50 142,58 C 136,70 130,88 127,108 C 124,128 122,148 124,168"/>
+    <!-- Ha inner loop/eye -->
+    <circle cx="134" cy="52" r="2.5" fill="currentColor" opacity="0.6"/>
+
+    <!-- Shaddah (ّ) — small 'w' shape above lam -->
+    <path d="M 75,12 C 78,8 82,8 85,12" stroke="currentColor" stroke-width="1" fill="none"/>
+    <!-- Dagger alif above shaddah -->
+    <path d="M 80,6 L 80,0" stroke="currentColor" stroke-width="1.2" fill="none"/>
+  </g>
+</svg>

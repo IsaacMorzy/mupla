@@ -14,7 +14,7 @@ export const teamBlockSchema: Template = {
 			list: true,
 			ui: {
 				defaultItem: { name: 'New member', role: 'Volunteer' },
-				itemProps: (i: TeamMember) => ({ label: `${i.name ?? ''} — ${i.role ?? ''}` }),
+				itemProps: (i: TeamMember) => ({ label: `${i.name ?? ''}, ${i.role ?? ''}` }),
 			},
 			fields: [
 				{ type: 'string', label: 'Name', name: 'name' },

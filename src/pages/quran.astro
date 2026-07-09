@@ -8,7 +8,10 @@ import { getConfig } from '../lib/data';
 
 const config = (await getConfig()).data?.config ?? null;
 
-interface SurahEntry {
+/* Surah data fetched from AlQuran.cloud (free, no key).
+   Returns all 114 surahs with Arabic name, English name, ayah count,
+   and revelation type. */
+interface AlQuranSurah {
 	number: number;
 	name: string;
 	englishName: string;
@@ -17,15 +20,21 @@ interface SurahEntry {
 	revelationType: string;
 }
 
-const surahs: SurahEntry[] = [];
+interface AlQuranSurahResponse {
+	code: number;
+	status: string;
+	data: AlQuranSurah[];
+}
+
+const surahs: AlQuranSurah[] = [];
 
 try {
-	const res = await fetch(
-		'https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/surahs.json',
-	);
+	const res = await fetch('https://api.alquran.cloud/v1/surah');
 	if (res.ok) {
-		const data: SurahEntry[] = await res.json();
-		surahs.push(...data);
+		const json: AlQuranSurahResponse = await res.json();
+		if (json.data && Array.isArray(json.data)) {
+			surahs.push(...json.data);
+		}
 	}
 } catch {
 	// Silently fall back - page shows empty state
@@ -39,15 +48,31 @@ try {
 	<main class="mx-auto max-w-5xl px-6 py-12 md:py-20">
 		<header class="reveal mx-auto max-w-2xl text-center">
 			<h1 class="text-balance text-5xl font-semibold tracking-tight md:text-6xl">The Quran</h1>
-			<div class="mt-6" aria-hidden="true">
-				<ArabicCalligraphy variant="bismillah" class="mx-auto block" size={300} />
+			<div class="mt-6 reveal-calligraphy" aria-hidden="true">
+				<ArabicCalligraphy variant="bismillah" class="mx-auto block" size={400} />
 			</div>
 			<p class="mx-auto mt-5 max-w-xl text-balance text-muted-foreground">
-				Browse all 114 surahs in Arabic Uthmani Hafs script with English Abdel Haleem translation. Click a surah to read its verses, then play audio recitation from AlQuran.cloud.
+				Browse all 114 surahs in Arabic Uthmani script with English translation. Click a surah to read its verses, then play audio recitation from AlQuran.cloud.
 			</p>
 		</header>
 
-		<IslamicDivider variant="single" class="max-w-4xl mx-auto mt-12 mb-8" />
+		<div class="mx-auto max-w-4xl px-6 mt-12 mb-8">
+			<div class="relative overflow-hidden rounded-2xl border border-border/60 bg-card/50 p-8 text-center">
+				<div aria-hidden="true" class="pointer-events-none absolute -right-10 -top-10 opacity-[0.06]">
+					<svg width="200" height="200" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1" class="text-primary animate-spin-slower geometric-line">
+						<rect x="30" y="30" width="140" height="140" rx="12" />
+						<rect x="30" y="30" width="140" height="140" rx="12" transform="rotate(45 100 100)" />
+						<circle cx="100" cy="100" r="30" />
+					</svg>
+				</div>
+				<p class="font-calligraphy text-4xl leading-relaxed text-foreground/20 md:text-5xl" lang="ar" dir="rtl">
+					إِنَّ هَٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ
+				</p>
+				<p class="mt-3 text-xs italic text-muted-foreground">
+					Indeed, this Qur'an guides to that which is most suitable.
+				</p>
+			</div>
+		</div>
 
 		{surahs.length > 0 ? (
 			<>
@@ -59,7 +84,7 @@ try {
 							data-ayahs={s.numberOfAyahs}
 							data-name={s.name}
 							data-english-name={s.englishName}
-							class="reveal group flex items-center gap-4 rounded-2xl border border-border/60 bg-card px-5 py-4 text-left transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+							class="reveal group flex items-center gap-4 rounded-2xl border border-border/60 bg-card px-5 py-4 text-left transition-colors hover:bg-accent/50 graceful-hover focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 							style={`--reveal-i: ${Math.floor(i / 3)}`}
 						>
 							<div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted font-mono text-xs text-foreground">
@@ -121,28 +146,27 @@ try {
 									id="verse-prev"
 									class="inline-flex items-center gap-1 rounded-xl border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-accent disabled:opacity-30"
 									disabled
-								>										<Icon name="arrow-left" class="size-4" />
-										Prev
-									</button>
-									<span id="verse-counter" class="text-sm font-medium text-foreground">1 / 1</span>
-									<button
-										type="button"
-										id="verse-next"
-										class="inline-flex items-center gap-1 rounded-xl border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-accent disabled:opacity-30"
-									>
-										Next
-										<Icon name="arrow-right" class="size-4" />
+								>								<Icon name="arrow-left" class="size-4" />
+									Prev
+								</button>
+								<span id="verse-counter" class="text-sm font-medium text-foreground">1 / 1</span>
+								<button
+									type="button"
+									id="verse-next"
+									class="inline-flex items-center gap-1 rounded-xl border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-accent disabled:opacity-30"
+								>
+									Next
+									<Icon name="arrow-right" class="size-4" />
 								</button>
 							</div>
 						</div>
-						<div id="verse-content" class="space-y-10">
-							<!-- Populated by client JS -->
-						</div>
+					<div id="verse-content" class="space-y-10">
+						<!-- Populated by client JS -->
+					</div>
 					</div>
 				</Section>
 
-				<!-- Empty state when CDN is unreachable -->
-				<IslamicDivider variant="single" class="max-w-4xl mx-auto my-12" />
+				<IslamicDivider variant="single" class="max-w-4xl mx-auto my-12 animate-bead-sway" />
 			</>
 		) : (
 			<p class="mt-12 text-center text-muted-foreground">
@@ -154,8 +178,8 @@ try {
 </Base>
 
 <script>
-	// Client-side verse reader. Fetches verses from the fawazahmed0/quran-api
-	// CDN when a surah card is clicked. Navigates between verses with prev/next.
+	// Client-side verse reader. Fetches verses from AlQuran.cloud (free, no key)
+	// when a surah card is clicked. Navigates between verses with prev/next.
 	interface Verse {
 		chapter: number;
 		verse: number;
@@ -198,7 +222,6 @@ try {
 		prevBtn.disabled = currentVerse <= 1;
 		nextBtn.disabled = currentVerse >= totalAyahs;
 
-		// Update audio play button to target the current verse
 		const playBtn = document.getElementById('play-audio') as HTMLButtonElement;
 		if (playBtn) {
 			playBtn.dataset.surah = String(currentSurah);
@@ -206,7 +229,7 @@ try {
 		}
 
 		content.innerHTML = `
-			<div class="text-center">
+			<div class="text-center animate-ayah-fade">
 				<p class="text-xs font-medium text-muted-foreground">Verse ${a.verse}</p>
 				<p lang="ar" dir="rtl" class="mt-4 font-serif text-3xl leading-[2] text-foreground md:text-4xl lg:text-5xl">${a.text}</p>
 				<p class="mx-auto mt-6 max-w-2xl text-balance italic leading-relaxed text-muted-foreground">${e.text}</p>
@@ -218,53 +241,36 @@ try {
 		content.innerHTML = `<p class="text-center text-muted-foreground">Loading verses...</p>`;
 		showReader();
 
-		// Reset before fetch to avoid stale data from a previous surah
 		arabicVerses = [];
 		englishVerses = [];
 
 		try {
+			// Fetch full surah from AlQuran.cloud (free, no key)
 			const [arabicRes, englishRes] = await Promise.all([
-				fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmanihaf/${surah}.json`),
-				fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-abdelhaleem/${surah}.json`),
+				fetch(`https://api.alquran.cloud/v1/surah/${surah}/quran-uthmani`),
+				fetch(`https://api.alquran.cloud/v1/surah/${surah}/en.asad`),
 			]);
 
 			if (!arabicRes.ok || !englishRes.ok) throw new Error('Fetch failed');
 
-			// Parse each response exactly once. The API returns different shapes
-			// depending on the endpoint: sometimes {ayahs: [...]}, sometimes an
-			// array directly, sometimes nested under {surahs: [{ayahs: [...]}]}.
-			const arabicData = await arabicRes.json();
-			const englishData = await englishRes.json();
+			const arabicJson = await arabicRes.json();
+			const englishJson = await englishRes.json();
 
-		const extractAyahs = (data: any): any[] => {
-			if (Array.isArray(data)) return data;
-			// Per-surah endpoint shape: { chapter: [ {chapter, verse, text}, ... ] }
-			if (data.chapter) return data.chapter;
-			// Alternative shapes from different endpoints
-			if (data.ayahs) return data.ayahs;
-			if (data.surahs?.[0]?.ayahs) return data.surahs[0].ayahs;
-			if (data.surah?.ayahs) return data.surah.ayahs;
-			return [];
-		};
-
-			const arabicAyahs = extractAyahs(arabicData);
-			const englishAyahs = extractAyahs(englishData);
-
-			if (arabicAyahs.length === 0) throw new Error('No verses found');
-
-			// Map to uniform shape. Field names vary: numberInSurah,
-			// number, verse, or index in the array.
-			arabicVerses = arabicAyahs.map((a: any, i: number) => ({
+			const arabicData: Verse[] = (arabicJson.data?.ayahs ?? []).map((a: any) => ({
 				chapter: surah,
-				verse: a.numberInSurah ?? a.number ?? a.verse ?? i + 1,
+				verse: a.numberInSurah ?? a.number ?? 0,
 				text: a.text ?? '',
 			}));
-			englishVerses = englishAyahs.map((a: any, i: number) => ({
+			const englishData: Verse[] = (englishJson.data?.ayahs ?? []).map((a: any) => ({
 				chapter: surah,
-				verse: a.numberInSurah ?? a.number ?? a.verse ?? i + 1,
+				verse: a.numberInSurah ?? a.number ?? 0,
 				text: a.text ?? '',
 			}));
 
+			if (arabicData.length === 0) throw new Error('No verses found');
+
+			arabicVerses = arabicData;
+			englishVerses = englishData;
 			totalAyahs = arabicVerses.length;
 			renderVerse(startVerse - 1);
 		} catch {
@@ -283,7 +289,6 @@ try {
 			const name = btn.dataset.name || '';
 			const nameHeading = document.getElementById('verse-surah-name');
 			if (nameHeading) nameHeading.textContent = name;
-			// Show audio controls when reader is active
 			const audioControls = document.getElementById('audio-controls');
 			if (audioControls) audioControls.classList.remove('hidden');
 			loadSurah(surah);
@@ -323,21 +328,20 @@ try {
 				audioPlayer.classList.remove('hidden');
 				await audioPlayer.play();
 			} else {
-				// Fallback: try CDN URL pattern (zero-padded verse numbers)
+				// Fallback CDN for audio
 				const paddedVerse = String(parseInt(verse)).padStart(3, '0');
 				audioPlayer.src = `https://cdn.islamic.network/quran/audio/128/${reciter}/${surah}${paddedVerse}.mp3`;
 				audioPlayer.classList.remove('hidden');
 				await audioPlayer.play();
 			}
 		} catch {
-			// Silent fail - user can try again
+			// Silent fail
 		} finally {
 			playBtn.disabled = false;
 			playBtn.innerHTML = '<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
 		}
 	});
 
-	// Stop audio when navigating away
 	document.getElementById('verse-back')?.addEventListener('click', () => {
 		audioPlayer?.pause();
 		const audioControls = document.getElementById('audio-controls');

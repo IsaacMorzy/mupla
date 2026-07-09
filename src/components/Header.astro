@@ -240,7 +240,8 @@ const navGroups = [
 	});
 	// Close dropdowns when clicking outside
 	document.addEventListener('click', (e) => {
-		if (!(e.target as Element).closest('[data-dropdown]')) {
+		const target = /** @type {Element} */ (e.target);
+		if (!target.closest('[data-dropdown]')) {
 			document.querySelectorAll('[data-dropdown].dropdown-open').forEach((el) => {
 				el.classList.remove('dropdown-open');
 			});

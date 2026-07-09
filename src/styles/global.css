@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/inter';
+@import '@fontsource/noto-naskh-arabic';
 @plugin '@tailwindcss/typography';
 
 /* Drive the dark: variant from the .dark class (toggled by ThemeToggle),
@@ -34,6 +35,10 @@
 	--font-serif:
 		'Charter', 'Iowan Old Style', 'Apple Garamond', 'Serif Fallback', ui-serif,
 		Georgia, serif;
+	--font-calligraphy:
+		'Noto Naskh Arabic', 'Traditional Arabic', 'Scheherazade New', 'Amiri',
+		ui-serif, serif;
+	--font-family-calligraphy: var(--font-calligraphy);
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
@@ -256,6 +261,127 @@
 		animation: arabesque-draw 3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 	}
 
+	/* === Islamic ornamental animations (Pass 27) === */
+
+	/* Calligraphy reveal — gentle fade + scale for Bismillah/Allah text */
+	@keyframes calligraphy-reveal {
+		0%   { opacity: 0; transform: scale(0.92); filter: blur(6px); }
+		100% { opacity: 1; transform: scale(1);    filter: blur(0); }
+	}
+	.reveal-calligraphy {
+		animation: calligraphy-reveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+		will-change: transform, opacity, filter;
+	}
+
+	/* Lantern glow — warm amber pulse simulating lantern/fanoos light */
+	@keyframes lantern-glow {
+		0%, 100% { box-shadow: 0 0 12px 2px oklch(0.62 0.12 78 / 12%), 0 0 40px 4px oklch(0.62 0.12 78 / 6%); }
+		50%      { box-shadow: 0 0 24px 4px oklch(0.62 0.12 78 / 20%), 0 0 60px 8px oklch(0.62 0.12 78 / 10%); }
+	}
+	.animate-lantern {
+		animation: lantern-glow 4s ease-in-out infinite;
+	}
+
+	/* Star field — multiple 8-point stars twinkling at staggered intervals */
+	@keyframes star-twinkle {
+		0%, 100% { opacity: 0.12; transform: scale(1); }
+		30%      { opacity: 0.35; transform: scale(1.08); }
+		60%      { opacity: 0.18; transform: scale(0.96); }
+	}
+	.animate-star-twinkle {
+		animation: star-twinkle 5s ease-in-out infinite;
+	}
+
+	/* Geometric morph — border-radius pulse for medallion containers */
+	@keyframes morph-radius {
+		0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+		25%      { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+		50%      { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+		75%      { border-radius: 33% 67% 58% 42% / 29% 68% 32% 71%; }
+	}
+	.animate-morph {
+		animation: morph-radius 12s ease-in-out infinite;
+	}
+
+	/* Prayer bead — gentle horizontal sway like misbaha/tasbih beads */
+	@keyframes bead-sway {
+		0%, 100% { transform: translateX(0) rotate(0deg); }
+		25%      { transform: translateX(3px) rotate(1deg); }
+		75%      { transform: translateX(-3px) rotate(-1deg); }
+	}
+	.animate-bead-sway {
+		animation: bead-sway 6s ease-in-out infinite;
+	}
+
+	/* Hover border glow — subtle amber border illumination on card hover */
+	.card-hover-glow {
+		transition: border-color 400ms ease, box-shadow 400ms ease;
+	}
+	.card-hover-glow:hover {
+		border-color: oklch(0.62 0.12 78 / 40%);
+		box-shadow: 0 0 20px 0 oklch(0.62 0.12 78 / 8%);
+	}
+
+	/* === Islamic ornamental animations (Pass 31) === */
+
+	/* Moon phase — subtle crescent glow for prayer/spiritual sections */
+	@keyframes moon-glow {
+		0%, 100% { opacity: 0.08; transform: scale(1); }
+		50%      { opacity: 0.18; transform: scale(1.06); }
+	}
+	.animate-moon-glow {
+		animation: moon-glow 8s ease-in-out infinite;
+	}
+
+	/* Geometric build — girih tile stroke-dash animation for dividers */
+	@keyframes geometric-build {
+		0%   { stroke-dashoffset: 600; opacity: 0; }
+		50%  { opacity: 1; }
+		100% { stroke-dashoffset: 0; opacity: 1; }
+	}
+	.geometric-line {
+		stroke-dasharray: 600;
+		stroke-dashoffset: 600;
+		animation: geometric-build 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+	}
+
+	/* Ayah fade — soft vertical reveal for Quranic verses (fade up) */
+	@keyframes ayah-fade {
+		0%   { opacity: 0; transform: translateY(18px); }
+		100% { opacity: 1; transform: translateY(0); }
+	}
+	.animate-ayah-fade {
+		animation: ayah-fade 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+	}
+
+	/* Graceful hover — subtle elevation + scale on card hover.
+	   Uses longhand transition-property so it composes with card-hover
+	   (which transitions background-color + border-color) instead of
+	   overriding the entire transition shorthand. */
+	.graceful-hover {
+		transition-property: transform, box-shadow;
+		transition-duration: 300ms;
+		transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.graceful-hover:hover {
+		transform: translateY(-2px) scale(1.01);
+		box-shadow: 0 8px 30px oklch(0.2 0.018 60 / 10%);
+	}
+	.dark .graceful-hover:hover {
+		box-shadow: 0 8px 30px oklch(0 0 0 / 30%);
+	}
+
+	/* Hilal crescent — subtle crescent moon glow for spiritual ambiance.
+	   Applied to prayer section GeometricMedallion in prayers.astro. */
+	@keyframes hilal-arc {
+		0%, 100% { transform: rotate(-15deg); opacity: 0.3; }
+		50%      { transform: rotate(-10deg); opacity: 0.5; }
+	}
+	.animate-hilal {
+		animation: hilal-arc 6s ease-in-out infinite;
+		will-change: transform, opacity;
+	}
+
 	.reveal {
 		opacity: 0;
 		transform: translateY(14px);
@@ -283,7 +409,15 @@
 	.animate-star-shimmer,
 	.animate-float,
 	.animate-girih,
-	.arabesque-line { animation: none !important; stroke-dashoffset: 0 !important; }
+	.animate-lantern,
+	.animate-moon-glow,
+	.animate-hilal,
+	.animate-bead-sway,
+	.reveal-calligraphy,
+	.animate-ayah-fade,
+	.arabesque-line,
+	.geometric-line { animation: none !important; stroke-dashoffset: 0 !important; }
+	.graceful-hover:hover { transform: none !important; box-shadow: none !important; }
 }
 
 /* Bubble up the reveal index for each child so a single rule can schedule

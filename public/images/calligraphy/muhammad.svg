@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="300" height="200" fill="none">
+  <!-- Muhammad (محمد) in Thuluth-style calligraphy -->
+  <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+    <!-- م (meem) — initial form with loop -->
+    <path d="M 18,170 C 22,140 24,110 22,85 C 20,65 24,48 30,42 C 36,38 40,44 37,52 C 33,65 28,85 26,110 C 24,135 26,155 28,170"/>
+    <path d="M 22,85 C 20,62 26,50 32,44 C 36,40 34,36 30,42"/>
+
+    <!-- ح (ha) — medial form -->
+    <path d="M 42,100 C 40,118 42,142 44,160 C 46,172 50,168 52,155 C 54,140 52,122 50,108 C 48,94 46,85 44,78"/>
+    <path d="M 44,78 C 50,66 56,62 62,64 C 65,66 63,70 59,70 C 55,70 48,74 44,78"/>
+
+    <!-- م (meem) — second meem -->
+    <path d="M 68,170 C 72,140 74,110 72,85 C 70,65 74,48 80,42 C 86,38 90,44 87,52 C 83,65 78,85 76,110 C 74,135 74,155 72,170"/>
+    <path d="M 72,85 C 70,62 76,50 82,44 C 86,40 84,36 80,42"/>
+
+    <!-- د (dal) — rounded descending -->
+    <path d="M 98,165 C 96,140 98,115 100,95 C 102,80 106,72 110,70 C 114,68 112,64 108,62 C 102,58 96,66 100,85"/>
+  </g>
+  <!-- Diacritical marks -->
+  <g fill="currentColor" opacity="0.5">
+    <circle cx="28" cy="48" r="2.2"/>
+    <circle cx="78" cy="48" r="2.2"/>
+  </g>
+  <!-- Decorative line above -->
+  <path d="M 15,30 C 40,25 70,28 105,30" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+</svg>

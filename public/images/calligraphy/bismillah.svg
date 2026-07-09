@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="currentColor" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="currentColor" stop-opacity="0.18"/>
+    </linearGradient>
+  </defs>
+  <!-- Bismillah in Thuluth-style calligraphy — hand-crafted SVG paths modeled
+       after classical Ottoman Thuluth compositions. Each letter group is a
+       continuous stroke; diacritical marks are separate. -->
+  <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85">
+    <!-- ب (ba) — initial form with diacritic dot below -->
+    <path d="M 15,165 C 18,140 22,100 20,70 C 18,50 22,35 28,30 C 32,28 36,32 34,38 C 30,50 28,65 26,80 C 22,110 20,140 22,165"/>
+    <circle cx="26" cy="38" r="2.5" fill="currentColor" opacity="0.7"/>
+    
+    <!-- س (seen) — flowing undulating stroke -->
+    <path d="M 38,160 C 42,130 44,100 42,80 C 40,65 44,50 50,45 C 55,42 58,48 56,55 C 52,68 50,85 52,100 C 54,120 50,145 48,160"/>
+    <path d="M 42,80 C 50,62 58,55 62,48 C 64,44 62,42 60,44"/>
+    
+    <!-- م (meem) — initial form -->
+    <path d="M 68,160 C 72,130 74,100 72,75 C 70,55 74,38 80,32 C 85,28 88,33 86,40 C 82,55 78,75 76,100 C 74,125 74,150 72,160"/>
+    <path d="M 72,75 C 70,50 76,42 82,37 C 86,34 84,30 80,32"/>
+    
+    <!-- ا (alif) — tall vertical -->
+    <path d="M 95,160 C 94,120 95,80 96,45 C 97,35 98,28 99,25 C 100,22 101,25 100,30 C 98,45 96,80 96,120"/>
+
+    <!-- ل (lam-alif) — the ligature -->
+    <path d="M 110,165 C 108,125 110,85 112,55 C 114,35 117,22 120,18 C 121,16 120,18 118,24 C 115,40 113,65 112,100"/>
+    <path d="M 120,18 C 125,12 130,14 132,18 C 133,20 130,24 126,22 C 123,20 121,18 120,18"/>
+
+    <!-- ل (lam) — second lam -->
+    <path d="M 138,165 C 136,125 138,85 140,55 C 142,35 145,22 148,18 C 149,16 148,18 146,24 C 143,40 141,65 140,100"/>
+    <path d="M 148,18 C 153,12 158,14 160,18 C 161,20 158,24 154,22"/>
+
+    <!-- ه (ha) — final form -->
+    <path d="M 165,160 C 164,130 166,100 168,75 C 170,55 174,42 180,38 C 186,35 188,42 185,50 C 180,62 175,80 172,100 C 170,118 170,140 168,158"/>
+    <circle cx="177" cy="44" r="2" fill="currentColor" opacity="0.6"/>
+
+    <!-- ا (alif) -->
+    <path d="M 195,158 C 194,120 195,80 196,45 C 197,35 198,28 199,25 C 200,22 201,25 200,30 C 198,45 196,80 196,120"/>
+
+    <!-- ل (lam) -->
+    <path d="M 210,162 C 208,125 210,85 212,55 C 214,35 215,25 218,18 C 219,16 218,18 216,24 C 214,40 212,65 211,100"/>
+
+    <!-- ر (ra) — descending curve -->
+    <path d="M 228,160 C 226,135 228,110 230,90 C 232,75 236,68 240,66 C 244,64 242,60 238,58 C 232,55 226,62 230,80"/>
+
+    <!-- ح (ha) — medial form -->
+    <path d="M 250,95 C 248,110 250,135 252,155 C 254,165 258,162 260,150 C 262,138 260,120 258,105 C 256,90 254,80 252,72"/>
+    <path d="M 252,72 C 258,62 264,58 270,60 C 273,62 270,66 266,66 C 262,66 256,68 252,72"/>
+
+    <!-- م (meem) — second meem -->
+    <path d="M 280,160 C 284,130 286,100 284,75 C 282,55 286,38 292,32 C 297,28 300,33 298,40 C 294,55 290,75 288,100 C 286,125 286,150 284,160"/>
+    <path d="M 284,75 C 282,50 288,42 294,37 C 298,34 296,30 292,32"/>
+
+    <!-- ن (noon) — final form with dot -->
+    <path d="M 310,160 C 308,135 310,110 312,90 C 314,75 318,68 322,66 C 326,64 324,60 320,58 C 314,55 308,62 312,80"/>
+    <circle cx="319" cy="58" r="2.5" fill="currentColor" opacity="0.7"/>
+
+    <!-- ا (alif) -->
+    <path d="M 335,158 C 334,120 335,80 336,45 C 337,35 338,28 339,25 C 340,22 341,25 340,30 C 338,45 336,80 336,120"/>
+
+    <!-- ل (lam) -->
+    <path d="M 350,162 C 348,125 350,85 352,55 C 354,35 355,25 358,18 C 359,16 358,18 356,24"/>
+
+    <!-- ل (lam) -->
+    <path d="M 368,162 C 366,125 368,85 370,55 C 372,35 373,25 376,18 C 377,16 376,18 374,24"/>
+
+    <!-- ه (ha) — final -->
+    <path d="M 385,158 C 384,130 386,100 388,75 C 390,55 394,42 400,38 C 406,35 408,42 405,50 C 400,62 395,80 392,100 C 390,118 390,140 388,156"/>
+    <circle cx="397" cy="44" r="2" fill="currentColor" opacity="0.6"/>
+
+    <!-- ا (alif) -->
+    <path d="M 415,156 C 414,120 415,80 416,45 C 417,35 418,28 419,25 C 420,22 421,25 420,30"/>
+
+    <!-- ل (lam) -->
+    <path d="M 430,160 C 428,125 430,85 432,55 C 434,35 435,25 438,18 C 439,16 438,18 436,24"/>
+
+    <!-- ر (ra) -->
+    <path d="M 448,158 C 446,135 448,110 450,90 C 452,75 456,68 460,66 C 464,64 462,60 458,58 C 452,55 446,62 450,80"/>
+
+    <!-- ح (ha) -->
+    <path d="M 470,95 C 468,110 470,135 472,155 C 474,165 478,162 480,150 C 482,138 480,120 478,105"/>
+    <path d="M 478,105 C 484,95 490,92 496,94 C 499,96 496,100 492,100"/>
+
+    <!-- ي (ya) — final -->
+    <path d="M 510,158 C 508,135 510,110 512,90 C 514,75 518,68 522,66 C 526,64 524,60 520,58 C 514,55 508,62 512,80"/>
+  </g>
+  <!-- Decorative diacritical marks (shaddah, fathah, kasrah) -->
+  <g fill="currentColor" opacity="0.5">
+    <!-- Various diacritical marks above letter groups -->
+    <path d="M 95,20 L 100,14 L 105,20" stroke="currentColor" stroke-width="1" fill="none"/>
+    <path d="M 138,12 L 143,6 L 148,12" stroke="currentColor" stroke-width="1" fill="none"/>
+    <path d="M 210,14 L 215,8 L 220,14" stroke="currentColor" stroke-width="1" fill="none"/>
+    <path d="M 350,14 L 355,8 L 360,14" stroke="currentColor" stroke-width="1" fill="none"/>
+  </g>
+</svg>

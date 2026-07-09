@@ -65,7 +65,7 @@ const programCards = [
 	{
 		icon: 'tabler:users',
 		title: 'Youth mentorship',
-		desc: 'One-on-one mentoring for youth ages 11–18. One hour a week for a year.',
+		desc: 'One-on-one mentoring for youth ages 11-18. One hour a week for a year.',
 		link: '/programs',
 	},
 	{
@@ -115,8 +115,8 @@ const testimonials = [
 		<PageBody data={data} />
 	</TinaIsland>
 
-	<div class="mx-auto max-w-3xl px-6 py-8" aria-hidden="true">
-		<ArabicCalligraphy variant="bismillah" class="mx-auto block" size={400} />
+	<div class="mx-auto max-w-3xl px-6 py-8 reveal-calligraphy" aria-hidden="true">
+		<ArabicCalligraphy variant="bismillah" class="mx-auto block" size={500} />
 	</div>
 
 	<!-- Impact stats - the numbers behind the work -->
@@ -172,7 +172,7 @@ const testimonials = [
 				{programCards.map((program, i) => (
 					<a
 						href={program.link}
-						class="reveal card-hover group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-6"
+						class="reveal card-hover card-hover-glow graceful-hover group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-6"
 						style={`--reveal-i: ${i}`}
 					>
 						<div class="flex size-12 items-center justify-center rounded-xl bg-muted text-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
@@ -220,7 +220,7 @@ const testimonials = [
 						<li class="reveal" style={`--reveal-i: ${i}`}>
 							<a
 								href={`/blog/${post._sys.filename}/`}
-								class="card-hover group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card"
+								class="card-hover group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card graceful-hover"
 							>
 								{post.heroImage && (
 									<div class="aspect-[16/10] overflow-hidden">
@@ -282,7 +282,7 @@ const testimonials = [
 						<li class="reveal" style={`--reveal-i: ${i}`}>
 							<a
 								href={`/events/${event._sys.filename}/`}
-								class="card-hover group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card"
+								class="card-hover group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card graceful-hover"
 							>
 								{event.image && (
 									<div class="aspect-[16/10] overflow-hidden">
@@ -344,7 +344,7 @@ const testimonials = [
 			</div>
 			<div class="reveal-stagger mt-12 grid gap-6 md:grid-cols-3">
 				{testimonials.map((t, i) => (
-					<Card class="reveal card-hover h-full" style={`--reveal-i: ${i}`}>
+					<Card class="reveal card-hover card-hover-glow graceful-hover h-full" style={`--reveal-i: ${i}`}>
 						<CardContent class="flex flex-col gap-4">
 							<div aria-hidden="true" class="font-serif text-5xl leading-none text-primary/30">&ldquo;</div>
 							<blockquote class="flex-1">

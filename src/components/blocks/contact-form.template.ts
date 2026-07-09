@@ -36,7 +36,7 @@ export const contactFormBlockSchema: Template = {
 			to: 'hello@mupla.org',
 			subject: 'Message from the mupla website',
 			submitLabel: 'Send message',
-			successMessage: "Thanks for reaching out! Your message has been sent — we'll be in touch within two business days.",
+			successMessage: "Thanks for reaching out. Your message has been sent; we'll be in touch within two business days.",
 			errorMessage: "Something went wrong. Please email us directly at hello@mupla.org.",
 		},
 	},

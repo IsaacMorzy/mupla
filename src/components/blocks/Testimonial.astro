@@ -25,7 +25,7 @@ const initials = (name?: string | null) => (name ?? '').split(' ').map((w) => w[
 		{testimonials.map((t, i) => (
 			<Card class="reveal card-hover h-full" data-tina-field={tinaField(t)} style={`--reveal-i: ${i}`}>
 				<CardContent class="grid grid-cols-[auto_1fr] gap-3">
-					<Avatar src={t.avatar} alt={t.author} fallback={initials(t.author)} />
+					<Avatar src={t.avatar} alt={t.author} fallback={initials(t.author)} class="size-12 text-sm" />
 					<div>
 						<h3 data-tina-field={tinaField(t, 'author')} class="font-medium">{t.author}</h3>
 						{t.role && <Badge variant="outline" class="mt-1 font-normal">{t.role}</Badge>}

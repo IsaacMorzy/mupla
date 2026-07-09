@@ -5,7 +5,7 @@
 - **Project**: mupla-front (Astro + TinaCMS + Tailwind; Vercel deploy; Matt Pocock skills)
 - **Pattern**: matt-pocock-skill + loop-engineering (Passes 1-12 closed)
 - **Loop readiness score**: 95 / 100 (L3 - unattended loop safe). Held flat from Pass 11 since Pass 12 ops don't add new scoring gates.
-- **Last updated**: pass 17 - 2026-07-08 (policy reaffirmation: HUMAN-ONLY semantics on the 6 hard-gate ops now explicit in docs/safety.md + LOOP.md; loop-constraints.md drift reconciled; agent may run gh issue create/close + git push origin under pre-flight per Pass 16.2; see Pass 17 in loop-run-log.md)
+- **Last updated**: pass 18 - 2026-07-09 (immersive hero redesign + square avatars + mosque imagery; GitHub issue #51 created) (policy reaffirmation: HUMAN-ONLY semantics on the 6 hard-gate ops now explicit in docs/safety.md + LOOP.md; loop-constraints.md drift reconciled; agent may run gh issue create/close + git push origin under pre-flight per Pass 16.2; see Pass 17 in loop-run-log.md)
 - **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 30 issues attached in Backlog).
 - **Active GH issues snapshot**: docs/agents/gh-triage-2026-07-06-pass-12.md (re-runnable).
 - **Promoted T1 ticket**: #10 (bin/gh-create-issues.sh ran idempotently; T1 promote via gh issue edit --add-label ready-for-agent, allowed per docs/safety.md).

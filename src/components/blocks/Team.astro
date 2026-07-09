@@ -32,7 +32,7 @@ const initials = (name?: string | null) =>
 		{members.map((m, i) => (
 			<Card class="reveal card-hover h-full" data-tina-field={tinaField(m)} style={`--reveal-i: ${i}`}>
 				<CardContent class="flex flex-col items-center text-center">
-					<Avatar src={m.avatar} alt={m.name} fallback={initials(m.name)} class="size-20 text-base" />
+					<Avatar src={m.avatar} alt={m.name} fallback={initials(m.name)} class="size-24 text-lg" />
 					<h3 data-tina-field={tinaField(m, 'name')} class="mt-4 font-medium">{m.name}</h3>
 					{m.role && <Badge variant="outline" class="mt-1.5 font-normal">{m.role}</Badge>}
 					{m.bio && <p data-tina-field={tinaField(m, 'bio')} class="mt-3 text-sm text-muted-foreground">{m.bio}</p>}

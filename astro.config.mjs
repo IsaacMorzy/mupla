@@ -20,7 +20,7 @@ import netlify from '@astrojs/netlify';
 function getAdapter() {
 	const nodeStandalone = node({ mode: 'standalone' });
 	switch (process.env.DEPLOY_ADAPTER) {
-		case 'vercel': return vercel();
+		case 'vercel': return vercel({ imageService: true });
 		case 'cloudflare': return cloudflare();
 		case 'netlify': return netlify();
 		case 'node': return nodeStandalone;
@@ -28,7 +28,7 @@ function getAdapter() {
 		default:
 			console.warn(`[astro.config] Unknown DEPLOY_ADAPTER "${process.env.DEPLOY_ADAPTER}" - ignoring and auto-detecting.`);
 	}
-	if (process.env.VERCEL) return vercel();
+	if (process.env.VERCEL) return vercel({ imageService: true });
 	// CF_PAGES = Cloudflare Pages CI; WORKERS_CI = Cloudflare Workers Builds CI.
 	if (process.env.WORKERS_CI || process.env.CF_PAGES) return cloudflare();
 	if (process.env.NETLIFY) return netlify();

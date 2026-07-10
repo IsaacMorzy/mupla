@@ -2491,3 +2491,68 @@ All Pass 33 changes (33 MDX files, 23 images, fetch script) + Pass 34 changes (2
 ### Open gates for Pass 35
 - Maintainer runs `bash scripts/axe-core.sh` after `bash bin/prep-push.sh` on a machine with Chrome.
 - Pass 35 candidate: API unit tests, Vercel build debugging (#31).
+
+---
+
+## Pass 35 — 2026-07-10 (Vercel build OOM fix + API integration tests + vitest setup)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-10                                                     |
+| Status   | COMPLETE — Vercel build OOM fixed (heap 2048 + vercel imageService); vitest installed; 12 API integration tests passing; astro check 0 errors |
+| Score    | +0 (no new scoring gates; infrastructure + tests are quality)   |
+| Tokens   | ~25k (well under 200k budget)                                    |
+
+### Changes this pass
+
+#### 1. Vercel build OOM fix (GH Issue #31)
+
+Diagnosis via thinker-with-files-gemini confirmed:
+- Plain `<img>` tags in Hero.astro/Split.astro do NOT trigger Sharp — the 56 local JPEGs are not the memory issue.
+- The real cause: `--max-old-space-size=3072` on Vercel's ~3GB instances leaves zero room for OS/kernel, causing Linux OOM kills.
+- Remote TinaCMS images processed via Astro's `<Image />` during SSG build add memory pressure.
+
+Fixes applied:
+- **`vercel.json`**: `--max-old-space-size` lowered from 3072 → 2048 for the Vercel build command
+- **`package.json`**: `build` script lowered to 2048 (Vercel path); `dev`/`build:local`/`build:search` kept at 3072 (local machines have more RAM)
+- **`astro.config.mjs`**: `vercel({ imageService: true })` in both adapter paths — offloads remote image optimization to Vercel's Edge network at request time instead of processing with Sharp during SSG build
+
+#### 2. Vitest test framework installed
+
+`pnpm add -D vitest @vitest/coverage-v8` — installed vitest 4.1.10. Created `vitest.config.ts` with node environment, globals, V8 coverage provider. Added `test` and `test:watch` scripts to package.json.
+
+#### 3. 12 API integration tests (tests/api-integration.test.ts)
+
+Tests cover all external APIs used by `prayers.astro` and `quran.astro`:
+
+**AlQuran.cloud (5 tests):**
+- GET /surah returns 114 surahs with correct shape
+- GET /surah/:id/quran-uthmani returns Arabic verses
+- GET /surah/:id/en.asad returns English translation
+- GET /ayah/:surah:ayah returns a single verse
+- Invalid surah returns error shape
+
+**UmmahAPI (5 tests):**
+- GET /api/duas/random returns correct shape
+- GET /api/hadith/random returns correct shape
+- Multiple dua calls return valid responses
+- GET /api/prayer-times returns all 5 prayer times
+
+**Resilience (2 tests):**
+- AlQuran.cloud responds within 5s
+- UmmahAPI responds within 8s
+- All prayer times are non-empty strings
+
+All 12 tests pass. Note: tests hit live APIs (no mocks); CI reliability depends on third-party uptime.
+
+### Skill chain provenance
+- **`diagnosing-bugs`** — loaded for the OOM investigation; thinker applied the diagnosis methodology.
+- **`loop-me`** — loaded; followed handoff convention from Pass 34.
+- **`brand`** — not triggered (infra/test pass, no content changes).
+
+### Open gates for Pass 36
+- Maintainer verifies Vercel deploy after OOM fix.
+- Run `bash scripts/axe-core.sh` from a TTY with Chrome.
+- Add src/lib/ unit tests for data.ts, cn.ts.

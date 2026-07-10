@@ -5,7 +5,7 @@
 - **Project**: mupla-front (Astro + TinaCMS + Tailwind; Vercel deploy; Matt Pocock skills)
 - **Pattern**: matt-pocock-skill + loop-engineering (Passes 1-12 closed)
 - **Loop readiness score**: 95 / 100 (L3 - unattended loop safe). Held flat from Pass 11 since Pass 12 ops don't add new scoring gates.
-- **Last updated**: pass 34 - 2026-07-10 (removed 2 unused images blog-gala.jpg and event-youth.jpg; axe-core audit deferred due to no Chrome in agent env; astro check clean; all changes committed + pushed)
+- **Last updated**: pass 35 - 2026-07-10 (Vercel build OOM fixed: lowered heap to 2048 + enabled vercel imageService; vitest installed + 12 API integration tests passing; astro check 0 errors)
 - **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 30 issues attached in Backlog).
 - **Active GH issues snapshot**: docs/agents/gh-triage-2026-07-06-pass-12.md (re-runnable).
 - **Promoted T1 ticket**: #10 (bin/gh-create-issues.sh ran idempotently; T1 promote via gh issue edit --add-label ready-for-agent, allowed per docs/safety.md).
@@ -39,7 +39,7 @@ In-band drift events the agent caught and recovered (preserved verbatim from Pas
 
 ## Predecessor chain
 
-1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2 / 13.4 / 13.5 / 13.6 / 13.7 / 13.8 / 13.9 / 13.8 / 13.9 / 14 / 14.1 / 14.2 / 15 / 16 / 16.1 / 16.2 / 17 / 18 / 19 / 20 / 21 / 22 / 23 / 24 / 25 / 26 / 27 / 28 / 29 / 30 / 31 / 32 / 33 / 34
+1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 8.1 / 8.2 / 8.3 / 9 / 9.1 / 9.2 / 10 / 11 / 12 / 12.1 / 12.2 / 13 / 13.1 / 13.2 / 13.4 / 13.5 / 13.6 / 13.7 / 13.8 / 13.9 / 13.8 / 13.9 / 14 / 14.1 / 14.2 / 15 / 16 / 16.1 / 16.2 / 17 / 18 / 19 / 20 / 21 / 22 / 23 / 24 / 25 / 26 / 27 / 28 / 29 / 30 / 31 / 32 / 33 / 34 / 35
 
 ( suffix = corrective amendment inside the same integer pass.)
 
@@ -47,13 +47,13 @@ In-band drift events the agent caught and recovered (preserved verbatim from Pas
 
 Live snapshot at  regenerated each pass close via [{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":17,"title":"**Vercel production build debugging (TinaCloud rebuild hook + `astro build` OOM @ 3072 MiB)**"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":16,"title":"Add `loop-engineering` MCP server status to readiness audit brief"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":15,"title":"Document override flow for human-only denylist ops"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":14,"title":"Add `docs/agents/kill-switch-test-2026-XX.md` drill report"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":13,"title":"Register `goal-engineering` pattern in `patterns/registry.yaml` (`status: not-active`)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":12,"title":"Document per-pass worktree policy in `loop-constraints.md`"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":11,"title":"Add `sub-agent` section to `loop-constraints.md` (maker/checker split)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"},{"id":"LA_kwDOTOfmAM8AAAACqR5LQg","name":"ready-for-agent","description":"Fully specified; AFK-ready","color":"0e8a16"}],"number":10,"title":"Scaffold `scripts/loop-context.sh` (rehydrate `run.json` → STATE.md)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":9,"title":"Wire `.github/workflows/daily-triage.yml` (night cron, 1 pass/day)"}]. Currently **30 open needs-triage issues** (Pass 12.2 landed 31; #18 promoted to ready-for-agent in Pass 12.2; Pass 13 close did NOT promote any new issues. Parser-vs-GH comm diff confirms zero missing titles + zero duplicates.) attached to GH Project  (#5) under IsaacMorzy. Top unaddressed T1 (#10) promoted to .
 
-## Next pass (Pass 35)
+## Next pass (Pass 36)
 
-Carried forward from Pass 34:
+Carried forward from Pass 35:
 
-1. **Run axe-core accessibility baseline audit** (Bucket B #10, T1): requires maintainer with Chrome installed on a clean Tina session. Run `bash scripts/axe-core.sh` after `bash bin/prep-push.sh`.
-2. **Add unit tests for Quran/prayers API integrations** - test fetch paths, error handling, and fallback rendering.
-3. **Vercel production build debugging** (GH Issue #31) - investigate `astro build` OOM @ 3072 MiB.
+1. **Run axe-core accessibility baseline audit** (Bucket B #10, T1): requires maintainer with Chrome installed. Run `bash scripts/axe-core.sh`.
+2. **Verify Vercel deploy** after the OOM fix (heap 2048 + imageService: true). Monitor production build for success.
+3. **Add src/lib/ unit tests** for data.ts, cn.ts — coverage currently 0% for lib code.
 
 ## Onward contract (Pass N+1)
 

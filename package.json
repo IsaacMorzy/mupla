@@ -7,11 +7,13 @@
   },
   "scripts": {
     "dev": "NODE_OPTIONS='--max-old-space-size=3072' tinacms dev -c \"astro dev\"",
-    "build": "NODE_OPTIONS='--max-old-space-size=3072' tinacms build --content=local && NODE_OPTIONS='--max-old-space-size=3072' astro build",
+    "build": "NODE_OPTIONS='--max-old-space-size=2048' tinacms build --content=local && NODE_OPTIONS='--max-old-space-size=2048' astro build",
     "build:local": "NODE_OPTIONS='--max-old-space-size=3072' tinacms build --local --skip-cloud-checks && NODE_OPTIONS='--max-old-space-size=3072' astro build",
     "build:search": "NODE_OPTIONS='--max-old-space-size=3072' tinacms search-index",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.7.0",
@@ -41,10 +43,12 @@
     "@tsconfig/node18": "^18.2.6",
     "@tsconfig/node22": "^22.0.5",
     "@types/node": "^25.9.1",
+    "@vitest/coverage-v8": "^4.1.10",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "tinacms": "^3.9.1",
     "typescript": "^6.0.3",
-    "vite": "^7.3.2"
+    "vite": "^7.3.2",
+    "vitest": "^4.1.10"
   }
 }

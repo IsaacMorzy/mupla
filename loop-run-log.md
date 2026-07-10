@@ -2610,3 +2610,53 @@ GOOD — lib coverage meaningfully improved; cn.ts fully covered (all input shap
 - Run `bash scripts/axe-core.sh` from a TTY with Chrome.
 - Verify Vercel deploy after OOM fix.
 - Expand coverage to islands.ts (needs Tina mock strategy).
+
+---
+
+## Pass 37 — 2026-07-10 (Vercel token + CLI install + production deploy with OOM fix)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-10                                                     |
+| Status   | COMPLETE — Vercel token saved to .env + ~/.bashrc; vercel CLI 55.0.0 installed; heap split fix deployed; production deploy READY (2m) |
+| Score    | +0 (no new scoring gates; infra fix is maintenance)             |
+| Tokens   | ~20k (well under 200k budget)                                    |
+
+### Changes this pass
+
+#### 1. Vercel token installed
+User-provided token `vcp_...` saved to:
+- `mupla-front/.env` as `VERCEL_TOKEN` (gitignored, local-only)
+- `~/.bashrc` as `export VERCEL_TOKEN=...` (global shell access)
+
+#### 2. Vercel CLI installed
+`pnpm add -g vercel` → vercel 55.0.0 installed globally.
+
+#### 3. Heap split fix (OOM iteration 2)
+First attempt (Pass 35): lowered both TinaCMS and Astro to 2048MB → TinaCMS OOM'd (needs 3072 for content graph).
+Second attempt (Pass 37): split heap — TinaCMS 3072MB + Astro 2048MB. This gives TinaCMS enough RAM while keeping the combined footprint under Vercel's ~3GB limit.
+
+**vercel.json** and **package.json** `build` script updated:
+```
+NODE_OPTIONS='--max-old-space-size=3072' tinacms build ... && NODE_OPTIONS='--max-old-space-size=2048' astro build
+```
+
+`astro.config.mjs` still has `vercel({ imageService: true })` (Pass 35) which offloads image optimization to Vercel Edge.
+
+#### 4. Production deploy result
+Triggered via `vercel --prod --yes`. Result:
+- `mupla-pikdwo5qy` → **● Ready** (Production, 2m build time)
+- `mupla-cuvvgbype` → **● Building** (triggered by git push, in progress)
+- Previous 2 deploys were ERROR (OOM kills)
+
+The OOM fix is confirmed working.
+
+### Self-grade
+GOOD — Vercel token + CLI operational; production deploy GREEN; OOM fix validated end-to-end. The root cause was TinaCMS needing 3072MB for content graph loading, while Astro builds comfortably at 2048MB with imageService offloaded.
+
+### Open gates for Pass 38
+- Monitor the production URL for the latest deployment.
+- Run `bash scripts/axe-core.sh` from a TTY with Chrome.
+- Expand test coverage.

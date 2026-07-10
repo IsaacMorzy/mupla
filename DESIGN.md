@@ -287,14 +287,39 @@ No `shadow-md` on cards. No `shadow-xl` on hover. If you need elevation, change 
 
 ---
 
-## 9. Agent Prompt Guide
+## 9. Keyboard Navigation
+
+The site should be fully navigable via keyboard:
+
+### Focus management
+- All interactive elements (links, buttons, form controls) must have visible `:focus-visible` rings (3px, `--ring` at 50% opacity, consistent with Button §4).
+- Focus order must follow visual order (DOM order = reading order). No `tabindex` values above 0.
+- Skip-to-content link at the top of every page (hidden until focused, skips to `<main>`).
+- Nav menus that open on hover (e.g., dropdown nav) must also open on `:focus-within`.
+
+### Keyboard traps
+- No component may trap focus without an explicit escape mechanism (`Escape` key).
+- Modals/dialogs (when added) must trap focus, close on `Escape`, and restore focus to the triggering element on close.
+- CSS-only `<details>` accordions (§11) are natively keyboard-accessible (Space/Enter to toggle) — no extra JS needed.
+
+### Tab order
+- Tab from skip-link → header nav → main content → footer → back to browser chrome.
+- Links that open new tabs must have `rel="noopener noreferrer"` and, where appropriate, `target="_blank"` with a visible or `aria-label` indicator.
+
+### Testing
+- On every new component, verify: all interactive elements are reachable via Tab, all have visible focus indicators, and Escape dismisses any overlay.
+- Use axe-core or Lighthouse keyboard audit as part of the CI pipeline (`scripts/axe-core.sh`).
+
+---
+
+## 10. Agent Prompt Guide
 
 When asking an AI agent to build or modify UI in this project, include this block in the prompt:
 
 ```text
 Read /DESIGN.md first. Use the Anthropic-paper warm palette (OKLCH, hue 60-75,
 no pure black/white). The current primary is amber/gold (`--amber-500` light,
-`--amber-700` dark) — see §10 for rationale and §2 for the token mapping.
+`--amber-700` dark) — see §11 for rationale and §2 for the token mapping.
 Headings are serif (Charter/Iowan/Georgia stack); UI is Inter. Restrained
 chroma — only the amber/gold accent is saturated. Use surface tinting for
 hierarchy, not shadows. No gradients, no green/emerald, no reintroduced
@@ -315,7 +340,7 @@ light and dark mode.
 
 ---
 
-## 10. Shipped Direction: Amber/Gold Primary (Muslim Theme)
+## 11. Shipped Direction: Amber/Gold Primary (Muslim Theme)
 
 The site's primary sits in a warm amber/gold family — the same warm hues the rest of the palette lives in. The shift from a generic muted clay to amber was a single-hue refinement, not a rebrand; the move carried cultural resonance from Islamic illumination manuscripts and lantern light.
 
@@ -348,7 +373,7 @@ Peacock teal (hue 200, the most iconic Islamic-coded non-green) requires shiftin
 
 ---
 
-## 11. Component Inventory
+## 12. Component Inventory
 
 The UI primitives actually shipped (in `src/components/ui/`). All follow the shadcn/ui pattern (cn utility + `tailwind-variants` + existing tokens), adapted as `.astro` files (no React runtime).
 
@@ -406,7 +431,7 @@ The UI primitives actually shipped (in `src/components/ui/`). All follow the sha
 
 These were deferred because the site is mostly static content and forms are rare. Add them when a concrete use case appears — don't add them speculatively.
 
-## 12. Skills & References
+## 13. Skills & References
 
 This DESIGN.md is designed to be read by AI agents. The following skills (installed globally for Codebuff) provide deeper guidance:
 

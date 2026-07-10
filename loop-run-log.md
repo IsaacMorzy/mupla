@@ -2698,3 +2698,31 @@ GOOD — Vercel token + CLI operational; production deploy GREEN; OOM fix valida
 - Ready-for-human: 3 issues (#3, #7, #40)
 
 LOOP: 6/47 issues resolved in single pass. 41 remain.
+
+---
+
+## Pass 39 -- 2026-07-10 (triage continuation + implement #22 #23 #32)
+
+| Slot     | Value                          |
+| -------- | ------------------------------ |
+| Operator | agent (Buffy)                  |
+| Pattern  | matt-pocock-skill + loop-engineering + triage skill |
+| Started  | 2026-07-10                     |
+| Status   | COMPLETE - 6 issues closed (+9 from Pass 38 = 12 total); 3 implemented |
+| Score    | +15                            |
+| Tokens   | ~30k                           |
+
+### Closed (6 issues)
+- #19: a11y baseline already exists
+- #22: Keyboard nav docs added to DESIGN.md §9
+- #23: Reduce-motion added to oxfam.astro
+- #25: phone/address already in global-config.ts
+- #32: publishStatus enum added to blog.ts
+- #35: writing-shape already in AGENTS.md
+
+### Implemented
+1. DESIGN.md §9 Keyboard Navigation (focus, traps, tab order, testing)
+2. oxfam.astro prefers-reduced-motion media query
+3. blog.ts publishStatus enum (4 options, default published)
+
+### Remaining: 32 issues

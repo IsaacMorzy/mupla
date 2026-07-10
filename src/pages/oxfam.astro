@@ -368,4 +368,18 @@ const stories = [
 	.theme-oxfam h3 {
 		font-weight: 700;
 	}
+
+	/* Reduce-motion: honour user preference for all animations and transitions
+	   inside the Oxfam variant. SVG opacity animations, hover transitions,
+	   and backdrop-blur are all suppressed when the OS says so. */
+	@media (prefers-reduced-motion: reduce) {
+		.theme-oxfam *,
+		.theme-oxfam *::before,
+		.theme-oxfam *::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+			scroll-behavior: auto !important;
+		}
+	}
 </style>

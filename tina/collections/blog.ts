@@ -48,6 +48,22 @@ export const BlogCollection: Collection = {
       type: "datetime",
     },
     {
+      name: "publishStatus",
+      label: "Publish Status",
+      type: "string",
+      description: "Controls visibility on the site. Defaults to 'published' for backward compatibility.",
+      options: [
+        { label: "Draft", value: "draft" },
+        { label: "Published", value: "published" },
+        { label: "Scheduled", value: "scheduled" },
+        { label: "Archived", value: "archived" },
+      ],
+      defaultValue: "published",
+      ui: {
+        component: "select",
+      },
+    },
+    {
       name: "heroImage",
       label: "Hero Image",
       type: "image",

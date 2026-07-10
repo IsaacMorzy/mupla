@@ -1,4 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "NODE_OPTIONS='--max-old-space-size=2048' tinacms build --content=local --skip-cloud-checks && NODE_OPTIONS='--max-old-space-size=2048' astro build"
+  "buildCommand": "NODE_OPTIONS='--max-old-space-size=3072' tinacms build --content=local --skip-cloud-checks && NODE_OPTIONS='--max-old-space-size=2048' astro build"
 }

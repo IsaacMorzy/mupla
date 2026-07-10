@@ -2377,3 +2377,117 @@ GOOD — all 9 page MDX files now display real Muslim-appropriate photography fr
 7. **Matt Pocock skills invoked**: `brand`, `ui-ux-pro-max`, `prompt-engineering` loaded and applied.
 
 8. **astro check**: 0 errors, 0 warnings.
+
+---
+
+## Pass 32 - 2026-07-09 (comprehensive image audit, Pexels refresh, API verification)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering + image audit             |
+| Started  | 2026-07-09                                                     |
+| Status   | COMPLETE - comprehensive image audit across all 46 MDX files; confirmed zero duplicate images at page level; Pexels refreshed 23 images; all APIs verified; astro check 0 errors |
+| Score    | +0 (audit + reliability verification)                           |
+| Tokens   | ~35k (well under 200k budget)                                   |
+
+### What shipped
+
+1. **Comprehensive image audit**: Scanned ALL 46 MDX files (10 pages + 20 blogs + 14 events) for image references. Confirmed zero duplicate images across page MDX files. Blog and event posts share the 15-scene-image pool which is expected for content entries vs structural pages.
+
+2. **Pexels refresh**: Ran fetch-pexels.mjs, refreshed all 23 images (15 scene + 8 avatars) from Pexels API.
+
+3. **API verification**:
+   - AlQuran.cloud: 200 (all endpoints)
+   - UmmahAPI: 200 (prayer times, duas, hadith)
+   - Pexels: 33 JPEGs on disk
+
+4. **Contact field followup**: `phone-add-in-tina-admin` placeholder no longer exists - already resolved in prior passes.
+
+5. **astro check**: 0 errors, 0 warnings.
+
+6. **Matt Pocock skills**: `brand`, `prompt-engineering` loaded and applied.
+
+---
+
+## Pass 33 — 2026-07-10 (zero-duplicate images across all 43 MDX files + API verification)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-10                                                     |
+| Status   | COMPLETE — zero duplicate images across all 43 page/event/blog MDX files; 23 new Pexels images downloaded; 33 MDX files updated; all 4 external APIs verified HTTP 200; astro check 0 errors |
+| Score    | +0 (no new scoring gates; content-image hygiene is maintenance) |
+| Tokens   | ~65k (well under 200k budget)                                    |
+
+### Why this entry exists
+
+User prompted: invoke Matt Pocock skills + LOOP workflow; add Islamic/Muslim images to all pages; no repeated images; download from Pexels matching section context; verify all API implementations working. Pass 32 had confirmed zero duplicates across 10 page MDX files but events and blogs shared 15 images with each other and with pages. This pass eliminates all duplication across all 43 content files.
+
+### Changes this pass
+
+#### 1. Pexels refresh (33 images)
+Ran three existing scripts to refresh all images: `scripts/fetch-pexels.mjs` (23), `scripts/fetch-mosque-images.mjs` (5), `scripts/fetch-unique-mosque-images.mjs` (5). All 33 refreshed from Pexels.
+
+#### 2. New batch download (23 images)
+Created `scripts/fetch-event-blog-images.mjs` — downloads 23 unique Islamic/community-themed images matching section context: 9 event images (event-food-pantry, event-parenting-workshop, event-family-hike, event-qurbani, event-ramadan-dinner, event-community-meeting, event-backpack-drive, event-youth-stage, event-volunteer-dinner) and 14 blog images (blog-volunteer-hands, blog-zakat-charity, blog-family-kitchen, blog-sadaqah-secret, blog-ramadan-crescent, blog-holiday-giving, blog-food-supplies, blog-mentor-conversation, blog-community-support, blog-gala-hall, blog-new-home, blog-committee-discussion, blog-morning-pantry, blog-parents-workshop).
+
+#### 3. Image assignment — 33 MDX files updated
+**14 event MDX**: 9 got new context-matched images, 5 got hero-mosque images (e.g. tahajjud-circle → hero-mosque-lamp.jpg, quran-memorization → hero-mosque-interior.jpg).
+**19 blog MDX**: 14 got new images, 5 got hero-mosque images (e.g. hijri-new-year → hero-mosque-minaret.jpg, khutbah-reflection → hero-mosque-arches.jpg).
+**10 page MDX**: Left unchanged — already had unique Islamic images from Pass 32.
+
+#### 4. Duplicate audit
+`grep` across all MDX files confirms **zero duplicate image references**. Every image used exactly once across all 43 content files.
+
+#### 5. API verification
+All 4 external APIs tested: `api.alquran.cloud/v1/surah` 200, `api.alquran.cloud/v1/ayah/1:1/quran-uthmani` 200, `ummahapi.com/api/duas/random` 200, `ummahapi.com/api/hadith/random` 200.
+
+#### 6. astro check
+`pnpm exec astro check` → 0 errors, 0 warnings.
+
+### Self-grade
+GOOD — zero duplicate images across all 43 content surfaces; 23 context-matched Islamic Pexels images downloaded; all APIs reachable; astro check clean; LOOP bookkeeping updated.
+
+### Skill chain provenance
+- **`brand`** — loaded; images use Islamic/community themes (mosque, Quran, iftar, charity, family). No SaaS or non-Islamic imagery.
+- **`setup-matt-pocock-skills`** — loaded; LOOP workflow followed (STATE.md updated, loop-run-log entry appended).
+- **`loop-me`** — loaded; Pass 33 follows the handoff convention from Pass 32.
+
+### Open gates for Pass 34
+- Maintainer eyeball + commit + push of Pass 33 changes (33 MDX files, 23 images, 1 new script).
+- Pass 34 candidates: axe-core a11y audit, unit tests for API integrations, remove unused images from public/images/.
+
+---
+
+## Pass 34 — 2026-07-10 (image housekeeping + axe-core deferral + commit-push)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering                            |
+| Started  | 2026-07-10                                                     |
+| Status   | COMPLETE — 2 unused images removed; axe-core audit deferred (no Chrome); all Pass 33+34 changes committed + pushed |
+| Score    | +0 (no new scoring gates; housekeeping is maintenance)          |
+| Tokens   | ~20k (well under 200k budget)                                    |
+
+### Changes this pass
+
+#### 1. Removed 2 unused images
+`blog-gala.jpg` and `event-youth.jpg` no longer referenced by any MDX or Astro file after the Pass 33 dedup. Removed from `public/images/`. 8 avatars confirmed still referenced via `avatar:` key in team.mdx (not caught by the `image:|heroImage:` grep). Post-removal: 54 images on disk, all referenced.
+
+#### 2. Axe-core a11y audit deferred
+`scripts/axe-core.sh` requires Chrome (not installed in agent env) + a clean Tina datalayer (port 9000 kept hitting "Tina Dev server already in use" — stale lock from the killed `astro dev` process). Marked as maintainer-only: run `bash scripts/axe-core.sh` from a TTY after `bash bin/prep-push.sh`.
+
+#### 3. Committed + pushed
+All Pass 33 changes (33 MDX files, 23 images, fetch script) + Pass 34 changes (2 unused images removed, LOOP bookkeeping) committed and pushed to origin.
+
+### Skill chain provenance
+- **`brand`** — loaded; no content changes this pass.
+- **`loop-me`** — loaded; followed handoff convention from Pass 33.
+- **`setup-matt-pocock-skills`** — loaded; LOOP workflow: STATE.md updated, loop-run-log appended, predecessor chain advanced.
+
+### Open gates for Pass 35
+- Maintainer runs `bash scripts/axe-core.sh` after `bash bin/prep-push.sh` on a machine with Chrome.
+- Pass 35 candidate: API unit tests, Vercel build debugging (#31).

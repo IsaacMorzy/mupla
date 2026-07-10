@@ -2726,3 +2726,29 @@ LOOP: 6/47 issues resolved in single pass. 41 remain.
 3. blog.ts publishStatus enum (4 options, default published)
 
 ### Remaining: 32 issues
+
+---
+
+## Pass 40 -- 2026-07-10 (#24 #28 #34: contact/faq cleanup + oxfam token audit + team collection)
+
+| Slot     | Value                          |
+| -------- | ------------------------------ |
+| Operator | agent (Buffy)                  |
+| Pattern  | matt-pocock-skill + loop-engineering + triage skill |
+| Started  | 2026-07-10                     |
+| Status   | COMPLETE - 3 issues closed; contact/faq cleaned, oxfam tokens audited, team collection created |
+| Score    | +15                            |
+| Tokens   | ~25k                           |
+
+### Closed (3 issues)
+- #24: Phone/address cleanup on contact.mdx + faq.mdx (removed placeholder, ref footer + TinaCMS)
+- #28: Token audit on oxfam.astro (16 conversions: #FF6B35->accent, #0B2540->primary, #E5E7EB->secondary, etc.)
+- #34: Author byline schema (created TeamCollection, registered in tina/config.ts)
+
+### Implemented
+1. contact.mdx/faq.mdx: replaced "request our phone/address by email" with references to global footer/TinaCMS
+2. oxfam.astro: converted hard-coded hex colors to CSS variable references via Tailwind semantic classes
+3. tina/collections/team.ts: new TeamCollection (name/role/avatar/bio/email/order)
+4. blog.ts author field: kept string type, updated description to reference team collection
+
+### Total: 15 issues closed (Passes 38-40), 29 remain

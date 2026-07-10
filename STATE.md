@@ -5,7 +5,7 @@
 - **Project**: mupla-front (Astro + TinaCMS + Tailwind; Vercel deploy; Matt Pocock skills)
 - **Pattern**: matt-pocock-skill + loop-engineering (Passes 1-12 closed)
 - **Loop readiness score**: 95 / 100 (L3 - unattended loop safe). Held flat from Pass 11 since Pass 12 ops don't add new scoring gates.
-- **Last updated**: pass 39 - 2026-07-10 (9 more issues closed: #19, #22, #23, #25, #32, #35 + 3 from Pass 38; 3 implemented: keyboard nav docs, reduce-motion, publishStatus enum; 32 issues remain open)
+- **Last updated**: pass 40 - 2026-07-10 (3 more closed: #24, #28, #34 + contact/faq cleanup, oxfam token audit, team collection; 29 issues remain)
 - **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 41 issues in Backlog after Pass 38 triage sweep).
 - **Active GH issues snapshot**: docs/agents/gh-triage-2026-07-06-pass-12.md (re-runnable).
 - **Promoted T1 ticket**: #10 (bin/gh-create-issues.sh ran idempotently; T1 promote via gh issue edit --add-label ready-for-agent, allowed per docs/safety.md).

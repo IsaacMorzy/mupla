@@ -35,7 +35,7 @@ export const BlogCollection: Collection = {
       name: "author",
       label: "Author",
       type: "string",
-      description: "Optional. Shown beneath the post title. Defaults to 'mupla community' if blank.",
+      description: "Optional. Enter a team member's name (must match a name in the Team collection). If blank, defaults to 'mupla community'.",
     },
     {
       name: "pubDate",

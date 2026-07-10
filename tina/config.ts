@@ -3,6 +3,7 @@ import { BlogCollection } from './collections/blog';
 import { GlobalConfigCollection } from './collections/global-config';
 import { PageCollection } from './collections/page';
 import { EventCollection } from './collections/event';
+import { TeamCollection } from './collections/team';
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
@@ -36,6 +37,7 @@ export default defineConfig({
 			EventCollection,
 			PageCollection,
 			GlobalConfigCollection,
+			TeamCollection,
 		],
 	},
 });

@@ -2660,3 +2660,41 @@ GOOD — Vercel token + CLI operational; production deploy GREEN; OOM fix valida
 - Monitor the production URL for the latest deployment.
 - Run `bash scripts/axe-core.sh` from a TTY with Chrome.
 - Expand test coverage.
+
+---
+
+## Pass 38 — 2026-07-10 (GitHub issue triage sweep: 6 closed, 41 remain)
+
+| Slot     | Value                                                          |
+| -------- | -------------------------------------------------------------- |
+| Operator | agent (Buffy)                                                  |
+| Pattern  | matt-pocock-skill + loop-engineering + triage skill            |
+| Started  | 2026-07-10                                                     |
+| Status   | COMPLETE — 6 issues closed as wontfix (already implemented/fixed); triage buckets presented for remaining 41 |
+| Score    | +0 (no new scoring gates; triage is maintenance)                |
+| Tokens   | ~30k (well under 200k budget)                                    |
+
+### Changes this pass
+
+#### 1. Triage sweep across all 47 open GitHub issues
+
+**Closed as wontfix (already implemented/fixed in prior passes):**
+- #9: `.github/workflows/daily-triage.yml` — already exists and is functional
+- #10: `scripts/loop-context.sh` — already exists and is functional  
+- #17: Vercel build OOM — fixed in Pass 35/37 (heap split + imageService offload)
+- #18: `scripts/axe-core.sh` — already exists and is functional
+- #33: `category` enum on `tina/collections/blog.ts` — already exists (line 29)
+- #49: IslamicPattern + IslamicDivider — both components exist in `src/components/ui/`
+
+**Conflicting labels resolved:** #9 and #10 had both `needs-triage` + `ready-for-agent` — resolved to `wontfix` since the files exist.
+
+#### 2. Verified live site
+`mupla.vercel.app` responds 200 on home, donate, about, quran, prayers, blog.
+`mupla.org` DNS does not resolve — custom domain verified on Vercel but DNS records not configured.
+
+#### 3. Triage bucket summary
+- Ready-for-agent: 15 issues (#22, #23, #24, #28, #32, #34, #37, #41–#45, #48, #50)
+- Needs-triage: 20 issues (#11–#16, #19–#21, #25, #26, #29–#31, #35, #36, #38, #39, #46, #47)
+- Ready-for-human: 3 issues (#3, #7, #40)
+
+LOOP: 6/47 issues resolved in single pass. 41 remain.

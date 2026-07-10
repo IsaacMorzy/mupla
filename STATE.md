@@ -5,8 +5,8 @@
 - **Project**: mupla-front (Astro + TinaCMS + Tailwind; Vercel deploy; Matt Pocock skills)
 - **Pattern**: matt-pocock-skill + loop-engineering (Passes 1-12 closed)
 - **Loop readiness score**: 95 / 100 (L3 - unattended loop safe). Held flat from Pass 11 since Pass 12 ops don't add new scoring gates.
-- **Last updated**: pass 37 - 2026-07-10 (Vercel token saved to .env and ~/.bashrc; vercel CLI 55.0.0 installed; heap split fix: TinaCMS 3072MB + Astro 2048MB; production deploy triggered)
-- **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 30 issues attached in Backlog).
+- **Last updated**: pass 38 - 2026-07-10 (6 issues closed as wontfix: #9, #10, #17, #18, #33, #49 — all already implemented/fixed; 41 issues remain open)
+- **Active GH project**: mupla-front triage (user-scoped under IsaacMorzy; 7 columns seeded idempotently; 41 issues in Backlog after Pass 38 triage sweep).
 - **Active GH issues snapshot**: docs/agents/gh-triage-2026-07-06-pass-12.md (re-runnable).
 - **Promoted T1 ticket**: #10 (bin/gh-create-issues.sh ran idempotently; T1 promote via gh issue edit --add-label ready-for-agent, allowed per docs/safety.md).
 
@@ -47,13 +47,27 @@ In-band drift events the agent caught and recovered (preserved verbatim from Pas
 
 Live snapshot at  regenerated each pass close via [{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":17,"title":"**Vercel production build debugging (TinaCloud rebuild hook + `astro build` OOM @ 3072 MiB)**"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":16,"title":"Add `loop-engineering` MCP server status to readiness audit brief"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":15,"title":"Document override flow for human-only denylist ops"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":14,"title":"Add `docs/agents/kill-switch-test-2026-XX.md` drill report"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":13,"title":"Register `goal-engineering` pattern in `patterns/registry.yaml` (`status: not-active`)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":12,"title":"Document per-pass worktree policy in `loop-constraints.md`"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":11,"title":"Add `sub-agent` section to `loop-constraints.md` (maker/checker split)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"},{"id":"LA_kwDOTOfmAM8AAAACqR5LQg","name":"ready-for-agent","description":"Fully specified; AFK-ready","color":"0e8a16"}],"number":10,"title":"Scaffold `scripts/loop-context.sh` (rehydrate `run.json` → STATE.md)"},{"labels":[{"id":"LA_kwDOTOfmAM8AAAACqR4Ylg","name":"needs-triage","description":"Maintainer needs to evaluate","color":"fbca04"}],"number":9,"title":"Wire `.github/workflows/daily-triage.yml` (night cron, 1 pass/day)"}]. Currently **30 open needs-triage issues** (Pass 12.2 landed 31; #18 promoted to ready-for-agent in Pass 12.2; Pass 13 close did NOT promote any new issues. Parser-vs-GH comm diff confirms zero missing titles + zero duplicates.) attached to GH Project  (#5) under IsaacMorzy. Top unaddressed T1 (#10) promoted to .
 
-## Next pass (Pass 38)
+## Pass 38 triage summary
 
-Carried forward from Pass 37:
+**Closed (6 issues)**: All already implemented or fixed in prior passes:
+- #9: `.github/workflows/daily-triage.yml` — already exists
+- #10: `scripts/loop-context.sh` — already exists
+- #17: Vercel build OOM — fixed in Pass 35/37 (heap split + imageService offload)
+- #18: `scripts/axe-core.sh` — already exists
+- #33: `category` enum on blog.ts — already exists (line 29)
+- #49: IslamicPattern + IslamicDivider — both components already exist in `src/components/ui/`
 
-1. **Monitor production deploy** — verify the latest Vercel deployment succeeds with the split heap fix.
-2. **Run axe-core a11y audit** (Bucket B #10): requires Chrome installed locally.
-3. **Expand test coverage** — islands.ts and Astro component tests.
+**Ready-for-agent (15 issues)**: #22, #23, #24, #28, #32, #34, #37, #41, #42, #43, #44, #45, #48, #50
+**Needs-triage (20 issues)**: #11–#16, #19–#21, #25, #26, #29–#31, #35, #36, #38, #39, #46, #47
+**Ready-for-human (3 issues)**: #3, #7, #40
+
+## Next pass (Pass 39)
+
+Carried forward from Pass 38:
+
+1. **Continue triage** — process remaining needs-triage issues (#11-#47).
+2. **Pick up ready-for-agent** — start with #22 (keyboard nav docs) or #32 (publishStatus enum).
+3. **Run axe-core a11y audit** requires Chrome installed locally.
 
 ## Onward contract (Pass N+1)
 

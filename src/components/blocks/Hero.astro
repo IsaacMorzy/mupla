@@ -32,7 +32,7 @@ const hasImage = Boolean(data.image?.src);
 			{data.headline && (
 				<h1
 					data-tina-field={tinaField(data, 'headline')}
-					class="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-foreground drop-shadow-sm md:text-5xl lg:text-6xl"
+					class="text-balance text-4xl font-medium leading-[1.1] tracking-[-0.005em] text-foreground md:text-5xl lg:text-6xl"
 				>
 					{data.headline}
 				</h1>
@@ -40,7 +40,7 @@ const hasImage = Boolean(data.image?.src);
 			{data.tagline && (
 				<p
 					data-tina-field={tinaField(data, 'tagline')}
-					class="mx-auto mt-6 max-w-2xl text-balance text-base text-foreground drop-shadow-sm md:text-lg"
+					class="mx-auto mt-6 max-w-2xl text-balance text-base text-foreground md:text-lg"
 				>
 					{data.tagline}
 				</p>
@@ -57,7 +57,7 @@ const hasImage = Boolean(data.image?.src);
 								href={action.link}
 								size="lg"
 								variant={action.type === 'link' ? 'outline' : 'default'}
-								class="rounded-xl px-6 text-base shadow-lg"
+								class="rounded-xl px-6 text-base"
 							>
 								{action.icon && <Icon name={action.icon} class="size-4" />}
 								<span class="text-nowrap">{action.label}</span>
@@ -89,7 +89,7 @@ const hasImage = Boolean(data.image?.src);
 
 	<div class="reveal relative text-center sm:mx-auto lg:mr-auto">
 		<div data-tina-field={tinaField(data, 'image')} class="sr-only">Add a hero image to enable the full-width background hero.</div>
-		{data.headline && <h1 data-tina-field={tinaField(data, 'headline')} class="text-balance text-5xl md:text-6xl xl:text-7xl font-semibold leading-[1.05] tracking-tight">{data.headline}</h1>}
+		{data.headline && <h1 data-tina-field={tinaField(data, 'headline')} class="text-balance text-5xl md:text-6xl xl:text-7xl font-medium leading-[1.05] tracking-[-0.005em]">{data.headline}</h1>}
 			{data.tagline && <p data-tina-field={tinaField(data, 'tagline')} class="mx-auto mt-6 max-w-2xl text-balance text-base text-muted-foreground md:text-lg">{data.tagline}</p>}
 			{actions.length > 0 && (
 				<div class="reveal-stagger mt-10 flex flex-col items-center justify-center gap-2 md:flex-row">

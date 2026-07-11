@@ -22,11 +22,13 @@ const config = (await getConfig()).data?.config ?? null;
 ---
 
 <Base
-	title={data.seoTitle || config?.seo?.title || 'TinaCMS + Astro'}
+	title={data.seoTitle || config?.seo?.title || 'MuPLA Foundation'}
 	description={config?.seo?.description ?? 'Welcome to my website!'}
 >
+	<main id="main-content">
 	<TinaIsland name="page" wrapper={islands.page.wrapper} params={{ slug }} primary>
 		<PageBody data={data} />
 	</TinaIsland>
 	{slug === 'donate' && <ZakatCalculator />}
+	</main>
 </Base>

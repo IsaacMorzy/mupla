@@ -34,16 +34,15 @@ const headingId = (data.title ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').r
 		/>
 	</div>
 	<div class="reveal relative text-center">
-		<h2 id={headingId} class="text-balance text-4xl font-semibold lg:text-5xl" data-tina-field={tinaField(data, 'title')}>{data.title}</h2>
-		<p class="mx-auto mt-4 max-w-2xl text-balance text-muted-foreground" data-tina-field={tinaField(data, 'description')}>{data.description}</p>
-		<div class="reveal-stagger mt-12 flex flex-wrap justify-center gap-4">
+		<h2 id={headingId} class="text-balance text-4xl font-medium tracking-[-0.005em] lg:text-5xl" data-tina-field={tinaField(data, 'title')}>{data.title}</h2>
+		<p class="mx-auto mt-4 max-w-2xl text-balance text-muted-foreground" data-tina-field={tinaField(data, 'description')}>{data.description}</p>			<div class="reveal-stagger mt-12 flex flex-wrap justify-center gap-4" role="region" aria-live="polite" aria-label={data.title ?? 'Call to action'}>
 			{actions.map((action, i) => (
 				<div
-					class="reveal bg-foreground/10 rounded-2xl border p-0.5"
+					class="reveal"
 					data-tina-field={tinaField(action)}
 					style={`--reveal-i: ${i}`}
 				>
-					<Button href={action.link} size="lg" variant={action.type === 'link' ? 'ghost' : 'default'} class="rounded-xl px-5 text-base">
+					<Button href={action.link} size="lg" variant={action.type === 'link' ? 'ghost' : 'default'} class="rounded-xl px-5 text-base" {...(action.tier ? { 'data-tier': action.tier } : {})}>
 						{action.icon && <Icon name={action.icon} class="size-4" />}
 						<span class="text-nowrap">{action.label}</span>
 					</Button>

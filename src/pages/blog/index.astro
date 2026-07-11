@@ -41,21 +41,25 @@ const rest = enriched.slice(1);
 	title={`Blog${config?.seo?.title ? ` · ${config.seo.title}` : ''}`}
 	description={config?.seo?.description ?? 'Stories, reflections, and program updates from the mupla foundation.'}
 >
-	<main class="mx-auto max-w-7xl px-6 pb-20 pt-12 md:pt-16">
+	<main id="main-content" class="mx-auto max-w-7xl px-6 pb-20 pt-12">
+		<!-- Hero: editorial-style header with generous whitespace -->
 		<header class="reveal mx-auto max-w-3xl text-center">
-			<h1 class="mt-3 text-balance text-5xl font-semibold tracking-tight md:text-6xl">From the mupla community</h1>
-			<p class="mx-auto mt-5 max-w-2xl text-balance text-muted-foreground">
-				Stories from our programs, reflections from our neighbors, and notes on the work. Written by the people who show up every day.
+			<h1 class="text-balance text-5xl font-medium tracking-[-0.005em] md:text-6xl">
+				Stories that shape our work
+			</h1>
+			<p class="mx-auto mt-6 max-w-xl text-balance text-muted-foreground leading-relaxed">
+				Reflections from programs, voices from the neighborhood, and honest notes on what we are learning. Written by the people who show up.
 			</p>
 		</header>
 
+		<!-- Featured post: asymmetric split with warm surface tinting -->
 		{featured && (
 			<section class="reveal mt-12 md:mt-16">
 				<a
 					href={`/blog/${featured._sys.filename}/`}
-					class="card-hover group block overflow-hidden rounded-2xl border border-border/60 bg-card"
+					class="group block overflow-hidden rounded-xl border border-border/60 bg-card transition-colors hover:bg-accent/20"
 				>
-					<div class="grid md:grid-cols-2">
+					<div class="grid md:grid-cols-[1.3fr_1fr]">
 						{featured.heroImage && (
 							<div class="aspect-[4/3] overflow-hidden md:aspect-auto md:h-full">
 								<img
@@ -69,24 +73,25 @@ const rest = enriched.slice(1);
 								/>
 							</div>
 						)}
-						<div class="flex flex-col justify-center gap-4 p-8 md:p-10">
-							<div class="flex flex-wrap items-center gap-2">
+						<div class="flex flex-col justify-center gap-5 p-8 md:p-10 lg:p-12">
+							<div class="flex flex-wrap items-center gap-2.5">
 								<Badge variant="default">{featured._displayCategory}</Badge>
-								<span class="text-sm text-muted-foreground">Featured</span>
+								<span class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Featured</span>
 							</div>
-							<h2 class="text-balance text-2xl font-semibold leading-tight transition-colors group-hover:text-primary md:text-3xl">
+							<h2 class="text-balance text-2xl font-medium leading-tight transition-colors group-hover:text-primary md:text-3xl">
 								{featured.title}
 							</h2>
 							{featured.description && (
-								<p class="text-base text-muted-foreground md:text-lg">{featured.description}</p>
+								<p class="text-base leading-relaxed text-muted-foreground">{featured.description}</p>
 							)}
-					<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-						{featured.pubDate && <FormattedDate date={new Date(featured.pubDate)} />}
-						<span>{featured._displayAuthor}</span>
+							<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+								{featured.pubDate && <FormattedDate date={new Date(featured.pubDate)} />}
+								<span class="text-foreground/60">·</span>
+								<span>{featured._displayAuthor}</span>
 							</div>
-							<div class="mt-2 flex items-center gap-2 text-sm font-medium text-primary">
+							<div class="mt-1 flex items-center gap-2 text-sm font-medium text-primary transition-colors group-hover:text-primary/80">
 								Read the story
-								<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
+								<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
 							</div>
 						</div>
 					</div>
@@ -96,39 +101,41 @@ const rest = enriched.slice(1);
 
 		<IslamicDivider variant="single" class="max-w-4xl mx-auto mt-12" />
 
+		<!-- Category filter: clean pill-style navigation -->
 		{categories.length > 1 && (
 			<nav class="mt-10 flex flex-wrap items-center gap-2 md:mt-14" aria-label="Filter posts by category">
 				<button
 					type="button"
 					data-category-filter=""
 					aria-pressed="true"
-					class="inline-flex items-center rounded-full border border-border bg-background px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&[aria-pressed=true]]:bg-foreground [&[aria-pressed=true]]:text-background"
+					class="inline-flex items-center rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-all hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&[aria-pressed=true]]:bg-primary [&[aria-pressed=true]]:text-primary-foreground"
 				>
-					All stories <span class="ml-1.5 text-xs text-muted-foreground [&[aria-pressed=true]]:text-background/70">{enriched.length}</span>
+					All stories <span class="ml-2 text-xs opacity-70">{enriched.length}</span>
 				</button>
 				{categories.map(([name, count]) => (
 					<button
 						type="button"
 						data-category-filter={name}
 						aria-pressed="false"
-						class="inline-flex items-center rounded-full border border-border bg-background px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&[aria-pressed=true]]:bg-foreground [&[aria-pressed=true]]:text-background"
+						class="inline-flex items-center rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-all hover:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&[aria-pressed=true]]:bg-primary [&[aria-pressed=true]]:text-primary-foreground"
 					>
-						{name} <span class="ml-1.5 text-xs text-muted-foreground">{count}</span>
+						{name} <span class="ml-2 text-xs opacity-70">{count}</span>
 					</button>
 				))}
 			</nav>
 		)}
 
+		<!-- Post grid: refined cards with better hierarchy -->
 		{rest.length > 0 ? (
 			<ul
 				id="post-grid"
-				class="reveal-stagger mt-8 grid list-none gap-6 p-0 md:grid-cols-2 md:gap-8 lg:grid-cols-3"
+				class="mt-8 grid list-none gap-6 p-0 md:grid-cols-2 md:gap-8 lg:grid-cols-3"
 			>
 				{rest.map((post, i) => (
-					<li data-category={post._displayCategory} class="reveal contents" style={`--reveal-i: ${i}`}>
+					<li data-category={post._displayCategory} style={`--reveal-i: ${i}`}>
 						<a
 							href={`/blog/${post._sys.filename}/`}
-							class="card-hover group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card"
+							class="group flex h-full flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-300 hover:border-border hover:bg-accent/20"
 						>
 							{post.heroImage && (
 								<div class="aspect-[16/10] overflow-hidden">
@@ -151,17 +158,17 @@ const rest = enriched.slice(1);
 										</time>
 									)}
 								</div>
-								<h3 class="text-balance text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+								<h3 class="text-balance text-lg font-medium leading-snug transition-colors group-hover:text-primary">
 									{post.title}
 								</h3>
 								{post.description && (
-									<p class="line-clamp-3 text-sm text-muted-foreground">{post.description}</p>
+									<p class="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{post.description}</p>
 								)}
-								<div class="mt-auto flex items-center justify-between gap-2 pt-3 text-sm">
+								<div class="mt-auto flex items-center justify-between gap-2 pt-4 text-sm">
 									<span class="text-muted-foreground">{post._displayAuthor}</span>
-									<span class="inline-flex items-center gap-1 font-medium text-foreground/70 transition-colors group-hover:text-primary">
+									<span class="inline-flex items-center gap-1 font-medium text-primary transition-colors">
 										Read
-										<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
+										<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
 									</span>
 								</div>
 							</div>
@@ -170,15 +177,18 @@ const rest = enriched.slice(1);
 				))}
 			</ul>
 		) : (
-			<p class="mt-12 text-center text-muted-foreground">No more posts yet - check back soon.</p>
-		)}				<section class="reveal mt-20 md:mt-24">
-				<div class="mx-auto grid max-w-4xl items-center gap-8 rounded-2xl border border-border/60 bg-card px-8 py-10 md:grid-cols-[1.5fr_1fr] md:px-12 md:py-14">
-					<div>
-						<h2 class="mt-3 text-balance text-2xl font-semibold leading-tight md:text-3xl">
-						Stories &amp; program updates, once a month
+			<p class="mt-12 text-center text-muted-foreground">No more posts yet — check back soon.</p>
+		)}
+
+		<!-- Newsletter signup: clean, editorial-style CTA -->
+		<section class="reveal mt-20 md:mt-24">
+			<div class="mx-auto grid max-w-4xl items-center gap-8 rounded-2xl border border-border/60 bg-secondary/50 px-8 py-10 md:grid-cols-[1.5fr_1fr] md:px-12 md:py-14">
+				<div>
+					<h2 class="text-balance text-2xl font-medium leading-tight md:text-3xl">
+						Stay in the loop
 					</h2>
-					<p class="mt-3 text-muted-foreground">
-						One email a month with what we are learning, what is working, and how your support is moving the work forward.
+					<p class="mt-3 text-muted-foreground leading-relaxed">
+						One email a month with what we are learning, what is working, and how your support moves the work forward.
 					</p>
 				</div>
 				<form

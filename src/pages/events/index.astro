@@ -16,20 +16,13 @@ const upcoming: CmsEvent[] = events.filter((e: CmsEvent) => Boolean(e.date) && n
 const past: CmsEvent[] = events.filter((e: CmsEvent) => Boolean(e.date) && new Date(e.date as string) < now);
 
 // Group upcoming events by YYYY-MM so callouts can sit in a compact editorial list.
-// Stable ordering: each group is sorted chronologically; groups sorted by earliest date.
 const groupKey = (iso: string) => {
 	const d = new Date(iso);
 	if (Number.isNaN(d.valueOf())) return 'TBA';
 	return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long' });
 };
 
-// Past-tense relative time ("3 months ago", "yesterday", "last week") for the
-// archive list. `Intl.RelativeTimeFormat` with `numeric: 'auto'` uses locale
-// phrasing for the special buckets (yesterday / last week / last month / last
-// year) and falls back to numeric for everything else. Buckets are sized so
-// "today" never shows up in the past list (it can't - past is filtered by
-// `date < now`) and so the smallest meaningful tag is "1 day ago" /
-// "yesterday".
+// Past-tense relative time for the archive list.
 const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
 const relativePast = (iso: string): string => {
 	const event = new Date(iso);
@@ -41,43 +34,50 @@ const relativePast = (iso: string): string => {
 	if (days < 365) return rtf.format(-Math.floor(days / 30), 'month');
 	return rtf.format(-Math.floor(days / 365), 'year');
 };
+
 const grouped = upcoming.reduce<Record<string, CmsEvent[]>>((acc, e) => {
 	const k = groupKey(e.date as string);
 	(acc[k] ??= []).push(e);
 	return acc;
 }, {});
+
 const groupedEntries = Object.entries(grouped).sort(([, a], [, b]) => {
 	const ad = a[0]?.date ? new Date(a[0].date).valueOf() : 0;
 	const bd = b[0]?.date ? new Date(b[0].date).valueOf() : 0;
 	return ad - bd;
 });
+
 const featured: CmsEvent | undefined = groupedEntries[0]?.[1]?.[0];
 const featuredGroupSize = groupedEntries[0]?.[1]?.length ?? 0;
-// `restGrouped` keeps the month-grouped shape so we can drop in per-month
-// headers in a follow-up without re-walking `groupedEntries`.
+
 const restGrouped = groupedEntries
 	.map(([, list], groupIdx) => (groupIdx === 0 ? list.slice(1) : list))
 	.filter((list) => list.length > 0);
 ---
+
 <Base
 	title={`Events${config?.seo?.title ? ` · ${config.seo.title}` : ''}`}
 	description="Upcoming community events at the mupla foundation."
 >
-	<main class="mx-auto max-w-7xl px-6 py-12 md:py-20">
+	<main id="main-content" class="mx-auto max-w-7xl px-6 py-12">
+		<!-- Hero: editorial-style header -->
 		<header class="reveal mx-auto max-w-3xl text-center">
-			<h1 class="mt-3 text-balance text-5xl font-semibold tracking-tight md:text-6xl">Events</h1>
-			<p class="mx-auto mt-5 max-w-2xl text-balance text-muted-foreground">
-				From weekly iftars to workshops to our annual gala. Find what is on the calendar and how to join.
+			<h1 class="text-balance text-5xl font-medium tracking-[-0.005em] md:text-6xl">
+				Gather, learn, serve
+			</h1>
+			<p class="mx-auto mt-6 max-w-xl text-balance text-muted-foreground leading-relaxed">
+				Weekly iftars, workshops, community dinners, and our annual gala. Find what's on the calendar and how to join.
 			</p>
 		</header>
 
+		<!-- Featured event: asymmetric split with warm surface tinting -->
 		{featured && (
 			<section class="reveal mt-10 md:mt-16">
 				<a
 					href={`/events/${featured._sys.filename}/`}
-					class="card-hover group block overflow-hidden rounded-2xl border border-border/60 bg-card"
+					class="group block overflow-hidden rounded-xl border border-border/60 bg-card transition-colors hover:bg-accent/20"
 				>
-					<div class="grid md:grid-cols-[1.4fr_1fr]">
+					<div class="grid md:grid-cols-[1.3fr_1fr]">
 						{featured.image ? (
 							<div class="aspect-[16/10] overflow-hidden md:aspect-auto md:h-full">
 								<img
@@ -91,44 +91,41 @@ const restGrouped = groupedEntries
 								/>
 							</div>
 						) : (
-							<!-- No-image fallback: a quiet amber-accented surface using a single OKLCH-aware
-							     secondary tint so the featured card still feels distinct. No gradient
-							     (DESIGN.md §7 forbids gradients on backgrounds) - just solid token colors. -->
 							<div class="hidden flex-col items-start justify-end p-8 md:flex md:aspect-auto md:h-full md:bg-secondary">
 								<Icon name="calendar-event" class="size-12 text-primary" />
 							</div>
 						)}
-						<div class="flex flex-col justify-center gap-4 p-8 md:p-10">
-							<div class="flex flex-wrap items-center gap-2">
+						<div class="flex flex-col justify-center gap-5 p-8 md:p-10 lg:p-12">
+							<div class="flex flex-wrap items-center gap-2.5">
 								<Badge variant="default">Next up</Badge>
 								{featuredGroupSize > 1 && (
 									<Badge variant="outline">{featuredGroupSize} events this month</Badge>
 								)}
 							</div>
-							<h2 class="text-balance text-2xl font-semibold leading-tight transition-colors group-hover:text-primary md:text-3xl">
+							<h2 class="text-balance text-2xl font-medium leading-tight transition-colors group-hover:text-primary md:text-3xl">
 								{featured.title}
 							</h2>
-						<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-							<time datetime={featured.date} class="font-medium text-foreground">
-								<FormattedDate date={new Date(featured.date)} />
-							</time>
-							<Countdown compact target={featured.date} />
-							{featured.location && (
-								<span class="flex items-center gap-1">
-									<Icon name="tabler:map-pin" class="size-3.5" />
-									{featured.location}
-								</span>
+							<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+								<time datetime={featured.date} class="font-medium text-foreground">
+									<FormattedDate date={new Date(featured.date)} />
+								</time>
+								<Countdown compact target={featured.date} />
+								{featured.location && (
+									<span class="flex items-center gap-1">
+										<Icon name="tabler:map-pin" class="size-3.5" />
+										{featured.location}
+									</span>
+								)}
+								{featured.cost && (
+									<Badge variant="outline" class="font-normal">{featured.cost}</Badge>
+								)}
+							</div>
+							{featured.description && (
+								<p class="line-clamp-2 text-base leading-relaxed text-muted-foreground">{descriptionPreview(featured.description)}</p>
 							)}
-							{featured.cost && (
-								<Badge variant="outline" class="font-normal">{featured.cost}</Badge>
-							)}
-						</div>
-						{featured.description && (
-							<p class="line-clamp-2 text-base text-muted-foreground">{descriptionPreview(featured.description)}</p>
-						)}
-							<div class="mt-2 flex items-center gap-2 text-sm font-medium text-primary">
+							<div class="mt-1 flex items-center gap-2 text-sm font-medium text-primary transition-colors group-hover:text-primary/80">
 								View details
-								<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
+								<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
 							</div>
 						</div>
 					</div>
@@ -136,22 +133,26 @@ const restGrouped = groupedEntries
 			</section>
 		)}
 
+		<!-- More upcoming events: refined card grid -->
 		{restGrouped.flat().length > 0 && (
 			<section class="mt-16 md:mt-20">
 				<IslamicDivider variant="single" class="max-w-4xl mx-auto mb-8" />
 				<div class="reveal mb-6 flex items-end justify-between gap-4">
-					<h2 class="text-2xl font-semibold md:text-3xl">More upcoming</h2>
-					<a href="/events" class="cta-cta-link hidden items-center gap-1 text-sm font-medium text-foreground/70 hover:text-primary md:inline-flex">
+					<div>
+						<p class="text-xs font-medium uppercase tracking-wider text-primary">Upcoming</p>
+						<h2 class="mt-2 text-2xl font-medium md:text-3xl">More to come</h2>
+					</div>
+					<a href="/events" class="hidden items-center gap-1 text-sm font-medium text-foreground/70 hover:text-primary md:inline-flex">
 						Browse all
 						<Icon name="tabler:arrow-right" class="size-4" />
 					</a>
 				</div>
-				<ul class="reveal-stagger grid list-none gap-6 p-0 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+				<ul class="grid list-none gap-6 p-0 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
 					{restGrouped.flat().map((event: CmsEvent, i: number) => (
-						<li class="reveal" style={`--reveal-i: ${i}`}>
+						<li style={`--reveal-i: ${i}`}>
 							<a
 								href={`/events/${event._sys.filename}/`}
-								class="card-hover group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card"
+								class="group flex h-full flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-300 hover:border-border hover:bg-accent/20"
 							>
 								{event.image && (
 									<div class="aspect-[16/10] overflow-hidden">
@@ -180,22 +181,23 @@ const restGrouped = groupedEntries
 										{event.cost && (
 											<Badge variant="outline" class="font-normal">{event.cost}</Badge>
 										)}
-									</div>										<h3 class="text-balance text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
-											{event.title}
-										</h3>
-								{event.description && (
-									<p class="line-clamp-3 text-sm text-muted-foreground">{descriptionPreview(event.description)}</p>
-								)}
-									<div class="mt-auto flex items-center justify-end pt-3">
+									</div>
+									<h3 class="text-balance text-lg font-medium leading-snug transition-colors group-hover:text-primary">
+										{event.title}
+									</h3>
+									{event.description && (
+										<p class="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{descriptionPreview(event.description)}</p>
+									)}
+									<div class="mt-auto flex items-center justify-end pt-4">
 										{event.rsvpUrl ? (
 											<Button href={event.rsvpUrl} size="sm" variant="outline">
 												RSVP
 												<Icon name="tabler:arrow-right" class="size-4" />
 											</Button>
 										) : (
-											<span class="inline-flex items-center gap-1 text-sm font-medium text-foreground/70 transition-colors group-hover:text-primary">
+											<span class="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors">
 												Details
-												<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
+												<Icon name="tabler:arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
 											</span>
 										)}
 									</div>
@@ -205,27 +207,32 @@ const restGrouped = groupedEntries
 					))}
 				</ul>
 			</section>
-		)}		{past.length > 0 && (
+		)}
+
+		<!-- Past events: clean archive list -->
+		{past.length > 0 && (
 			<section class="reveal mt-20 md:mt-24">
 				<IslamicDivider variant="single" class="max-w-4xl mx-auto mb-8" />
 				<div class="mb-6 flex items-end justify-between gap-4">
 					<div>
-						<h2 class="text-2xl font-semibold md:text-3xl">Past events</h2>
+						<p class="text-xs font-medium uppercase tracking-wider text-primary">Archive</p>
+						<h2 class="mt-2 text-2xl font-medium md:text-3xl">Past events</h2>
 					</div>
 					<span class="text-sm text-muted-foreground">{past.length} on record</span>
 				</div>
-				<ul class="reveal-stagger divide-y divide-border overflow-hidden rounded-2xl border border-border/60 bg-card">
+				<ul class="divide-y divide-border overflow-hidden rounded-xl border border-border/60 bg-card">
 					{past.slice(0, 12).map((event: CmsEvent, i: number) => (
-						<li class="reveal" style={`--reveal-i: ${i}`}>
+						<li style={`--reveal-i: ${i}`}>
 							<a href={`/events/${event._sys.filename}/`} class="group flex flex-wrap items-center justify-between gap-3 p-5 transition-colors hover:bg-accent/30">
-								<div class="min-w-0 flex-1">											<h3 class="font-medium transition-colors group-hover:text-primary">
+								<div class="min-w-0 flex-1">
+									<h3 class="font-medium transition-colors group-hover:text-primary">
 										{event.title}
 									</h3>
-						<p class="mt-1 text-sm text-muted-foreground">
-							<FormattedDate date={new Date(event.date)} />
-							<span class="text-muted-foreground/80" title={new Date(event.date).toLocaleDateString()}>{' ' + relativePast(event.date)}</span>
-							{event.location && ` - ${event.location}`}
-						</p>
+									<p class="mt-1 text-sm text-muted-foreground">
+										<FormattedDate date={new Date(event.date)} />
+										<span class="text-muted-foreground/80" title={new Date(event.date).toLocaleDateString()}>{' ' + relativePast(event.date)}</span>
+										{event.location && ` · ${event.location}`}
+									</p>
 								</div>
 								<Icon name="arrow-right" class="size-4 text-muted-foreground transition-transform group-hover:translate-x-1" />
 							</a>
@@ -237,7 +244,7 @@ const restGrouped = groupedEntries
 
 		{upcoming.length === 0 && past.length === 0 && (
 			<p class="mt-12 text-center text-muted-foreground">
-				No events scheduled right now. Check back soon - or <a href="/get-involved" class="underline">get involved</a> to help us plan the next one.
+				No events scheduled right now. Check back soon — or <a href="/get-involved" class="underline">get involved</a> to help us plan the next one.
 			</p>
 		)}
 	</main>

@@ -23,7 +23,6 @@ const config = (await getConfig()).data?.config ?? null;
 const eventDate = data.date ? new Date(data.date) : null;
 const eventEndDate = data.endDate ? new Date(data.endDate) : null;
 const isMultiDay = Boolean(eventEndDate && eventDate && eventEndDate.toDateString() !== eventDate.toDateString());
-// Rich-Text AST or string → single-line plaintext snippet for meta + gcal.
 const descriptionText = descriptionPreview(data.description, 200);
 
 // Google Calendar expects dates as YYYYMMDDTHHMMSSZ (no separators).
@@ -32,16 +31,19 @@ const toCalDate = (d: string | null | undefined): string =>
 const calDates = `${toCalDate(data.date)}/${toCalDate(data.endDate)}`;
 const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(data.title ?? 'Event')}&dates=${calDates}&location=${encodeURIComponent(data.location ?? '')}&details=${encodeURIComponent(descriptionText)}`;
 ---
+
 <Base
 	title={`${data.title ?? 'Event'}${config?.seo?.title ? ` - ${config.seo.title}` : ''}`}
 	description={descriptionText}
 >
-	<main class="mx-auto max-w-3xl px-6 py-16">
+	<main id="main-content" class="mx-auto max-w-3xl px-6 py-12">
+		<!-- Back link -->
 		<a href="/events" class="mb-8 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground">
 			<Icon name="arrow-left" class="size-4" />
 			All events
 		</a>
 
+		<!-- Header: editorial-style with generous metadata -->
 		<header class="mb-10 space-y-5">
 			<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
 				{eventDate && (
@@ -49,7 +51,7 @@ const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${en
 						<FormattedDate date={eventDate} />
 						{isMultiDay && eventEndDate && (
 							<>
-								{' \u2013 '}
+								{' — '}
 								<FormattedDate date={eventEndDate} />
 							</>
 						)}
@@ -64,7 +66,7 @@ const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${en
 				)}
 				{data.cost && <Badge variant="outline" class="font-normal">{data.cost}</Badge>}
 			</div>
-			<h1 class="text-balance text-4xl font-semibold tracking-tight md:text-5xl">{data.title}</h1>
+			<h1 class="text-balance text-4xl font-medium tracking-[-0.005em] md:text-5xl">{data.title}</h1>
 			{data.rsvpUrl && (
 				<div class="pt-2">
 					<Button href={data.rsvpUrl} size="lg">
@@ -75,16 +77,18 @@ const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${en
 			)}
 		</header>
 
+		<!-- Hero image -->
 		{data.image && (
 			<img
 				src={data.image}
 				alt={data.title ?? ''}
 				width={1200}
 				height={675}
-				class="mb-10 aspect-video w-full rounded-xl border object-cover"
+				class="mb-10 aspect-video w-full rounded-2xl border border-border/60 object-cover"
 			/>
 		)}
 
+		<!-- Event description -->
 		<div class="prose prose-lg max-w-none">
 			<IslamicDivider variant="single" class="max-w-xl mx-auto my-8" />
 			{descriptionParagraphs(data.description).map((paragraph) => (
@@ -92,16 +96,16 @@ const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${en
 			))}
 		</div>
 
+		<!-- Calendar CTA: clean, warm-surfaced sidebar -->
 		{eventDate && (
-			<aside class="mt-16 rounded-xl border bg-card p-6 text-sm">
-				<IslamicDivider variant="single" class="max-w-xs mx-auto mb-6" />
+			<aside class="mt-16 rounded-2xl border border-border/60 bg-secondary/50 p-6 text-sm">
 				<h2 class="text-base font-medium">Add to your calendar</h2>
-				<p class="mt-1 text-muted-foreground">Set a reminder so you don't miss it.</p>
+				<p class="mt-1 text-muted-foreground leading-relaxed">Set a reminder so you don't miss it.</p>
 				<a
 					href={calUrl}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="mt-3 inline-flex items-center gap-1.5 text-primary underline-offset-4 hover:underline"
+					class="mt-4 inline-flex items-center gap-1.5 font-medium text-primary underline-offset-4 hover:underline"
 				>
 					<Icon name="calendar-plus" class="size-4" />
 					Add to Google Calendar

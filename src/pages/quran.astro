@@ -45,19 +45,19 @@ try {
 	title={`Quran${config?.seo?.title ? ` · ${config.seo.title}` : ''}`}
 	description="Browse surahs and verses of the Quran in Arabic with English translation."
 >
-	<main class="mx-auto max-w-5xl px-6 py-12 md:py-20">
+	<main id="main-content" class="mx-auto max-w-5xl px-6 py-12">
 		<header class="reveal mx-auto max-w-2xl text-center">
-			<h1 class="text-balance text-5xl font-semibold tracking-tight md:text-6xl">The Quran</h1>
+			<h1 class="text-balance text-5xl font-medium tracking-[-0.005em] md:text-6xl">The Quran</h1>
 			<div class="mt-6 reveal-calligraphy" aria-hidden="true">
 				<ArabicCalligraphy variant="bismillah" class="mx-auto block" size={400} />
 			</div>
-			<p class="mx-auto mt-5 max-w-xl text-balance text-muted-foreground">
+			<p class="mx-auto mt-5 max-w-xl text-balance text-muted-foreground leading-relaxed">
 				Browse all 114 surahs in Arabic Uthmani script with English translation. Click a surah to read its verses, then play audio recitation from AlQuran.cloud.
 			</p>
 		</header>
 
 		<div class="mx-auto max-w-4xl px-6 mt-12 mb-8">
-			<div class="relative overflow-hidden rounded-2xl border border-border/60 bg-card/50 p-8 text-center">
+			<div class="relative overflow-hidden rounded-xl border border-border/60 bg-card/50 p-8 text-center">
 				<div aria-hidden="true" class="pointer-events-none absolute -right-10 -top-10 opacity-[0.06]">
 					<svg width="200" height="200" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1" class="text-primary animate-spin-slower geometric-line">
 						<rect x="30" y="30" width="140" height="140" rx="12" />
@@ -84,7 +84,7 @@ try {
 							data-ayahs={s.numberOfAyahs}
 							data-name={s.name}
 							data-english-name={s.englishName}
-							class="reveal group flex items-center gap-4 rounded-2xl border border-border/60 bg-card px-5 py-4 text-left transition-colors hover:bg-accent/50 graceful-hover focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+							class="reveal group flex items-center gap-4 rounded-xl border border-border/60 bg-card px-5 py-4 text-left transition-colors hover:bg-accent/50 graceful-hover focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 							style={`--reveal-i: ${Math.floor(i / 3)}`}
 						>
 							<div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted font-mono text-xs text-foreground">
@@ -111,7 +111,7 @@ try {
 						<!-- Audio reciter selector -->
 						<div id="audio-controls" class="mb-6 hidden items-center gap-3">
 							<label for="reciter-select" class="text-xs text-muted-foreground">Reciter:</label>
-							<select id="reciter-select" class="rounded-xl border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-[3px] focus:ring-ring/50">
+							<select id="reciter-select" class="rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-[3px] focus:ring-ring/50">
 								<option value="ar.alafasy">Mishary Alafasy</option>
 								<option value="ar.abdulbasitmurattal">Abdul Basit</option>
 								<option value="ar.abdurrahmaansudais">Abdurrahman As-Sudais</option>
@@ -139,7 +139,7 @@ try {
 								<Icon name="arrow-left" class="size-4" />
 								Back to surahs
 							</button>
-							<h2 id="verse-surah-name" class="text-lg font-semibold text-foreground" lang="ar" dir="rtl"></h2>
+							<h2 id="verse-surah-name" class="text-lg font-medium text-foreground" lang="ar" dir="rtl"></h2>
 							<div id="verse-nav" class="flex items-center gap-3">
 								<button
 									type="button"

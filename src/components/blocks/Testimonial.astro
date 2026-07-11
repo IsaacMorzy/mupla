@@ -17,7 +17,7 @@ const initials = (name?: string | null) => (name ?? '').split(' ').map((w) => w[
 
 <Section>
 	<div class="reveal mx-auto max-w-xl text-center">
-		<h2 data-tina-field={tinaField(data, 'title')} class="text-3xl font-semibold">{data.title}</h2>
+		<h2 data-tina-field={tinaField(data, 'title')} class="text-3xl font-medium tracking-[-0.005em]">{data.title}</h2>
 		<p data-tina-field={tinaField(data, 'description')} class="mt-4 text-muted-foreground">{data.description}</p>
 	</div>
 	<div class="reveal-stagger mt-10 grid gap-6 md:mt-14 sm:grid-cols-2 lg:grid-cols-3">

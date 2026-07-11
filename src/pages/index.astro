@@ -108,9 +108,10 @@ const testimonials = [
 ---
 
 <Base
-	title={data.seoTitle || config?.seo?.title || 'TinaCMS + Astro'}
+	title={data.seoTitle || config?.seo?.title || 'MuPLA Foundation'}
 	description={config?.seo?.description ?? 'Welcome to my website!'}
 >
+	<main id="main-content">
 	<TinaIsland name="page" wrapper={islands.page.wrapper} params={{ slug }} primary>
 		<PageBody data={data} />
 	</TinaIsland>
@@ -132,16 +133,16 @@ const testimonials = [
 
 		<div class="reveal relative z-10 mx-auto max-w-5xl space-y-8 px-6 md:space-y-16">
 			<div class="reveal mx-auto max-w-xl space-y-4 text-center">
-				<h2 class="text-4xl font-medium lg:text-5xl">Our year-round impact</h2>
-				<p class="text-muted-foreground">
-					The numbers behind the work - what your support and your service make possible.
+				<h2 class="text-4xl font-medium tracking-[-0.005em] lg:text-5xl">Our year-round impact</h2>
+				<p class="text-muted-foreground leading-relaxed">
+					The numbers behind the work — what your support and your service make possible.
 				</p>
 			</div>
 			<div class="reveal-stagger grid divide-y *:text-center md:grid-cols-4 md:divide-x md:divide-y-0">
 				{impactStats.map((stat, i) => (
-					<div class="reveal space-y-3 py-4" style={`--reveal-i: ${i}`}>
-						<div class="font-serif text-5xl font-medium text-foreground lg:text-6xl">{stat.stat}</div>
-						<p class="text-sm text-muted-foreground">{stat.type}</p>
+					<div class="reveal space-y-3 py-6" style={`--reveal-i: ${i}`}>
+						<div class="font-serif text-5xl font-medium tracking-[-0.005em] text-foreground lg:text-6xl">{stat.stat}</div>
+						<p class="text-sm leading-relaxed text-muted-foreground">{stat.type}</p>
 					</div>
 				))}
 			</div>
@@ -163,30 +164,30 @@ const testimonials = [
 	<Section background="bg-secondary">
 		<div class="mx-auto max-w-7xl px-6">
 			<div class="reveal mx-auto max-w-xl text-center">
-				<h2 class="text-4xl font-medium lg:text-5xl">What we run</h2>
-				<p class="mt-4 text-muted-foreground">
-					Six core programs, volunteer-led and community-funded. Free or sliding-scale - no one is turned away.
+				<h2 class="text-4xl font-medium tracking-[-0.005em] lg:text-5xl">What we run</h2>
+				<p class="mt-4 text-muted-foreground leading-relaxed">
+					Six core programs, volunteer-led and community-funded. Free or sliding-scale — no one is turned away.
 				</p>
 			</div>
 			<div class="reveal-stagger mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 				{programCards.map((program, i) => (
 					<a
 						href={program.link}
-						class="reveal card-hover card-hover-glow graceful-hover group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-6"
+						class="reveal group flex flex-col gap-4 rounded-xl border border-border/60 bg-card p-6 transition-all duration-300 hover:border-border hover:bg-accent/30"
 						style={`--reveal-i: ${i}`}
 					>
-						<div class="flex size-12 items-center justify-center rounded-xl bg-muted text-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-							<Icon name={program.icon} class="size-6" />
+						<div class="flex size-11 items-center justify-center rounded-xl bg-secondary text-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+							<Icon name={program.icon} class="size-5" />
 						</div>
 						<div class="flex-1 space-y-2">
 							<h3 class="font-medium leading-snug transition-colors group-hover:text-primary">
 								{program.title}
 							</h3>
-							<p class="text-sm text-muted-foreground">{program.desc}</p>
+							<p class="text-sm leading-relaxed text-muted-foreground">{program.desc}</p>
 						</div>
-						<span class="cta-cta-link inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground group-hover:text-primary">
+						<span class="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors group-hover:text-primary/80">
 							Learn more
-							<Icon name="tabler:arrow-right" class="size-3.5" />
+							<Icon name="tabler:arrow-right" class="size-3.5 transition-transform group-hover:translate-x-0.5" />
 						</span>
 					</a>
 				))}
@@ -202,14 +203,14 @@ const testimonials = [
 			<div class="mx-auto max-w-7xl px-6">
 				<div class="reveal flex flex-col items-end gap-2 md:flex-row md:items-end md:justify-between">
 					<div>
-						<h2 class="text-3xl font-semibold md:text-4xl">Latest from the blog</h2>
-						<p class="mt-2 max-w-xl text-muted-foreground">
+						<h2 class="text-3xl font-medium tracking-[-0.005em] md:text-4xl">Latest from the blog</h2>
+						<p class="mt-2 max-w-xl text-muted-foreground leading-relaxed">
 							Reflections, program updates, and notes from the community. Written by the people who show up every day.
 						</p>
 					</div>
 					<a
 						href="/blog"
-						class="cta-cta-link inline-flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-md px-2 py-1"
+						class="inline-flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-md px-2 py-1"
 					>
 						Browse all stories
 						<Icon name="tabler:arrow-right" class="size-4" />
@@ -217,10 +218,10 @@ const testimonials = [
 				</div>
 				<ul class="reveal-stagger mt-10 grid list-none gap-6 p-0 md:grid-cols-3 md:gap-8">
 					{recentBlogs.map((post, i) => (
-						<li class="reveal" style={`--reveal-i: ${i}`}>
+						<li style={`--reveal-i: ${i}`}>
 							<a
 								href={`/blog/${post._sys.filename}/`}
-								class="card-hover group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card graceful-hover"
+								class="group flex h-full flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-300 hover:border-border hover:bg-accent/20"
 							>
 								{post.heroImage && (
 									<div class="aspect-[16/10] overflow-hidden">
@@ -243,11 +244,11 @@ const testimonials = [
 											</time>
 										)}
 									</div>
-									<h3 class="text-balance text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+									<h3 class="text-balance text-lg font-medium leading-snug transition-colors group-hover:text-primary">
 										{post.title}
 									</h3>
 									{post.description && (
-										<p class="line-clamp-3 text-sm text-muted-foreground">{descriptionPreview(post.description, 180)}</p>
+										<p class="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{descriptionPreview(post.description, 180)}</p>
 									)}
 								</div>
 							</a>
@@ -264,14 +265,14 @@ const testimonials = [
 			<div class="mx-auto max-w-7xl px-6">
 				<div class="reveal flex flex-col items-end gap-2 md:flex-row md:items-end md:justify-between">
 					<div>
-						<h2 class="text-3xl font-semibold md:text-4xl">What's coming up</h2>
-						<p class="mt-2 max-w-xl text-muted-foreground">
+						<h2 class="text-3xl font-medium tracking-[-0.005em] md:text-4xl">What's coming up</h2>
+						<p class="mt-2 max-w-xl text-muted-foreground leading-relaxed">
 							From weekly iftars to workshops to our annual gala. Pull up a chair, all are welcome.
 						</p>
 					</div>
 					<a
 						href="/events"
-						class="cta-cta-link inline-flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-md px-2 py-1"
+						class="inline-flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-md px-2 py-1"
 					>
 						See all events
 						<Icon name="tabler:arrow-right" class="size-4" />
@@ -279,10 +280,10 @@ const testimonials = [
 				</div>
 				<ul class="reveal-stagger mt-10 grid list-none gap-6 p-0 md:grid-cols-3 md:gap-8">
 					{upcomingEvents.map((event, i) => (
-						<li class="reveal" style={`--reveal-i: ${i}`}>
+						<li style={`--reveal-i: ${i}`}>
 							<a
 								href={`/events/${event._sys.filename}/`}
-								class="card-hover group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card graceful-hover"
+								class="group flex h-full flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-300 hover:border-border hover:bg-accent/20"
 							>
 								{event.image && (
 									<div class="aspect-[16/10] overflow-hidden">
@@ -308,11 +309,11 @@ const testimonials = [
 											</span>
 										)}
 									</div>
-									<h3 class="text-balance text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+									<h3 class="text-balance text-lg font-medium leading-snug transition-colors group-hover:text-primary">
 										{event.title}
 									</h3>
 									{event.description && (
-										<p class="line-clamp-2 text-sm text-muted-foreground">{descriptionPreview(event.description, 180)}</p>
+										<p class="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{descriptionPreview(event.description, 180)}</p>
 									)}
 								</div>
 							</a>
@@ -337,21 +338,21 @@ const testimonials = [
 
 		<div class="relative z-10 mx-auto max-w-7xl px-6">
 			<div class="reveal mx-auto max-w-xl text-center">
-				<h2 class="text-3xl font-semibold md:text-4xl">Voices from our community</h2>
-				<p class="mt-4 text-muted-foreground">
+				<h2 class="text-3xl font-medium tracking-[-0.005em] md:text-4xl">Voices from our community</h2>
+				<p class="mt-4 text-muted-foreground leading-relaxed">
 					What our neighbors say about the programs they lean on.
 				</p>
 			</div>
 			<div class="reveal-stagger mt-12 grid gap-6 md:grid-cols-3">
 				{testimonials.map((t, i) => (
-					<Card class="reveal card-hover card-hover-glow graceful-hover h-full" style={`--reveal-i: ${i}`}>
+					<Card class="reveal h-full transition-all duration-300 hover:border-border hover:bg-accent/20" style={`--reveal-i: ${i}`}>
 						<CardContent class="flex flex-col gap-4">
 							<div aria-hidden="true" class="font-serif text-5xl leading-none text-primary/30">&ldquo;</div>
 							<blockquote class="flex-1">
 								<p class="text-balance text-muted-foreground leading-relaxed">{t.quote}</p>
 							</blockquote>
 							<div class="flex items-center gap-3 pt-2 border-t border-border/40">
-								<div class="flex size-10 items-center justify-center rounded-xl bg-muted text-xs font-medium text-foreground">
+								<div class="flex size-10 items-center justify-center rounded-full bg-secondary text-xs font-medium text-foreground">
 									{t.author.split(' ').map(w => w[0]).join('')}
 								</div>
 								<div>
@@ -386,15 +387,14 @@ const testimonials = [
 		</div>
 
 		<div class="reveal relative z-10 mx-auto max-w-3xl text-center px-6">
-			<h2 class="text-balance text-4xl font-semibold lg:text-5xl">
+			<h2 class="text-balance text-4xl font-medium tracking-[-0.005em] lg:text-5xl">
 				Every program is run by volunteers and funded by your donations
 			</h2>
-			<p class="mx-auto mt-4 max-w-2xl text-balance text-muted-foreground">
+			<p class="mx-auto mt-4 max-w-2xl text-balance text-muted-foreground leading-relaxed">
 				Both are essential, and both are deeply needed. Whether you give an hour on Saturday or a recurring monthly gift, you make every number on this page possible.
 			</p>
 
-			<!-- Trust signals - based on competitive research of Islamic Relief, Penny Appeal,
-			     Muslim Hands, and Zakat Foundation. All use trust badges to build donor confidence. -->
+			<!-- Trust signals -->
 			<div class="reveal-stagger mt-10 flex flex-wrap justify-center gap-4 text-sm">
 				<div class="reveal flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2" style="--reveal-i: 0">
 					<Icon name="tabler:shield-check" class="size-4 text-primary" />
@@ -429,4 +429,5 @@ const testimonials = [
 			</div>
 		</div>
 	</Section>
+	</main>
 </Base>

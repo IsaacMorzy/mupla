@@ -18,7 +18,7 @@ const items = (data.items ?? []).filter((it): it is FaqItem => it !== null);
 ---
 <Section>
 	<div class="mx-auto max-w-3xl text-center">
-		{data.title && <h2 data-tina-field={tinaField(data, 'title')} class="text-balance text-3xl font-semibold md:text-4xl">{data.title}</h2>}
+		{data.title && <h2 data-tina-field={tinaField(data, 'title')} class="text-balance text-3xl font-medium tracking-[-0.005em] md:text-4xl">{data.title}</h2>}
 		{data.description && <p data-tina-field={tinaField(data, 'description')} class="mt-4 text-muted-foreground">{data.description}</p>}
 	</div>
 	{items.length > 0 && (

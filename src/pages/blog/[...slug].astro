@@ -50,8 +50,7 @@ const layoutProps = {
 <BlogPost {...layoutProps}>
 	<article>
 		<IslamicDivider variant="single" class="max-w-4xl mx-auto mt-8 mb-4" />
-		<!-- Reading-progress bar - single-line accent that grows as the user
-		     scrolls. No JS library, just one rAF loop reading scroll position. -->
+		<!-- Reading-progress bar -->
 		<div
 			id="reading-progress"
 			class="fixed top-16 left-0 z-30 h-0.5 w-0 bg-primary transition-[width] duration-150 ease-out"
@@ -62,17 +61,15 @@ const layoutProps = {
 			<BlogBody data={data} />
 		</TinaIsland>
 
-		<!-- Author + meta strip - keeps single-voice attribution visible without
-		     intruding on the prose. Pure-static; falls back gracefully if optional
-		     `author` field on the schema was never populated. -->
+		<!-- Author + meta strip: editorial-style attribution -->
 		<aside class="mx-auto mt-12 max-w-3xl border-t border-border px-6 pt-8">
-			<div class="flex flex-wrap items-center gap-3 text-sm">
-			<div class="flex size-11 items-center justify-center rounded-xl bg-muted font-medium text-muted-foreground">
-				{(data?.author || 'mupla community').split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
-			</div>
-			<div class="leading-tight">
-				<p class="font-medium text-foreground">{data?.author || 'mupla community'}</p>
-					<p class="text-muted-foreground">
+			<div class="flex items-center gap-4">
+				<div class="flex size-12 items-center justify-center rounded-full bg-secondary font-medium text-muted-foreground">
+					{(data?.author || 'mupla community').split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
+				</div>
+				<div>
+					<p class="font-medium text-foreground">{data?.author || 'mupla community'}</p>
+					<p class="text-sm text-muted-foreground">
 						{data.pubDate && <FormattedDate date={new Date(data.pubDate)} />}
 					</p>
 				</div>
@@ -85,8 +82,8 @@ const layoutProps = {
 			<section class="mx-auto mt-8 max-w-6xl px-6 md:mt-12">
 				<div class="mb-8 flex items-end justify-between gap-4">
 					<div>
-						<p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Keep reading</p>
-						<h2 class="mt-2 text-balance text-2xl font-semibold md:text-3xl">More from the mupla blog</h2>
+						<p class="text-xs font-medium uppercase tracking-wider text-primary">Keep reading</p>
+						<h2 class="mt-2 text-balance text-2xl font-medium md:text-3xl">More from the mupla blog</h2>
 					</div>
 					<a href="/blog" class="hidden items-center gap-1 text-sm font-medium text-foreground/70 transition-colors hover:text-primary md:inline-flex">
 						All posts
@@ -98,7 +95,7 @@ const layoutProps = {
 						<li>
 							<a
 								href={`/blog/${post._sys.filename}/`}
-								class="group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition-colors hover:bg-accent/30"
+								class="group flex h-full flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-300 hover:border-border hover:bg-accent/20"
 							>
 								{post.heroImage && (
 									<div class="aspect-[16/10] overflow-hidden">
@@ -114,20 +111,20 @@ const layoutProps = {
 								)}
 								<div class="flex flex-1 flex-col gap-3 p-6">
 									<div class="flex flex-wrap items-center gap-2">
-									{post.category && (
-										<Badge variant="outline">{post.category}</Badge>
-									)}
+										{post.category && (
+											<Badge variant="outline">{post.category}</Badge>
+										)}
 										{post.pubDate && (
 											<time datetime={post.pubDate} class="text-xs text-muted-foreground">
 												<FormattedDate date={new Date(post.pubDate)} />
 											</time>
 										)}
 									</div>
-									<h3 class="text-balance text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+									<h3 class="text-balance text-lg font-medium leading-snug transition-colors group-hover:text-primary">
 										{post.title}
 									</h3>
 									{post.description && (
-										<p class="line-clamp-2 text-sm text-muted-foreground">{post.description}</p>
+										<p class="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{post.description}</p>
 									)}
 								</div>
 							</a>

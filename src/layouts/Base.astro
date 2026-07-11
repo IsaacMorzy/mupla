@@ -23,6 +23,7 @@ const config = (await getConfig()).data?.config ?? null;
 		<BaseHead title={title} description={description} image={image} />
 	</head>
 	<body>
+		<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-[9999] focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-none">Skip to content</a>
 		<TinaIsland name="global" wrapper={islands.global.wrapper}>
 			<Header config={config} />
 		</TinaIsland>

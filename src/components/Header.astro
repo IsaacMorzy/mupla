@@ -200,8 +200,10 @@ const navGroups = [
 	.dropdown-open > button svg { transform: rotate(180deg); }
 </style>
 <script is:inline>
-	if (!window.__mobileMenuBound) {
-		window.__mobileMenuBound = true;
+	if (!window.__headerBound) {
+		window.__headerBound = true;
+
+		// Mobile menu toggle
 		const setOpen = (open) => {
 			const btn = document.getElementById('mobile-menu-toggle');
 			const panel = document.getElementById('mobile-menu-panel');
@@ -223,28 +225,26 @@ const navGroups = [
 		document.addEventListener('keydown', (e) => {
 			if (e.key === 'Escape') setOpen(false);
 		});
-	}
-</script>
-<script is:inline>
-	// Touch-friendly dropdown toggles for desktop nav dropdowns.
-	// On touch devices, hover doesn't work - click toggles the panel.
-	document.querySelectorAll('[data-dropdown-toggle]').forEach((btn) => {
-		btn.addEventListener('click', (e) => {
-			// Only intercept on touch-capable devices (hover works on desktop)
-			if (!window.matchMedia('(hover: hover)').matches) {
-				e.preventDefault();
-				const parent = btn.closest('[data-dropdown]');
-				if (parent) parent.classList.toggle('dropdown-open');
+
+		// Touch-friendly dropdown toggles for desktop nav dropdowns
+		document.querySelectorAll('[data-dropdown-toggle]').forEach((btn) => {
+			btn.addEventListener('click', (e) => {
+				if (!window.matchMedia('(hover: hover)').matches) {
+					e.preventDefault();
+					const parent = btn.closest('[data-dropdown]');
+					if (parent) parent.classList.toggle('dropdown-open');
+				}
+			});
+		});
+		// Close dropdowns when clicking outside
+		document.addEventListener('click', (e) => {
+			const target = /** @type {Element} */ (e.target);
+			if (!target.closest('[data-dropdown]')) {
+				document.querySelectorAll('[data-dropdown].dropdown-open').forEach((el) => {
+					el.classList.remove('dropdown-open');
+				});
 			}
 		});
-	});
-	// Close dropdowns when clicking outside
-	document.addEventListener('click', (e) => {
-		const target = /** @type {Element} */ (e.target);
-		if (!target.closest('[data-dropdown]')) {
-			document.querySelectorAll('[data-dropdown].dropdown-open').forEach((el) => {
-				el.classList.remove('dropdown-open');
-			});
-		}
-	});
+	}
+</script>
 </script>

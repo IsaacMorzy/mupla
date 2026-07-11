@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
-import sitemap from '@astrojs/sitemap';
+import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import icon from 'astro-icon';
 import tina from '@tinacms/astro/integration';
 import { tinaAdminDevRedirect } from '@tinacms/astro/vite';
@@ -56,7 +56,54 @@ export default defineConfig({
 	output: 'static',
 	adapter: getAdapter(),
 	redirects: { '/home': '/' },
-	integrations: [mdx(), sitemap(), icon(), tina()],
+	integrations: [
+		mdx(),
+		sitemap({
+			// Split sitemap into logical chunks for better crawl efficiency
+			chunks: {
+				'blog': (item) => {
+					if (/\/blog\//.test(item.url) && !/\/blog\/search/.test(item.url)) {
+						item.changefreq = ChangeFreqEnum.WEEKLY;
+						item.priority = 0.8;
+						return item;
+					}
+				},
+				'events': (item) => {
+					if (/\/events\//.test(item.url)) {
+						item.changefreq = ChangeFreqEnum.WEEKLY;
+						item.priority = 0.7;
+						return item;
+					}
+				},
+				'programs': (item) => {
+					if (/\/(about|programs|team|faq|get-involved|contact|donate|privacy|terms)/.test(item.url)) {
+						item.changefreq = ChangeFreqEnum.MONTHLY;
+						item.priority = 0.6;
+						return item;
+					}
+				},
+			},
+			// Exclude utility pages from sitemap
+			filter: (page) =>
+				!/\/(404|oxfam|home)\//.test(page) &&
+				!/\/blog\/search/.test(page),
+			// Exclude unused XML namespaces for leaner output
+			namespaces: {
+				news: false,
+				video: false,
+			},
+			serialize(item) {
+				// Homepage gets highest priority
+				if (item.url.endsWith('/') && item.url.split('/').length <= 4) {
+					item.changefreq = ChangeFreqEnum.WEEKLY;
+					item.priority = 1.0;
+				}
+				return item;
+			},
+		}),
+		icon(),
+		tina(),
+	],
 	build: {
 		// Inline the (~10 KiB) bundled CSS into a <style> in <head> instead of a
 		// separate render-blocking <link>. Astro's default ('auto') only inlines

@@ -29,7 +29,7 @@ const newsletterAction = (import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '').toStri
 		<div class="grid gap-10 md:grid-cols-[1fr_1.2fr] md:gap-16">
 			<div class="max-w-md">
 				{seo?.logo && (
-					<img src={seo.logo} alt={seo.title ?? ''} class="mb-4 size-10" />
+					<img src={seo.logo} alt={`${seo?.title ?? 'mupla'} logo`} class="mb-4 size-10" decoding="async" />
 				)}
 				<h2 class="text-base font-medium text-foreground">{seo?.title}</h2>
 				<p class="mt-2">Get monthly updates on our programs, events, and impact - straight to your inbox.</p>

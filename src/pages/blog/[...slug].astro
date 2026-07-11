@@ -6,7 +6,7 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import Badge from '../../components/ui/Badge.astro';
 import Icon from '../../components/ui/Icon.astro';
 import IslamicDivider from '../../components/ui/IslamicDivider.astro';
-import { getBlog, listBlogs, categoryOf } from '../../lib/data';
+import { getBlog, listBlogs, categoryOf, getConfig } from '../../lib/data';
 import { islands } from '../../lib/islands';
 import type { CmsBlog } from '../../lib/data';
 
@@ -19,6 +19,8 @@ const slug = (Astro.params.slug ?? '').toString();
 const blog = await getBlog(slug);
 const data = blog.data?.blog;
 if (!data) return new Response('Not Found', { status: 404 });
+
+const config = (await getConfig()).data?.config ?? null;
 
 const allPosts: CmsBlog[] = await listBlogs();
 
@@ -39,7 +41,7 @@ const related: CmsBlog[] = allPosts
 	.slice(0, 3);
 
 const layoutProps = {
-	title: data.title ?? '',
+	title: `${data.title ?? ''} | ${config?.seo?.title ?? 'mupla Foundation'}`,
 	description: data.description ?? '',
 	pubDate: data.pubDate ? new Date(data.pubDate) : new Date(),
 	updatedDate: data.updatedDate ? new Date(data.updatedDate) : undefined,
@@ -48,6 +50,18 @@ const layoutProps = {
 ---
 
 <BlogPost {...layoutProps}>
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "Article",
+		"headline": data.title,
+		"description": data.description,
+		"image": data.heroImage ? `https://mupla.org${data.heroImage}` : undefined,
+		"datePublished": data.pubDate,
+		"dateModified": data.updatedDate || data.pubDate,
+		"author": { "@type": "Person", "name": data.author || "mupla community" },
+		"publisher": { "@type": "Organization", "name": "mupla Foundation" },
+		"mainEntityOfPage": { "@type": "WebPage", "@id": `https://mupla.org/blog/${slug}/` }
+	})} />
 	<article>
 		<IslamicDivider variant="single" class="max-w-4xl mx-auto mt-8 mb-4" />
 		<!-- Reading-progress bar -->

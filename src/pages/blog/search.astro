@@ -10,7 +10,7 @@ const config = (await getConfig()).data?.config ?? null;
 ---
 
 <Base
-	title={`Search${config?.seo?.title ? ` - ${config.seo.title}` : ''}`}
+	title={`Search | ${config?.seo?.title ?? 'mupla Foundation'}`}
 	description="Search blog posts and upcoming events on the mupla foundation site."
 >
 	<main id="main-content" class="mx-auto max-w-3xl px-6 py-12">

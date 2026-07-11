@@ -38,7 +38,7 @@ const rest = enriched.slice(1);
 ---
 
 <Base
-	title={`Blog${config?.seo?.title ? ` · ${config.seo.title}` : ''}`}
+	title={`Blog | ${config?.seo?.title ?? 'mupla Foundation'}`}
 	description={config?.seo?.description ?? 'Stories, reflections, and program updates from the mupla foundation.'}
 >
 	<main id="main-content" class="mx-auto max-w-7xl px-6 pb-20 pt-12">

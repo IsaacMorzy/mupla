@@ -108,8 +108,8 @@ const testimonials = [
 ---
 
 <Base
-	title={data.seoTitle || config?.seo?.title || 'MuPLA Foundation'}
-	description={config?.seo?.description ?? 'Welcome to my website!'}
+	title={data.seoTitle || `${config?.seo?.title ?? 'mupla Foundation'}`}
+	description={config?.seo?.description ?? 'mupla Foundation - Serving the Muslim community through education, charity, and outreach.'}
 >
 	<main id="main-content">
 	<TinaIsland name="page" wrapper={islands.page.wrapper} params={{ slug }} primary>

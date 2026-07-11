@@ -44,9 +44,10 @@ const minutesLabel = `${readingMinutes} min read`;
 			width={1200}
 			height={675}
 			src={data.heroImage}
-			alt=""
+			alt={data.title ?? 'Blog post image'}
 			loading="eager"
 			fetchpriority="high"
+			decoding="async"
 			class="w-full rounded-2xl border border-border/60 object-cover"
 		/>
 	</div>

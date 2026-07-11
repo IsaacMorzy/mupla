@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /404
+Disallow: /blog/search
+Disallow: /oxfam
+
+Sitemap: https://mupla.org/sitemap-index.xml

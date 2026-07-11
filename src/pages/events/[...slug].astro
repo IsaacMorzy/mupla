@@ -33,9 +33,22 @@ const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${en
 ---
 
 <Base
-	title={`${data.title ?? 'Event'}${config?.seo?.title ? ` - ${config.seo.title}` : ''}`}
+	title={`${data.title ?? 'Event'} | ${config?.seo?.title ?? 'mupla Foundation'}`}
 	description={descriptionText}
 >
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "Event",
+		"name": data.title,
+		"description": descriptionText,
+		"image": data.image ? `https://mupla.org${data.image}` : undefined,
+		"startDate": data.date,
+		"endDate": data.endDate || data.date,
+		"location": data.location ? { "@type": "Place", "name": data.location } : undefined,
+		"organizer": { "@type": "Organization", "name": "mupla Foundation" },
+		"offers": data.cost ? { "@type": "Offer", "price": data.cost, "priceCurrency": "USD" } : undefined,
+		"url": `https://mupla.org/events/${slug}/`
+	})} />
 	<main id="main-content" class="mx-auto max-w-3xl px-6 py-12">
 		<!-- Back link -->
 		<a href="/events" class="mb-8 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground">

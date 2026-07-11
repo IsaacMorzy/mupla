@@ -70,6 +70,7 @@
 
 :root {
 	--radius: 0.5rem;
+	--header-h: 5rem;
 
 	/* === Primitive scale (mode-agnostic warm palette) === */
 	/* paper-N — the warm neutrals (cream → sepia). One primitive per visual stop. */
@@ -158,7 +159,10 @@
 		color: var(--foreground);
 		font-family: var(--font-sans);
 		margin: 0;
-		padding-top: 5rem;
+		padding-top: var(--header-h);
+	}
+	#main-content {
+		scroll-margin-top: var(--header-h);
 	}
 	.bg-default {
 		background-color: var(--background);
